@@ -11,31 +11,21 @@ type ChatResponse = {
    message: string;
 };
 
-const churchInfo = fs.readFileSync(
-   path.join(__dirname, '..', 'llm', 'prompts', 'RCNLagosIslandChurch.md'),
-   'utf-8'
-);
+const churchInfo = fs.readFileSync(path.join(__dirname, '..', 'llm', 'prompts', 'RCNLagosIslandChurch.md'), 'utf-8');
 const instructions = template.replace('{{churchInfo}}', churchInfo);
 
 export const chatService = {
-   async sendMessage(
-      prompt: string,
-      conversationId: string
-   ): Promise<ChatResponse> {
+   async sendMessage(prompt: string, conversationId: string): Promise<ChatResponse> {
       const response = await openAiClient.responses.create({
          model: 'gpt-4o-mini',
          instructions,
          input: prompt,
          temperature: 0.7,
          max_output_tokens: 100,
-         previous_response_id:
-            await conversationRepository.getLastResponseId(conversationId),
+         previous_response_id: await conversationRepository.getLastResponseId(conversationId),
       });
 
-      await conversationRepository.setLastResponseId(
-         conversationId,
-         response.id
-      );
+      await conversationRepository.setLastResponseId(conversationId, response.id);
 
       return {
          id: response.id,
