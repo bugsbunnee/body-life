@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Conversation {
+  conversationId String @id @unique
+  lastResponseId String @db.VarChar(255)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("conversations")
+}
+
+model PrayerCell {
+  id          Int        @id @default(autoincrement())
+  
+  name        String     @db.VarChar(255)
+  address     String     @db.Text
+
+  meetingDay  String
+  meetingTime String
+
+  leaderId    Int        @unique
+  leader      User       @relation(fields: [leaderId], references: [id])
+
+  @@map("prayercells")
+}
+
+model Department {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(255)
+  hodId       Int        @unique
+  hod         User       @relation(fields: [hodId], references: [id])
+
+  @@map("departments")
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+
+  email       String     @unique
+  firstName   String     @db.VarChar(55)
+  lastName    String     @db.VarChar(55)
+  phoneNumber String
+  address     String     @db.VarChar(255)
+  
+  birthDay    DateTime   
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  prayerCell  PrayerCell?
+  department  Department?
+
+  @@map("users")
+}
