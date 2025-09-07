@@ -9,10 +9,6 @@ import { chatSchema } from '../lib/schema';
 const router = express.Router();
 
 router.post('/', validate(chatSchema), chatController.sendMessage);
-router.post(
-   '/transcribe',
-   upload.single('file'),
-   chatController.transcribeAudio
-);
+router.post('/transcribe', upload.single('file'), chatController.transcribeAudio);
 
 export default router;
