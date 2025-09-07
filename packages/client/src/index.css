@@ -45,6 +45,7 @@
    --color-blue-light: var(--blue-light);
    --color-main: var(--main-color);
    --color-border: var(--border);
+   --color-gray-neutral: var(--gray-neutral);
 
    --font-dm-sans: var(--font-dm-sans);
 }
@@ -85,6 +86,7 @@
 
    --font-dm-sans: 'DM Sans', sans-serif;
 
+   --gray-neutral: #6f7777;
    --gray-light: #fdfdfd;
    --blue-light: #eff7ff;
    --main-color: #022a68;

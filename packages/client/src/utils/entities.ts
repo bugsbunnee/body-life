@@ -14,3 +14,15 @@ export interface Route {
       label: string;
    }[];
 }
+
+export interface User {
+   id: number;
+   email: string;
+   firstName: string;
+   lastName: string;
+   phoneNumber: string;
+   address: string;
+   birthDay: Date;
+   createdAt: Date;
+   updatedAt: Date;
+}

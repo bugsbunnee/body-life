@@ -60,7 +60,7 @@ const NavBar: React.FC = () => {
 
             <div>
                <div className="text-lg text-main font-medium">Chukwuma Marcel</div>
-               <div className="text-sm text-gray-400 font-medium">Media HOD</div>
+               <div className="text-sm text-gray-neutral font-medium">Media HOD</div>
             </div>
          </div>
       </div>
