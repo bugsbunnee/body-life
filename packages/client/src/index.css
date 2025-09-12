@@ -46,6 +46,7 @@
    --color-main: var(--main-color);
    --color-border: var(--border);
    --color-gray-neutral: var(--gray-neutral);
+   --color-dark: var(--dark);
 
    --font-dm-sans: var(--font-dm-sans);
 }
@@ -90,6 +91,7 @@
    --gray-light: #fdfdfd;
    --blue-light: #eff7ff;
    --main-color: #022a68;
+   --dark: #1b1d1e;
    --border: rgba(180, 180, 180, 0.2);
 }
 

@@ -4,11 +4,7 @@ type DotProps = {
    className?: string;
 };
 
-const Dot: React.FC<DotProps> = ({ className }) => (
-   <div
-      className={`w-2 h-2 rounded-full bg-gray-800 animate-pulse ${className}`}
-   ></div>
-);
+const Dot: React.FC<DotProps> = ({ className }) => <div className={`w-2 h-2 rounded-full bg-gray-800 animate-pulse ${className}`}></div>;
 
 const TypingIndicator: React.FC = () => {
    return (

@@ -5,6 +5,13 @@ export interface AuthResponse {
    user: null;
 }
 
+export interface PaginationProps {
+   pageNumber: number;
+   pageSize: number;
+   totalCount: number;
+   totalPages: number;
+}
+
 export interface Route {
    path: string;
    label: string;

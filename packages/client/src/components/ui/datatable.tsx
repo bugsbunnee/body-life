@@ -4,6 +4,7 @@ import { Skeleton } from './skeleton';
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { PaginationProps } from '@/utils/entities';
 
 import {
    Pagination,
@@ -16,12 +17,14 @@ import {
 } from '@/components/ui/pagination';
 
 interface DataTableProps<TData, TValue> {
+   onPageChange: (page: number) => void;
    columns: ColumnDef<TData, TValue>[];
    data: TData[];
+   pagination: PaginationProps;
    loading: boolean;
 }
 
-export function DataTable<TData, TValue>({ columns, data, loading }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, loading, pagination, onPageChange }: DataTableProps<TData, TValue>) {
    const table = useReactTable({
       data,
       columns,
@@ -75,28 +78,38 @@ export function DataTable<TData, TValue>({ columns, data, loading }: DataTablePr
             </TableBody>
          </Table>
 
-         <Pagination>
+         <Pagination className="pb-6">
             <PaginationContent>
                <PaginationItem>
-                  <PaginationPrevious href="#" />
+                  <PaginationPrevious
+                     href="#"
+                     data-disabled={pagination.pageNumber === 1}
+                     className="data-[disabled=true]:opacity-25"
+                     onClick={() => onPageChange(1)}
+                  />
                </PaginationItem>
 
+               {_.range(1, pagination.totalPages + 1).map((page) => (
+                  <PaginationItem key={page}>
+                     <PaginationLink href="#" onClick={() => onPageChange(page)} isActive={page === pagination.pageNumber}>
+                        {page}
+                     </PaginationLink>
+                  </PaginationItem>
+               ))}
+
+               {pagination.totalPages > 2 && (
+                  <PaginationItem>
+                     <PaginationEllipsis />
+                  </PaginationItem>
+               )}
+
                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-               </PaginationItem>
-               <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                     2
-                  </PaginationLink>
-               </PaginationItem>
-               <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-               </PaginationItem>
-               <PaginationItem>
-                  <PaginationEllipsis />
-               </PaginationItem>
-               <PaginationItem>
-                  <PaginationNext href="#" />
+                  <PaginationNext
+                     href="#"
+                     data-disabled={pagination.pageNumber === pagination.totalPages}
+                     className="data-[disabled=true]:opacity-25"
+                     onClick={() => onPageChange(pagination.totalPages)}
+                  />
                </PaginationItem>
             </PaginationContent>
          </Pagination>

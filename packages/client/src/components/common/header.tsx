@@ -4,16 +4,17 @@ import { FaSearch } from 'react-icons/fa';
 
 interface Props {
    title: string;
+   onSearch: (search: string) => void;
 }
 
-const Header: React.FC<Props> = ({ title }) => {
+const Header: React.FC<Props> = ({ title, onSearch }) => {
    const ref = useRef<HTMLInputElement>(null);
 
    const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
       if (ref.current) {
-         console.log(ref.current.value);
+         onSearch(ref.current.value);
       }
    };
 

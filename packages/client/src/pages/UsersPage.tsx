@@ -1,59 +1,148 @@
 import type React from 'react';
 
-import type { ColumnDef } from '@tanstack/react-table';
+import { useMemo, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
+import { formatDate } from 'date-fns';
 
+import type { ColumnDef } from '@tanstack/react-table';
+import type { User } from '@/utils/entities';
+import { getInitials } from '@/lib/utils';
+
+import AddUserForm from '@/components/forms/add-user-form';
 import Header from '@/components/common/header';
 import Filters from '@/components/common/filters';
+import Modal from '@/components/common/modal';
+import Summary from '@/components/common/summary';
+import SendMessageForm from '@/components/forms/send-message-form';
+
 import useUsers from '@/hooks/useUsers';
+import useUserStore from '@/store/user';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { DatePickerDemo } from '@/components/ui/datepicker';
+import { DatePicker } from '@/components/ui/datepicker';
 import { DataTable } from '@/components/ui/datatable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getInitials } from '@/lib/utils';
-import type { User } from '@/utils/entities';
-
-const columns: ColumnDef<User>[] = [
-   {
-      accessorKey: 'id',
-      header: 'Avatar',
-      cell: ({ row }) => (
-         <Avatar>
-            <AvatarFallback>{getInitials(row.original.firstName + ' ' + row.original.lastName)}</AvatarFallback>
-         </Avatar>
-      ),
-   },
-   {
-      accessorKey: 'firstName',
-      header: 'First Name',
-      cell: ({ row }) => (
-         <span>
-            {row.original.firstName} {row.original.lastName}
-         </span>
-      ),
-   },
-   {
-      accessorKey: 'address',
-      header: 'Address',
-   },
-   {
-      accessorKey: 'phoneNumber',
-      header: 'Phone',
-   },
-   {
-      accessorKey: 'email',
-      header: 'Email',
-   },
-];
+import { Checkbox } from '@/components/ui/checkbox';
 
 const UsersPage: React.FC = () => {
-   const { isFetching, data } = useUsers();
+   const [isAddUserVisible, setAddUserVisible] = useState(false);
+   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+   const { isFetching, data, refetch } = useUsers();
+   const { onSetSearch, onSetPageNumber } = useUserStore();
+
+   const handleMemberAddition = () => {
+      setAddUserVisible(false);
+      refetch();
+   };
+
+   const columns = useMemo(() => {
+      const columns: ColumnDef<User>[] = [
+         {
+            accessorKey: 'createdAt',
+            header: ({ table }) => (
+               <Checkbox
+                  checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+                  onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                  aria-label="Select all"
+               />
+            ),
+            cell: ({ row }) => (
+               <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+         },
+         {
+            accessorKey: 'id',
+            header: 'Avatar',
+            cell: ({ row }) => (
+               <Avatar>
+                  <AvatarFallback>{getInitials(row.original.firstName + ' ' + row.original.lastName)}</AvatarFallback>
+               </Avatar>
+            ),
+         },
+         {
+            accessorKey: 'firstName',
+            header: 'Full Name',
+            cell: ({ row }) => (
+               <Button
+                  onClick={() => setSelectedUser(row.original)}
+                  className="underline bg-transparent text-main font-semibold shadow-none hover:bg-transparent cursor-pointer"
+               >
+                  {row.original.firstName} {row.original.lastName}
+               </Button>
+            ),
+         },
+         {
+            accessorKey: 'address',
+            header: 'Address',
+         },
+         {
+            accessorKey: 'phoneNumber',
+            header: 'Phone',
+         },
+         {
+            accessorKey: 'email',
+            header: 'Email',
+         },
+      ];
+
+      return columns;
+   }, []);
 
    return (
       <>
-         <Header title="Members" />
+         <Header title="Members" onSearch={onSetSearch} />
+
+         <Modal onClose={() => setAddUserVisible(false)} title="Add User" visible={isAddUserVisible}>
+            <AddUserForm onAddUser={handleMemberAddition} />
+         </Modal>
+
+         {selectedUser && (
+            <Modal onClose={() => setSelectedUser(null)} title="User Details" visible>
+               <div className="grid grid-cols-2 gap-4">
+                  <Summary
+                     title="General Information"
+                     labels={[
+                        {
+                           key: 'First Name',
+                           value: selectedUser.firstName,
+                        },
+                        {
+                           key: 'Last Name',
+                           value: selectedUser.lastName,
+                        },
+                        {
+                           key: 'Email Address',
+                           value: selectedUser.email,
+                        },
+                        {
+                           key: 'Phone Number',
+                           value: selectedUser.phoneNumber,
+                        },
+                     ]}
+                  />
+
+                  <Summary
+                     title="Others"
+                     labels={[
+                        {
+                           key: 'Home Address',
+                           value: selectedUser.address,
+                        },
+                        {
+                           key: 'Birthday',
+                           value: formatDate(selectedUser.birthDay, 'PPP'),
+                        },
+                     ]}
+                  />
+
+                  <SendMessageForm phoneNumber={selectedUser.phoneNumber} />
+               </div>
+            </Modal>
+         )}
 
          <Tabs defaultValue="account" className="w-full pt-8 gap-0">
             <TabsList className="w-full bg-transparent border-b-border border-b justify-start">
@@ -79,9 +168,10 @@ const UsersPage: React.FC = () => {
                </div>
 
                <div className="flex gap-x-4">
-                  <DatePickerDemo />
+                  <DatePicker />
 
                   <Button
+                     onClick={() => setAddUserVisible(true)}
                      variant="ghost"
                      className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                   >
@@ -94,7 +184,13 @@ const UsersPage: React.FC = () => {
             <Filters />
 
             <TabsContent value="account">
-               <DataTable loading={isFetching} columns={columns} data={data.data} />
+               <DataTable
+                  onPageChange={onSetPageNumber}
+                  pagination={data.data.pagination}
+                  loading={isFetching}
+                  columns={columns}
+                  data={data.data.data}
+               />
             </TabsContent>
          </Tabs>
       </>

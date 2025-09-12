@@ -4,7 +4,7 @@ import validate from '../middleware/validate';
 import upload from '../services/upload.service';
 
 import { chatController } from '../controllers/chat.controller';
-import { chatSchema } from '../lib/schema';
+import { chatSchema } from '../infrastructure/lib/schema';
 
 const router = express.Router();
 

@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-export const sendMessage = async <T>(
-   prompt: string,
-   conversationId: string
-) => {
+export const sendMessage = async <T>(prompt: string, conversationId: string) => {
    const { data } = await axios.post<T>('/api/chat', {
       prompt,
       conversationId,

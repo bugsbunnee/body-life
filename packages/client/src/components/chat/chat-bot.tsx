@@ -33,15 +33,9 @@ const ChatBot = () => {
 
          popAudio.play();
 
-         const data = await sendMessage<ChatResponse>(
-            prompt,
-            conversationId.current
-         );
+         const data = await sendMessage<ChatResponse>(prompt, conversationId.current);
 
-         setMessages((prev) => [
-            ...prev,
-            { content: data.message, role: 'bot' },
-         ]);
+         setMessages((prev) => [...prev, { content: data.message, role: 'bot' }]);
 
          notificationAudio.play();
       } catch (error) {

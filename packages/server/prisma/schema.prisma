@@ -66,3 +66,17 @@ model User {
 
   @@map("users")
 }
+
+model Announcement {
+  id         Int        @id @default(autoincrement())
+  
+  title        String     @db.VarChar(55)
+  content      String     @db.Text
+
+  imageUrl     String     @db.VarChar(255)
+  isActive     Boolean    @default(true)
+
+  scheduledFor DateTime
+
+  @@map("announcements")
+}

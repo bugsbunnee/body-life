@@ -14,6 +14,8 @@
       "verbatimModuleSyntax": true,
       "noEmit": true,
 
+      "typeRoots": ["./types"] /* Specify multiple folders that act like './node_modules/@types'. */,
+
       // Best practices
       "strict": true,
       "skipLibCheck": true,

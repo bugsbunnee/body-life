@@ -47,9 +47,7 @@ const ChatRecorder: React.FC<ChatInputProps> = ({ onSubmit }) => {
    useEffect(() => {
       if (recording) {
          const interval = setInterval(() => {
-            setLevels((previous) =>
-               previous.map(() => Math.floor(Math.random() * 20) + 5)
-            );
+            setLevels((previous) => previous.map(() => Math.floor(Math.random() * 20) + 5));
          }, 200);
 
          return () => clearInterval(interval);
@@ -60,10 +58,7 @@ const ChatRecorder: React.FC<ChatInputProps> = ({ onSubmit }) => {
       <div className="flex items-center justify-center gap-x-2">
          <Button
             onClick={recording ? stopRecording : startRecording}
-            className={cn([
-               'rounded-full w-9 h-9',
-               recording ? 'bg-red-500' : 'bg-green-500',
-            ])}
+            className={cn(['rounded-full w-9 h-9', recording ? 'bg-red-500' : 'bg-green-500'])}
          >
             {recording ? <FaStop /> : <FaCircle />}
          </Button>
