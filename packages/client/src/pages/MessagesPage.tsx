@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 
@@ -28,7 +28,7 @@ const MessagesPage: React.FC = () => {
    const [selectedMessage, setSelectedMessage] = useState<IMessage | null>(null);
 
    const { isFetching, data, refetch } = useMessages();
-   const { onSetSearch, onSetPageNumber } = useQueryStore();
+   const { onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
 
    const handleMessageddition = () => {
       setAddMessagesVisible(false);
@@ -86,6 +86,10 @@ const MessagesPage: React.FC = () => {
 
       return columns;
    }, []);
+
+   useEffect(() => {
+      resetQuery();
+   }, [resetQuery]);
 
    return (
       <>

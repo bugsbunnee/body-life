@@ -1,4 +1,4 @@
-import { Resend, type CreateEmailOptions } from 'resend';
+import { Resend, type CreateEmailOptions, type CreateEmailResponse } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -23,5 +23,23 @@ export const emailService = {
             react: option.react,
          }))
       );
+   },
+
+   async queueBatchEmails(options: Omit<CreateEmailOptions, 'from'>[]) {
+      const success: CreateEmailResponse[] = [];
+      const failed: Omit<CreateEmailOptions, 'from'>[] = [];
+
+      for (const option of options) {
+         try {
+            const emailResponse = await this.sendSingleEmail(option);
+            success.push(emailResponse);
+         } catch (error) {
+            console.error(error);
+
+            failed.push(option);
+         }
+      }
+
+      return { success, failed };
    },
 };

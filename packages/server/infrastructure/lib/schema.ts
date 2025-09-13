@@ -19,6 +19,8 @@ export const userSchema = z.object({
    lastName: z.string().min(1, 'Last Name is required').max(30, 'Last Name is too long (max 30 characters'),
    address: z.string().min(1, 'Address is required').max(200, 'Address is too long (max 200 characters'),
    email: z.email(),
+   maritalStatus: z.string().min(1, 'Marital Status is required').max(20, 'Marital Status is too long (max 20 characters'),
+   gender: z.string().min(1, 'Gender is required').max(200, 'Gender is too long (max 200 characters'),
    birthDay: z.coerce.date(),
    phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
 });

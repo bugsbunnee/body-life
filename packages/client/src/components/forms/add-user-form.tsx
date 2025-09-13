@@ -18,11 +18,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../ui/calendar';
 import { getErrorMessage } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const userSchema = z.object({
    firstName: z.string().min(1, 'First Name is required').max(30, 'First Name is too long (max 30 characters'),
    lastName: z.string().min(1, 'Last Name is required').max(30, 'Last Name is too long (max 30 characters'),
    address: z.string().min(1, 'Address is required').max(200, 'Address is too long (max 200 characters'),
+   gender: z.string().min(1, 'Gender is required').max(200, 'Gender is too long (max 200 characters'),
+   maritalStatus: z.string().min(1, 'Marital Status is required').max(20, 'Marital Status is too long (max 20 characters'),
    email: z.email().min(1, 'Email Address is required').max(200, 'Email Address is too long (max 50 characters'),
    birthDay: z.date(),
    phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
@@ -119,6 +122,99 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
                <FormField
                   control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                           <FormControl>
+                              <SelectTrigger
+                                 style={{ height: '3.5rem' }}
+                                 className="rounded-lg border border-border px-4 shadow-none w-full"
+                              >
+                                 <SelectValue placeholder="Select a Gender" />
+                              </SelectTrigger>
+                           </FormControl>
+
+                           <SelectContent>
+                              {GENDERS.map((gender) => (
+                                 <SelectItem key={gender.id} value={gender.id}>
+                                    {gender.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+
+               <FormField
+                  control={form.control}
+                  name="maritalStatus"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel>Marital Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                           <FormControl>
+                              <SelectTrigger
+                                 style={{ height: '3.5rem' }}
+                                 className="rounded-lg border border-border px-4 shadow-none w-full"
+                              >
+                                 <SelectValue placeholder="Select a Marital Status" />
+                              </SelectTrigger>
+                           </FormControl>
+
+                           <SelectContent>
+                              {MARITAL_STATUS.map((status) => (
+                                 <SelectItem key={status.id} value={status.id}>
+                                    {status.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+            </div>
+
+            <div className="grid grid-cols-3 gap-x-5">
+               <FormField
+                  control={form.control}
+                  name="birthDay"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel className="text-sm text-dark font-medium">Date of Birth</FormLabel>
+                        <FormControl>
+                           <Popover>
+                              <PopoverTrigger asChild>
+                                 <FormControl>
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                       {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                 </FormControl>
+                              </PopoverTrigger>
+
+                              <PopoverContent className="w-auto p-0" align="start">
+                                 <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                                    captionLayout="dropdown"
+                                 />
+                              </PopoverContent>
+                           </Popover>
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+
+               <FormField
+                  control={form.control}
                   name="phoneNumber"
                   render={({ field }) => (
                      <FormItem>
@@ -154,41 +250,6 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                />
             </div>
 
-            <div className="grid grid-cols-2 gap-x-5">
-               <FormField
-                  control={form.control}
-                  name="birthDay"
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel className="text-sm text-dark font-medium">Date of Birth</FormLabel>
-                        <FormControl>
-                           <Popover>
-                              <PopoverTrigger asChild>
-                                 <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
-                                       {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                 </FormControl>
-                              </PopoverTrigger>
-
-                              <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                                    captionLayout="dropdown"
-                                 />
-                              </PopoverContent>
-                           </Popover>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-            </div>
-
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting}
@@ -200,5 +261,27 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
       </Form>
    );
 };
+
+const GENDERS = [
+   {
+      id: 'Male',
+      name: 'Male',
+   },
+   {
+      id: 'Female',
+      name: 'Female',
+   },
+];
+
+const MARITAL_STATUS = [
+   {
+      id: 'Single',
+      name: 'Single',
+   },
+   {
+      id: 'Married',
+      name: 'Married',
+   },
+];
 
 export default AddUserForm;

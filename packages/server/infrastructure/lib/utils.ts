@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
+
+import { faker } from '@faker-js/faker';
 import * as XLSX from 'xlsx';
 
 export function parseUsersFromFile(file: Express.Multer.File) {
@@ -10,16 +12,20 @@ export function parseUsersFromFile(file: Express.Multer.File) {
 
       const results = XLSX.utils.sheet_to_json(workSheet!);
 
-      const mappedResults = results.map((result: any) => ({
-         firstName: result.Name.split(' ')[0],
-         lastName: result.Name.split(' ')[1],
-         phoneNumber: result.Number,
-         address: result.Address,
-         notes: result['Recommeded Cell'] ? `Recommended Cell: ${result['Recommeded Cell']}, ${result['Call Log 12th Feb']}` : '',
-         dateVisited: result['Date Visited'] ? moment(result['Date Visited'] * 1_000).toDate() : moment().toDate(),
-      }));
+      const mappedResults = results
+         .map((result: any) => ({
+            firstName: result['First Name'],
+            lastName: result['Surname'],
+            gender: result['Gender'],
+            email: result['E-mail Address']?.trim()?.toLowerCase(),
+            maritalStatus: result['Marital Status'],
+            birthDay: moment(`${result['Birthday (Day)']}-${result['Birthday (Month)']}-${moment().year()}`, 'DD-MMMM-YYYY').toDate(),
+            phoneNumber: result['Phone Number']?.toString() ?? faker.phone.number(),
+            address: result['Home Address'] ?? faker.location.streetAddress({ useFullAddress: true }),
+         }))
+         .filter((user) => user.email);
 
-      resolve(mappedResults);
+      resolve(_.uniqBy(mappedResults, 'email'));
    });
 }
 

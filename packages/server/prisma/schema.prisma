@@ -56,11 +56,12 @@ model User {
   lastName    String     @db.VarChar(55)
   phoneNumber String
   address     String     @db.VarChar(255)
-  
+  gender      String     @db.VarChar(10)
+
+  maritalStatus String   @db.Text
   birthDay    DateTime   
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  dateVisited DateTime   @default(now())
 
   notes       String?     @db.Text
 

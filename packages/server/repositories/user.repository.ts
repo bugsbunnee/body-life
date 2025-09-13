@@ -11,7 +11,9 @@ export const userRepository = {
             firstName: user.firstName,
             lastName: user.lastName,
             birthDay: user.birthDay,
+            gender: user.gender,
             email: user.email,
+            maritalStatus: user.maritalStatus,
             address: user.address,
             phoneNumber: user.phoneNumber,
          },
@@ -25,7 +27,7 @@ export const userRepository = {
          where,
          take: pagination.pageSize,
          skip: pagination.offset,
-         orderBy: { createdAt: 'desc' },
+         orderBy: { firstName: 'asc' },
       });
 
       const [users, total] = await Promise.all([userQuery, prisma.user.count({ where })]);

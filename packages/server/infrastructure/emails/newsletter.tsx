@@ -59,10 +59,10 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, message, summary, ann
                      </Text>
 
                      <Text className="mt-[8px]" style={body}>
-                        It's a brand new week—how are you really doing? 💬 Whether you're celebrating a victory, carrying a challenge, or
-                        simply in need of prayer, remember: you're not walking this journey alone. We'd love to hear from you and stand with
-                        you. 💡 In case you missed last Sunday's message, it was truly a word in season! Don't let it pass you by. Click the
-                        link below to watch the full sermon and be refreshed again.
+                        The week just wrapped up! how are you really doing? 💬 Whether you're celebrating a victory, carrying a challenge,
+                        or simply in need of prayer, remember: you're not walking this journey alone. We'd love to hear from you and stand
+                        with you. 💡 In case you missed last Sunday's message, it was truly a word in season! Don't let it pass you by.
+                        Click the link below to watch the full sermon and be refreshed again.
                      </Text>
 
                      <Hr className="mt-[16px] mb-0" />
@@ -78,7 +78,7 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, message, summary, ann
                      </Text>
 
                      <Button className="mt-[16px] py-[8px] px-[16px]" href={message.videoUrl} style={trackOrder}>
-                        Catch Up
+                        Replay
                      </Button>
 
                      <Hr className="mt-[16px] mb-0" />
@@ -171,7 +171,7 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, message, summary, ann
 };
 
 const body = {
-   fontSize: '14px',
+   fontSize: '16px',
    lineHeight: '24px',
    fontWeight: '400',
    color: '#333333',

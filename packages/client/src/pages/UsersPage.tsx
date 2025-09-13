@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 
@@ -29,7 +29,7 @@ const UsersPage: React.FC = () => {
    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
    const { isFetching, data, refetch } = useUsers();
-   const { onSetSearch, onSetPageNumber } = useQueryStore();
+   const { onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
 
    const handleMemberAddition = () => {
       setAddUserVisible(false);
@@ -90,6 +90,10 @@ const UsersPage: React.FC = () => {
 
       return columns;
    }, []);
+
+   useEffect(() => {
+      resetQuery();
+   }, [resetQuery]);
 
    return (
       <>

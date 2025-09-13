@@ -24,7 +24,7 @@ export const communicationService = {
       const users = await userRepository.getAllUsers();
 
       const emailData = users
-         .filter((user) => user.id)
+         .filter((user) => user.email)
          .map((user) => ({
             to: user.email,
             subject: `Church Rewind! - ${convertSentenceToTitleCase(message.title)}`,
@@ -32,6 +32,7 @@ export const communicationService = {
          }));
 
       const response = await emailService.sendBatchEmails(emailData);
+
       return response;
    },
 

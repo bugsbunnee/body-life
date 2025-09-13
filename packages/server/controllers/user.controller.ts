@@ -15,8 +15,8 @@ export const userController = {
          return;
       }
 
-      const users = (await parseUsersFromFile(req.file)) as User[];
-      const response = await userRepository.bulkCreateUsers(users);
+      const users = await parseUsersFromFile(req.file);
+      const response = await userRepository.bulkCreateUsers(users as User[]);
 
       res.json(response);
    },
