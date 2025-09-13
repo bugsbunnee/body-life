@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
-import openAiClient from '../llm/client';
+// @ts-ignore
 import template from '../llm/prompts/chatbot.txt';
 
+import { llmClient } from '../llm/client';
 import { conversationRepository } from '../repositories/conversation.repository';
 
 type ChatResponse = {
@@ -16,29 +17,24 @@ const instructions = template.replace('{{churchInfo}}', churchInfo);
 
 export const chatService = {
    async sendMessage(prompt: string, conversationId: string): Promise<ChatResponse> {
-      const response = await openAiClient.responses.create({
+      const response = await llmClient.generateText({
          model: 'gpt-4o-mini',
          instructions,
-         input: prompt,
-         temperature: 0.7,
-         max_output_tokens: 100,
-         previous_response_id: await conversationRepository.getLastResponseId(conversationId),
+         prompt,
+         temperature: 0.2,
+         maxTokens: 200,
+         previousResponseId: await conversationRepository.getLastResponseId(conversationId),
       });
 
       await conversationRepository.setLastResponseId(conversationId, response.id);
 
       return {
          id: response.id,
-         message: response.output_text,
+         message: response.text,
       };
    },
 
    async transcribeAudio(file: Express.Multer.File): Promise<string> {
-      const response = await openAiClient.audio.transcriptions.create({
-         file: fs.createReadStream(file.path),
-         model: 'gpt-4o-transcribe',
-      });
-
-      return response.text;
+      return llmClient.transcribe(file.path);
    },
 };

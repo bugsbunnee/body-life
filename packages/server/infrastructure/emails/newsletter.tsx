@@ -11,26 +11,30 @@ import {
    Html,
    Img,
    Link,
+   Markdown,
    Preview,
    Row,
    Section,
    Tailwind,
    Text,
 } from '@react-email/components';
-import type { Announcement } from '../../generated/prisma';
+import type { Announcement, Message, Summary } from '../../generated/prisma';
 
 interface Props {
    userFirstName: string;
-   messageUrl: string;
+
+   message: Message;
+   summary: Summary;
+
    announcements: Announcement[];
 }
 
-const NewsletterEmail: React.FC<Props> = ({ userFirstName, messageUrl, announcements }) => {
+const NewsletterEmail: React.FC<Props> = ({ userFirstName, message, summary, announcements }) => {
    return (
       <Html>
          <Head />
 
-         <Preview>Weekly Newsletter</Preview>
+         <Preview style={{ textTransform: 'capitalize' }}>Church Rewind! {message.title}</Preview>
 
          <Tailwind>
             <Body className="bg-[#f2f2f2] py-[16px] w-full h-full font-sans">
@@ -44,7 +48,9 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, messageUrl, announcem
                         className="object-contain"
                      />
 
-                     <Heading style={header}>Your Weekly Newsletter</Heading>
+                     <Heading style={header}>
+                        <strong>Church Rewind! {message.title}</strong>
+                     </Heading>
                   </Section>
 
                   <Section className="mt-[48px]">
@@ -53,23 +59,25 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, messageUrl, announcem
                      </Text>
 
                      <Text className="mt-[8px]" style={body}>
-                        It's a new week! How are you doing? Share your joys, challenges, or prayer needs. We are here to listen. In case you
-                        missed the last service, here's the link for you to catch up. Click the link below to watch the full message.
+                        It's a brand new week—how are you really doing? 💬 Whether you're celebrating a victory, carrying a challenge, or
+                        simply in need of prayer, remember: you're not walking this journey alone. We'd love to hear from you and stand with
+                        you. 💡 In case you missed last Sunday's message, it was truly a word in season! Don't let it pass you by. Click the
+                        link below to watch the full sermon and be refreshed again.
                      </Text>
 
                      <Hr className="mt-[16px] mb-0" />
                   </Section>
 
                   <Section className="mt-[48px]">
-                     <Text style={title}>Posture of the Blessed: Walking in the Family (Part I)</Text>
-
-                     <Text className="mt-[8px]" style={body}>
-                        It was a deeply impactful time in God's presence — and a glorious way to step into our new space. In case you missed
-                        the service or want to rewatch, you can catch the replay by clicking the link below. We look forward to seeing you
-                        and worshipping with you this Sunday!
+                     <Text style={title}>
+                        <strong>{message.title}</strong>
                      </Text>
 
-                     <Button className="mt-[16px] py-[8px] px-[16px]" href={messageUrl} style={trackOrder}>
+                     <Text className="mt-[8px]" style={body}>
+                        <Markdown>{summary.content}</Markdown>
+                     </Text>
+
+                     <Button className="mt-[16px] py-[8px] px-[16px]" href={message.videoUrl} style={trackOrder}>
                         Catch Up
                      </Button>
 
@@ -103,7 +111,7 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, messageUrl, announcem
                   <Section className="mt-[48px]">
                      <Text style={salutationHeader}>With Love</Text>
 
-                     <Text style={salutationBody}>RCNLagos Island Church</Text>
+                     <Text style={salutationBody}>{process.env.SENDER_NAME}</Text>
 
                      <Hr className="mt-[64px] mb-0" />
                   </Section>
@@ -150,7 +158,7 @@ const NewsletterEmail: React.FC<Props> = ({ userFirstName, messageUrl, announcem
 
                   <Section className="mt-[24px]">
                      <Text style={footer}>
-                        RCNLagosIslandChurch © {new Date().getFullYear()}.
+                        {process.env.SENDER_NAME} © {new Date().getFullYear()}.
                         <br />
                         Striving for the rebirth of apostolic Christianity.
                      </Text>
@@ -187,6 +195,7 @@ const header = {
    fontSize: '24px',
    fontWeight: '400',
    color: '#000000',
+   textTransform: 'capitalize' as const,
 };
 
 const productSection = {

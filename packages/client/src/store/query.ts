@@ -1,21 +1,21 @@
 import { create } from 'zustand';
 
-interface UserQuery {
+interface Query {
    search?: string;
    field?: string;
    pageNumber?: number;
    pageSize?: number;
 }
 
-interface UserStore {
-   query: UserQuery;
+interface QueryStore {
+   query: Query;
    onSetSearch: (search: string) => void;
    onSetPageNumber: (pageNumber: number) => void;
    onSetPageSize: (pageSize: number) => void;
    onSetField: (field: string) => void;
 }
 
-const useUserStore = create<UserStore>((set) => ({
+const useQueryStore = create<QueryStore>((set) => ({
    query: {
       pageNumber: 1,
       pageSize: 10,
@@ -26,4 +26,4 @@ const useUserStore = create<UserStore>((set) => ({
    onSetSearch: (search) => set((store) => ({ query: { ...store.query, search } })),
 }));
 
-export default useUserStore;
+export default useQueryStore;

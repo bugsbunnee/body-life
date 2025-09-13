@@ -1,15 +1,15 @@
 import useQueryStore from '@/store/query';
-import type { ApiResponse, User } from '@/utils/entities';
+import type { ApiResponse, IMessage } from '@/utils/entities';
 import { useQuery } from '@tanstack/react-query';
 
 import axios from 'axios';
 
-const useUsers = () => {
+const useMessages = () => {
    const { query } = useQueryStore();
 
    return useQuery({
-      queryKey: ['users', query],
-      queryFn: () => axios.get<{ data: ApiResponse<User> }>('/api/user', { params: query }).then((response) => response.data),
+      queryKey: ['message', query],
+      queryFn: () => axios.get<{ data: ApiResponse<IMessage> }>('/api/message', { params: query }).then((response) => response.data),
       initialData: {
          data: {
             data: [],
@@ -24,4 +24,4 @@ const useUsers = () => {
    });
 };
 
-export default useUsers;
+export default useMessages;

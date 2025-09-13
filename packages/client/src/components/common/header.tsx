@@ -24,7 +24,7 @@ const Header: React.FC<Props> = ({ title, onSearch }) => {
 
          <div>
             <form onSubmit={handleSubmitForm}>
-               <div className="border border-gray-200 rounded-2xl p-4 flex justify-start items-center gap-x-[0.75rem] min-w-[16rem]">
+               <div className="border border-gray-200 rounded-2xl h-14 px-4 min-w-[16rem] flex justify-start items-center gap-x-[0.75rem]">
                   <div className="">
                      <FaSearch className="text-xl text-[#BEBEBE]" />
                   </div>

@@ -18,7 +18,7 @@ const Modal: React.FC<Props> = ({ children, onClose, title, visible }) => {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0 }}
-                  className="w-[50%] bg-white rounded-xl"
+                  className="w-[55%] bg-white rounded-xl"
                >
                   <div className="text-white p-9 flex items-start justify-between">
                      <div className="text-sm font-medium capitalize bg-blue-light text-dark px-5 py-3.5 w-fit border border-border rounded-md">

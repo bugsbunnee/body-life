@@ -1,6 +1,7 @@
-import { email } from 'zod';
-import type { Pagination } from '../infrastructure/lib/entities';
+import type { Pagination, SearchFilter } from '../infrastructure/lib/entities';
+import type { User } from '../generated/prisma';
 import type { IUser } from '../infrastructure/lib/schema';
+
 import prisma from '../prisma/client';
 
 export const userRepository = {
@@ -17,14 +18,17 @@ export const userRepository = {
       });
    },
 
-   async getUsers(pagination: Pagination) {
+   async getUsers(pagination: Pagination, filters: SearchFilter<User> = {}) {
+      const where = filters.field && filters.search ? { [filters.field]: { contains: filters.search } } : undefined;
+
       const userQuery = prisma.user.findMany({
+         where,
          take: pagination.pageSize,
          skip: pagination.offset,
          orderBy: { createdAt: 'desc' },
       });
 
-      const [users, total] = await Promise.all([userQuery, prisma.user.count()]);
+      const [users, total] = await Promise.all([userQuery, prisma.user.count({ where })]);
 
       return {
          data: users,
@@ -35,6 +39,12 @@ export const userRepository = {
             totalPages: Math.ceil(total / pagination.pageSize),
          },
       };
+   },
+
+   async bulkCreateUsers(users: User[]) {
+      return prisma.user.createMany({
+         data: users,
+      });
    },
 
    async getAllUsers() {

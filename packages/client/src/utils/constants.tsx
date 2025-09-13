@@ -1,4 +1,5 @@
 import type { Route } from './entities';
+import { Cross } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { HiOutlineCog } from 'react-icons/hi';
@@ -18,6 +19,11 @@ export const sections: Route[] = [
             path: '/dashboard/members',
             label: 'Members',
             Icon: BsFillPeopleFill,
+         },
+         {
+            path: '/dashboard/messages',
+            label: 'Messages',
+            Icon: Cross,
          },
       ],
    },

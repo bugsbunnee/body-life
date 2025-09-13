@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 import announcement from './routes/announcement.route';
 import chat from './routes/chat.route';
-import communication from './routes/communication.route';
+import message from './routes/message.route';
 import sms from './routes/sms.route';
 import user from './routes/user.route';
 
@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use('/api/announcement', announcement);
 app.use('/api/chat', chat);
-app.use('/api/communication', communication);
+app.use('/api/message', message);
 app.use('/api/user', user);
 app.use('/api/sms', sms);
 

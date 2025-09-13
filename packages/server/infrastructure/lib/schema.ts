@@ -1,4 +1,4 @@
-import z from 'zod';
+import z, { number } from 'zod';
 import moment from 'moment';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 
@@ -26,6 +26,17 @@ export const userSchema = z.object({
 export const textSchema = z.object({
    phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
    body: z.string().min(1, 'Text body is required').max(200, 'Text body is too long'),
+});
+
+export const messageSchema = z.object({
+   title: z.string().min(1, 'Title is required').max(55, 'Title is too long (max 100 characters'),
+   preacher: z.string().min(1, 'Preacher name is required').max(255, 'Preacher name is too long (max 30 characters'),
+   date: z.coerce.date().max(new Date()),
+   videoUrl: z.url().min(1, 'Video URL is required'),
+});
+
+export const updateMessageSchema = z.object({
+   content: z.string().min(1, 'Content is required'),
 });
 
 export type IAnnouncement = z.infer<typeof announcementSchema>;

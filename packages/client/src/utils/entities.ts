@@ -1,8 +1,37 @@
 import type { IconType } from 'react-icons/lib';
 
+export interface ApiResponse<T> {
+   data: T[];
+   pagination: {
+      pageNumber: number;
+      pageSize: number;
+      totalPages: number;
+      totalCount: number;
+   };
+}
+
 export interface AuthResponse {
    token: string;
    user: null;
+}
+
+export interface IMessage {
+   id: number;
+
+   title: string;
+   date: Date;
+   preacher: string;
+   videoUrl: string;
+
+   summary?: ISummary;
+}
+
+export interface ISummary {
+   id: number;
+   content: string;
+   transcript: string;
+   generatedAt: Date;
+   expiresAt: Date;
 }
 
 export interface PaginationProps {
@@ -32,4 +61,5 @@ export interface User {
    birthDay: Date;
    createdAt: Date;
    updatedAt: Date;
+   notes: string;
 }

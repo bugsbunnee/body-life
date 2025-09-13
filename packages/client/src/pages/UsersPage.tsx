@@ -10,13 +10,12 @@ import { getInitials } from '@/lib/utils';
 
 import AddUserForm from '@/components/forms/add-user-form';
 import Header from '@/components/common/header';
-import Filters from '@/components/common/filters';
 import Modal from '@/components/common/modal';
 import Summary from '@/components/common/summary';
 import SendMessageForm from '@/components/forms/send-message-form';
 
 import useUsers from '@/hooks/useUsers';
-import useUserStore from '@/store/user';
+import useQueryStore from '@/store/query';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,7 @@ const UsersPage: React.FC = () => {
    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
    const { isFetching, data, refetch } = useUsers();
-   const { onSetSearch, onSetPageNumber } = useUserStore();
+   const { onSetSearch, onSetPageNumber } = useQueryStore();
 
    const handleMemberAddition = () => {
       setAddUserVisible(false);
@@ -136,6 +135,10 @@ const UsersPage: React.FC = () => {
                            key: 'Birthday',
                            value: formatDate(selectedUser.birthDay, 'PPP'),
                         },
+                        {
+                           key: 'Notes',
+                           value: selectedUser.notes,
+                        },
                      ]}
                   />
 
@@ -180,8 +183,6 @@ const UsersPage: React.FC = () => {
                   </Button>
                </div>
             </div>
-
-            <Filters />
 
             <TabsContent value="account">
                <DataTable
