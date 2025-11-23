@@ -27,8 +27,8 @@ export const communicationService = {
          .filter((user) => user.email)
          .map((user) => ({
             to: user.email,
-            subject: `Church Rewind! - ${convertSentenceToTitleCase(message.title)}`,
-            react: <NewsletterEmail userFirstName={user.firstName} message={message} summary={summary} announcements={announcements} />,
+            subject: `Church Rewind!`,
+            react: <NewsletterEmail summary={summary} announcements={announcements} />,
          }));
 
       const response = await emailService.sendBatchEmails(emailData);

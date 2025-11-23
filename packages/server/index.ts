@@ -11,6 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(express.static('public'));
 
 app.use('/api/announcement', announcement);
 app.use('/api/chat', chat);
