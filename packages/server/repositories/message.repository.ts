@@ -77,7 +77,7 @@ export const messageRepository = {
    async getMessageSummary(messageId: number): Promise<Summary | null> {
       const summary = await prisma.summary.findFirst({
          where: {
-            AND: [{ messageId }, { expiresAt: { gt: new Date() } }],
+            AND: [{ messageId }],
          },
       });
 

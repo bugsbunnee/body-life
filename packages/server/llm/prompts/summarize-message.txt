@@ -1,5 +1,12 @@
-Summarize the following preaching message, extract the main points and
-represent it in a way that is fitting for a newsletter. It should be no more than 
-300 words. Don't include the word newsletter.
+Summarize the following preaching message, extract the key points, scriptural references, 
+quotes into lesson notes. Give a complete answer. Do not stop until the sentence is finished. 
+It should be no more than 1000 words. Include the metadata below like title, preacher, URL and date.
+
+Title: {{messageTitle}}
+Preacher: {{preacherName}}
+YouTube URL: {{youtubeUrl}}
+Date: {{datePreached}}
 
 {{messageTranscript}}
+
+Only display the summary in the response. Don't include any prefixes

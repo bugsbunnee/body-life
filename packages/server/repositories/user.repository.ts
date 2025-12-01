@@ -55,10 +55,10 @@ export const userRepository = {
       });
    },
 
-   async getOneUser(user: IUser) {
+   async getOneUser({ email, phoneNumber }: Pick<User, 'email' | 'phoneNumber'>) {
       return prisma.user.findFirst({
          where: {
-            OR: [{ email: user.email }, { phoneNumber: user.phoneNumber }],
+            OR: [{ email }, { phoneNumber }],
          },
       });
    },

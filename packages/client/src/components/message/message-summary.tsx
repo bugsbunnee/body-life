@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 import { HiSparkles } from 'react-icons/hi';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import Markdown from 'react-markdown';
 import UpdateMessageSummaryForm from '../forms/updated-message-summary-form';
 
-import type { ApiResponse, IMessage, ISummary } from '@/utils/entities';
+import type { IMessage, ISummary } from '@/utils/entities';
 import { getErrorMessage } from '@/lib/utils';
 
 import { Button } from '../ui/button';
@@ -22,30 +22,9 @@ interface Props {
 const MessageSummary: React.FC<Props> = ({ message }) => {
    const [isMessageEditVisible, setMessageEditVisible] = useState(false);
 
-   const queryClient = useQueryClient();
-
    const mutation = useMutation({
       mutationFn: () => axios.post<{ data: ISummary }>(`/api/message/${message.id}/summarize`),
-      onSuccess: (data) => {
-         queryClient.setQueryData(['messages', {}], (previous: ApiResponse<IMessage>) => {
-            if (previous) {
-               return {
-                  ...previous,
-                  data: previous.data.map((datum) => (datum.id === message.id ? { ...message, summary: data.data } : datum)),
-               };
-            }
-
-            return {
-               data: [],
-               pagination: {
-                  pageNumber: 1,
-                  pageSize: 10,
-                  totalPages: 1,
-                  totalCount: 0,
-               },
-            };
-         });
-      },
+      onSuccess: () => window.location.reload(),
       onError: (error) =>
          toast('Could not add the messsage', {
             description: getErrorMessage(error),
@@ -76,31 +55,31 @@ const MessageSummary: React.FC<Props> = ({ message }) => {
                         <div className="mb-4 bg-blue-light rounded-md p-4 border border-border font-medium text-sm text-center text-main">
                            No summary yet. Click the button to generate
                         </div>
-
-                        <Button
-                           disabled={mutation.isPending}
-                           onClick={() => mutation.mutate()}
-                           className="w-full bg-main rounded-md px-4 py-6 text-white"
-                        >
-                           {mutation.isPending ? (
-                              'Summarizing...'
-                           ) : (
-                              <>
-                                 <HiSparkles /> Summarize
-                              </>
-                           )}
-
-                           {mutation.isPending && (
-                              <span className="relative flex size-3 ml-4">
-                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-light opacity-75"></span>
-                                 <span className="relative inline-flex size-3 rounded-full bg-blue-light"></span>
-                              </span>
-                           )}
-                        </Button>
                      </div>
                   )}
                </ScrollArea>
             )}
+
+            <Button
+               disabled={mutation.isPending}
+               onClick={() => mutation.mutate()}
+               className="w-full bg-main rounded-md px-4 py-6 mt-4 text-white"
+            >
+               {mutation.isPending ? (
+                  'Summarizing...'
+               ) : (
+                  <>
+                     <HiSparkles /> {message.summary ? 'Re-generate' : 'Generate'} Summary
+                  </>
+               )}
+
+               {mutation.isPending && (
+                  <span className="relative flex size-3 ml-4">
+                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-light opacity-75"></span>
+                     <span className="relative inline-flex size-3 rounded-full bg-blue-light"></span>
+                  </span>
+               )}
+            </Button>
          </div>
       </div>
    );

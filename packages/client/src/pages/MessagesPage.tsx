@@ -1,27 +1,28 @@
 import type React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
-import { PlusIcon } from 'lucide-react';
+import { EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { IMessage } from '@/utils/entities';
 
 import Header from '@/components/common/header';
 import MessageSummary from '@/components/message/message-summary';
 import Modal from '@/components/common/modal';
+import SendNewsLetter from '@/components/message/send-newsletter';
 import Summary from '@/components/common/summary';
 import UploadMessageForm from '@/components/forms/upload-message-form';
 
 import useMessages from '@/hooks/useMessages';
 import useQueryStore from '@/store/query';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DatePicker } from '@/components/ui/datepicker';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
-import SendNewsLetter from '@/components/message/send-newsletter';
+import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const MessagesPage: React.FC = () => {
    const [isAddMessageVisible, setAddMessagesVisible] = useState(false);
@@ -75,11 +76,32 @@ const MessagesPage: React.FC = () => {
          },
          {
             accessorKey: 'videoUrl',
-            header: 'View Video',
+            header: 'Options',
             cell: ({ row }) => (
-               <a href={row.original.videoUrl} rel="noopener noreferrer" target="_blank">
-                  <Badge variant="default">View Video</Badge>
-               </a>
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                     <Button
+                        variant="outline"
+                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                     >
+                        <EllipsisVertical />
+                     </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                     <DropdownMenuItem className="capitalize p-3">
+                        <a href={row.original.videoUrl} rel="noopener noreferrer" target="_blank">
+                           View Video
+                        </a>
+                     </DropdownMenuItem>
+
+                     <DropdownMenuSeparator />
+
+                     <DropdownMenuItem onClick={() => setSelectedMessage(row.original)} className="capitalize p-3">
+                        View Summary
+                     </DropdownMenuItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
             ),
          },
       ];

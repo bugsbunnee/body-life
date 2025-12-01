@@ -55,7 +55,7 @@ export const messageController = {
 
    async summarizeMessage(req: Request, res: Response) {
       try {
-         const response = await communicationService.getMessageTranscript(req.message);
+         const response = await communicationService.generateMessageSummary(req.message);
          res.json({ data: response });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
