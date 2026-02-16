@@ -1,27 +1,20 @@
 import _ from 'lodash';
+
 import { useEffect, useState, useTransition } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { type PaginationProps } from '@/utils/entities';
 
-import { ChevronDown } from 'lucide-react';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Skeleton } from './skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from './input';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from './dropdown-menu';
 import { Button } from './button';
 
+import Conditional from '../common/conditional';
 import useQueryStore from '@/store/query';
-
-import {
-   Pagination,
-   PaginationContent,
-   PaginationEllipsis,
-   PaginationItem,
-   PaginationLink,
-   PaginationNext,
-   PaginationPrevious,
-} from '@/components/ui/pagination';
 
 interface DataTableProps<TData, TValue> {
    onPageChange: (page: number) => void;
@@ -29,9 +22,10 @@ interface DataTableProps<TData, TValue> {
    data: TData[];
    pagination: PaginationProps;
    loading: boolean;
+   filtering?: boolean;
 }
 
-export function DataTable<TData, TValue>({ columns, data, loading, pagination, onPageChange }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, loading, pagination, filtering = true, onPageChange }: DataTableProps<TData, TValue>) {
    const { query, onSetSearch, onSetField } = useQueryStore();
    const { getAllColumns, getHeaderGroups, getRowModel } = useReactTable({
       data,
@@ -54,69 +48,64 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, o
 
    return (
       <>
-         <div className="flex items-center p-6 border-b border-b-border">
-            <div className="flex items-center gap-x-4">
-               <Input
-                  placeholder="Search..."
-                  value={searchValue}
-                  onChange={(event) => setSearchValue(event.target.value)}
-                  className="border border-gray-200 rounded-2xl h-14 px-4 min-w-64 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
-               />
+         <Conditional visible={filtering}>
+            <div className="flex items-center p-6 border-b border-b-border">
+               <div className="flex items-center gap-x-4">
+                  <Input
+                     placeholder="Search..."
+                     value={searchValue}
+                     onChange={(event) => setSearchValue(event.target.value)}
+                     className="border border-gray-200 rounded-2xl h-14 px-4 min-w-64 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                  />
+
+                  <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                        <Button
+                           variant="outline"
+                           className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                        >
+                           {query.field ?? 'Search By'} <ChevronDown />
+                        </Button>
+                     </DropdownMenuTrigger>
+
+                     <DropdownMenuContent align="end">
+                        {getAllColumns().map((column) => {
+                           return (
+                              <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={query.field === column.id} onCheckedChange={() => onSetField(column.id)}>
+                                 {column.id}
+                              </DropdownMenuCheckboxItem>
+                           );
+                        })}
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+               </div>
 
                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                     <Button
-                        variant="outline"
-                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
-                     >
-                        {query.field ?? 'Search By'} <ChevronDown />
+                     <Button variant="outline" className="ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium">
+                        Fields <ChevronDown />
                      </Button>
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent align="end">
-                     {getAllColumns().map((column) => {
-                        return (
-                           <DropdownMenuCheckboxItem
-                              key={column.id}
-                              className="capitalize"
-                              checked={query.field === column.id}
-                              onCheckedChange={() => onSetField(column.id)}
-                           >
-                              {column.id}
-                           </DropdownMenuCheckboxItem>
-                        );
-                     })}
+                     {getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => {
+                           return (
+                              <DropdownMenuCheckboxItem
+                                 key={column.id}
+                                 className="capitalize"
+                                 checked={column.getIsVisible()}
+                                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                              >
+                                 {column.id}
+                              </DropdownMenuCheckboxItem>
+                           );
+                        })}
                   </DropdownMenuContent>
                </DropdownMenu>
             </div>
-
-            <DropdownMenu>
-               <DropdownMenuTrigger asChild>
-                  <Button
-                     variant="outline"
-                     className="ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
-                  >
-                     Fields <ChevronDown />
-                  </Button>
-               </DropdownMenuTrigger>
-               <DropdownMenuContent align="end">
-                  {getAllColumns()
-                     .filter((column) => column.getCanHide())
-                     .map((column) => {
-                        return (
-                           <DropdownMenuCheckboxItem
-                              key={column.id}
-                              className="capitalize"
-                              checked={column.getIsVisible()}
-                              onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                           >
-                              {column.id}
-                           </DropdownMenuCheckboxItem>
-                        );
-                     })}
-               </DropdownMenuContent>
-            </DropdownMenu>
-         </div>
+         </Conditional>
 
          <div className="overflow-hidden">
             <Table>
@@ -167,12 +156,7 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, o
             <Pagination className="pb-6">
                <PaginationContent>
                   <PaginationItem>
-                     <PaginationPrevious
-                        href="#"
-                        data-disabled={pagination.pageNumber === 1}
-                        className="data-[disabled=true]:opacity-25"
-                        onClick={() => onPageChange(1)}
-                     />
+                     <PaginationPrevious href="#" data-disabled={pagination.pageNumber === 1} className="data-[disabled=true]:opacity-25" onClick={() => onPageChange(1)} />
                   </PaginationItem>
 
                   {_.range(1, pagination.totalPages + 1).map((page) => (

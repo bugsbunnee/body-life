@@ -1,30 +1,46 @@
 import * as React from 'react';
-import { format } from 'date-fns';
-import { ChevronDown } from 'lucide-react';
+import { Calendar1Icon, ChevronDown } from 'lucide-react';
+
+import type { DateRange } from 'react-day-picker';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { formatDateRange } from '@/lib/utils';
 
-export function DatePicker() {
-   const [date, setDate] = React.useState<Date>();
+interface Props {
+   dateRange: DateRange;
+   onSelectRange: (range: DateRange) => void;
+}
+
+export const RangeDatePicker: React.FC<Props> = ({ dateRange, onSelectRange }) => {
+   const label = React.useMemo(() => {
+      if (!dateRange.from && !dateRange.to) {
+         return 'Pick a date';
+      }
+
+      return formatDateRange(dateRange);
+   }, [dateRange]);
 
    return (
       <Popover>
          <PopoverTrigger asChild>
             <Button
                variant="ghost"
-               data-empty={!date}
-               className="data-[empty=true]:bg-blue-light h-12 min-w-2xs p-4 rounded-md justify-start text-left font-medium text-base text-main"
+               data-empty={!dateRange.from && !dateRange.to}
+               className="bg-blue-light h-12 min-w-2xs p-4 rounded-md justify-start flex gap-x-2 text-left font-medium text-base text-main"
             >
-               <span className="flex-1">{date ? format(date, 'PPP') : 'Pick a date'}</span>
+               <Calendar1Icon />
+
+               <span className="flex-1">{label}</span>
+
                <ChevronDown />
             </Button>
          </PopoverTrigger>
 
          <PopoverContent className="w-auto p-0">
-            <Calendar mode="single" selected={date} onSelect={setDate} />
+            <Calendar required mode="range" selected={dateRange} onSelect={onSelectRange} />
          </PopoverContent>
       </Popover>
    );
-}
+};

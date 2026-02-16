@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { announcementRepository } from '../repositories/announcement.repository';
+import { lib } from '../utils/lib';
 
 export const announcementController = {
    async createAnnouncement(req: Request, res: Response) {
@@ -9,7 +10,7 @@ export const announcementController = {
          res.json({ data: announcement });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            error: 'Could not create the announcement',
+            message: 'Could not create the announcement',
          });
       }
    },
@@ -20,18 +21,20 @@ export const announcementController = {
          res.json({ data: announcements });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            error: 'Could not fetch the announcements',
+            message: 'Could not fetch the announcements',
          });
       }
    },
 
    async deactivateAnnouncement(req: Request, res: Response) {
       try {
-         const announcement = await announcementRepository.deactivateAnnouncement(+req.params.id!);
+         const anouncementId = lib.parseObjectId(req.params.id!);
+         const announcement = await announcementRepository.deactivateAnnouncement(anouncementId);
+
          res.json({ data: announcement });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            error: 'Could not deactivate the announcement',
+            message: 'Could not deactivate the announcement',
          });
       }
    },

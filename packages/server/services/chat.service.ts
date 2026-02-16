@@ -17,13 +17,15 @@ const instructions = template.replace('{{churchInfo}}', churchInfo);
 
 export const chatService = {
    async sendMessage(prompt: string, conversationId: string): Promise<ChatResponse> {
+      const lastResponseId = await conversationRepository.getLastResponseId(conversationId);
+
       const response = await llmClient.generateText({
          model: 'gpt-4o-mini',
          instructions,
          prompt,
          temperature: 0.2,
          maxTokens: 200,
-         previousResponseId: await conversationRepository.getLastResponseId(conversationId),
+         previousResponseId: lastResponseId ?? undefined,
       });
 
       await conversationRepository.setLastResponseId(conversationId, response.id);

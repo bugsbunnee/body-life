@@ -19,7 +19,7 @@ export function parseUsersFromFile(file: Express.Multer.File) {
             gender: result['Gender'],
             email: result['E-mail Address']?.trim()?.toLowerCase(),
             maritalStatus: result['Marital Status'],
-            birthDay: moment(`${result['Birthday (Day)']}-${result['Birthday (Month)']}-${moment().year()}`, 'DD-MMMM-YYYY').toDate(),
+            dateOfBirth: moment(`${result['Birthday (Day)']}-${result['Birthday (Month)']}-${moment().year()}`, 'DD-MMMM-YYYY').toDate(),
             phoneNumber: result['Phone Number']?.toString() ?? faker.phone.number(),
             address: result['Home Address'] ?? faker.location.streetAddress({ useFullAddress: true }),
          }))

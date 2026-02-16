@@ -1,17 +1,19 @@
 import { type RouteObject } from 'react-router-dom';
+import { APP_ROUTES } from './constants';
 
 import ChatBot from '@/components/chat/chat-bot';
 import ErrorPage from '@/pages/ErrorPage';
 import Dashboard from '@/pages/Dashboard';
+import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
-import PublicRoute from '@/pages/PublicRoute';
-import UsersPage from '@/pages/UsersPage';
 import MessagesPage from '@/pages/MessagesPage';
+import ResetPassword from '@/pages/ResetPasswordPage';
+import ServiceReportPage from '@/pages/ServiceReportPage';
+import UsersPage from '@/pages/UsersPage';
 
 const routes: RouteObject[] = [
    {
       path: '/',
-      element: <PublicRoute />,
       errorElement: <ErrorPage />,
       children: [
          {
@@ -19,22 +21,34 @@ const routes: RouteObject[] = [
             element: <ChatBot />,
          },
          {
-            path: '/auth',
+            path: APP_ROUTES.AUTH,
             element: <LoginPage />,
+         },
+         {
+            path: APP_ROUTES.SETUP_PASSWORD,
+            element: <ResetPassword />,
          },
       ],
    },
    {
-      path: '/dashboard',
+      path: APP_ROUTES.DASHBOARD,
       element: <Dashboard />,
       errorElement: <ErrorPage />,
       children: [
          {
-            path: '/dashboard/members',
+            index: true,
+            element: <HomePage />,
+         },
+         {
+            path: APP_ROUTES.MEMBERS,
             element: <UsersPage />,
          },
          {
-            path: '/dashboard/messages',
+            path: APP_ROUTES.SERVICE_REPORT,
+            element: <ServiceReportPage />,
+         },
+         {
+            path: APP_ROUTES.MESSAGES,
             element: <MessagesPage />,
          },
       ],

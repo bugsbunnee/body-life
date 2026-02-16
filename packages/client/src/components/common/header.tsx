@@ -29,12 +29,7 @@ const Header: React.FC<Props> = ({ title, onSearch }) => {
                      <FaSearch className="text-xl text-[#BEBEBE]" />
                   </div>
 
-                  <input
-                     ref={ref}
-                     type="text"
-                     placeholder="Search anything..."
-                     className="focus:outline-hidden placeholder:text-[#D9D9D9] placeholder:text-[1rem] font-medium"
-                  />
+                  <input ref={ref} type="text" placeholder="Search anything..." className="focus:outline-hidden placeholder:text-[#D9D9D9] placeholder:text-[1rem] font-medium" />
                </div>
             </form>
          </div>

@@ -1,5 +1,3 @@
-import type { User } from '../../generated/prisma';
-
 export interface Pagination {
    pageNumber: number;
    pageSize: number;

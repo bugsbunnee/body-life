@@ -11,21 +11,18 @@ export const chatController = {
          res.json({ message: response.message });
       } catch (error) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            error: 'Failed to generate a response',
+            message: 'Failed to generate a response',
          });
       }
    },
+
    async transcribeAudio(req: Request, res: Response) {
       if (!req.file) {
-         res.status(StatusCodes.BAD_REQUEST).json({
-            error: 'Missing audio file!',
-         });
-         return;
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Missing audio file!' });
       }
 
       try {
          const message = await chatService.transcribeAudio(req.file);
-
          res.json({ message });
       } catch (error) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });

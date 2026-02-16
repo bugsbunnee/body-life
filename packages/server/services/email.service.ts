@@ -24,22 +24,4 @@ export const emailService = {
          }))
       );
    },
-
-   async queueBatchEmails(options: Omit<CreateEmailOptions, 'from'>[]) {
-      const success: CreateEmailResponse[] = [];
-      const failed: Omit<CreateEmailOptions, 'from'>[] = [];
-
-      for (const option of options) {
-         try {
-            const emailResponse = await this.sendSingleEmail(option);
-            success.push(emailResponse);
-         } catch (error) {
-            console.error(error);
-
-            failed.push(option);
-         }
-      }
-
-      return { success, failed };
-   },
 };

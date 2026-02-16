@@ -13,13 +13,13 @@ import MessageSummary from '@/components/message/message-summary';
 import Modal from '@/components/common/modal';
 import SendNewsLetter from '@/components/message/send-newsletter';
 import Summary from '@/components/common/summary';
-import UploadMessageForm from '@/components/forms/upload-message-form';
+import UploadMessageForm from '@/components/forms/message/upload-message-form';
 
 import useMessages from '@/hooks/useMessages';
 import useQueryStore from '@/store/query';
 
 import { Button } from '@/components/ui/button';
-import { DatePicker } from '@/components/ui/datepicker';
+import { RangeDatePicker } from '@/components/ui/datepicker';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -29,7 +29,7 @@ const MessagesPage: React.FC = () => {
    const [selectedMessage, setSelectedMessage] = useState<IMessage | null>(null);
 
    const { isFetching, data, refetch } = useMessages();
-   const { onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
+   const { dateRangeQuery, onSetDateRange, onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
 
    const handleMessageddition = () => {
       setAddMessagesVisible(false);
@@ -39,7 +39,7 @@ const MessagesPage: React.FC = () => {
    const columns = useMemo(() => {
       const columns: ColumnDef<IMessage>[] = [
          {
-            accessorKey: 'id',
+            accessorKey: '_id',
             header: ({ table }) => (
                <Checkbox
                   checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
@@ -47,9 +47,7 @@ const MessagesPage: React.FC = () => {
                   aria-label="Select all"
                />
             ),
-            cell: ({ row }) => (
-               <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
-            ),
+            cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
             enableSorting: false,
             enableHiding: false,
          },
@@ -68,6 +66,11 @@ const MessagesPage: React.FC = () => {
          {
             accessorKey: 'preacher',
             header: 'Preacher',
+            cell: ({ row }) => (
+               <span className="underline bg-transparent text-main font-semibold shadow-none hover:bg-transparent cursor-pointer">
+                  {row.original.preacher.firstName} {row.original.preacher.lastName}
+               </span>
+            ),
          },
          {
             accessorKey: 'date',
@@ -139,7 +142,7 @@ const MessagesPage: React.FC = () => {
                         },
                         {
                            key: 'Preacher',
-                           value: selectedMessage.preacher,
+                           value: selectedMessage.preacher.firstName + ' ' + selectedMessage.preacher.lastName,
                         },
                         {
                            key: 'Date Preached',
@@ -162,7 +165,10 @@ const MessagesPage: React.FC = () => {
             </div>
 
             <div className="flex gap-x-4">
-               <DatePicker />
+               <RangeDatePicker
+                  dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
+                  onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}
+               />
 
                <Button
                   onClick={() => setAddMessagesVisible(true)}
@@ -175,13 +181,7 @@ const MessagesPage: React.FC = () => {
             </div>
          </div>
 
-         <DataTable
-            onPageChange={onSetPageNumber}
-            pagination={data.data.pagination}
-            loading={isFetching}
-            columns={columns}
-            data={data.data.data}
-         />
+         <DataTable onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
       </>
    );
 };

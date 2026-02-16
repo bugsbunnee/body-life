@@ -8,28 +8,29 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { User } from '@/utils/entities';
 import { getInitials } from '@/lib/utils';
 
-import AddUserForm from '@/components/forms/add-user-form';
+import AddUserForm from '@/components/forms/user/add-user-form';
 import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
 import Summary from '@/components/common/summary';
-import SendMessageForm from '@/components/forms/send-message-form';
+import SendMessageForm from '@/components/forms/message/send-message-form';
 
 import useUsers from '@/hooks/useUsers';
 import useQueryStore from '@/store/query';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DatePicker } from '@/components/ui/datepicker';
-import { DataTable } from '@/components/ui/datatable';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DataTable } from '@/components/ui/datatable';
+import { RangeDatePicker } from '@/components/ui/datepicker';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
    const { isFetching, data, refetch } = useUsers();
-   const { onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
+   const { dateRangeQuery, onSetDateRange, onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
 
    const handleMemberAddition = () => {
       setAddUserVisible(false);
@@ -47,9 +48,7 @@ const UsersPage: React.FC = () => {
                   aria-label="Select all"
                />
             ),
-            cell: ({ row }) => (
-               <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
-            ),
+            cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
             enableSorting: false,
             enableHiding: false,
          },
@@ -66,13 +65,15 @@ const UsersPage: React.FC = () => {
             accessorKey: 'firstName',
             header: 'Full Name',
             cell: ({ row }) => (
-               <Button
-                  onClick={() => setSelectedUser(row.original)}
-                  className="underline bg-transparent text-main font-semibold shadow-none hover:bg-transparent cursor-pointer"
-               >
+               <Button onClick={() => setSelectedUser(row.original)} className="underline bg-transparent text-main font-semibold shadow-none hover:bg-transparent cursor-pointer">
                   {row.original.firstName} {row.original.lastName}
                </Button>
             ),
+         },
+         {
+            accessorKey: 'isFirstTimer',
+            header: 'Is First Timer',
+            cell: ({ row }) => <Badge className={row.original.isFirstTimer ? 'bg-green-400' : 'bg-orange-400'}>{row.original.isFirstTimer ? 'Yes' : 'No'}</Badge>,
          },
          {
             accessorKey: 'address',
@@ -99,12 +100,12 @@ const UsersPage: React.FC = () => {
       <>
          <Header title="Members" onSearch={onSetSearch} />
 
-         <Modal onClose={() => setAddUserVisible(false)} title="Add User" visible={isAddUserVisible}>
+         <Modal onClose={() => setAddUserVisible(false)} title="Add Member" visible={isAddUserVisible}>
             <AddUserForm onAddUser={handleMemberAddition} />
          </Modal>
 
          {selectedUser && (
-            <Modal onClose={() => setSelectedUser(null)} title="User Details" visible>
+            <Modal onClose={() => setSelectedUser(null)} title="Member Details" visible>
                <div className="grid grid-cols-2 gap-4">
                   <Summary
                      title="General Information"
@@ -137,7 +138,7 @@ const UsersPage: React.FC = () => {
                         },
                         {
                            key: 'Birthday',
-                           value: formatDate(selectedUser.birthDay, 'PPP'),
+                           value: formatDate(selectedUser.dateOfBirth, 'PPP'),
                         },
                         {
                            key: 'Notes',
@@ -175,7 +176,10 @@ const UsersPage: React.FC = () => {
                </div>
 
                <div className="flex gap-x-4">
-                  <DatePicker />
+                  <RangeDatePicker
+                     dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
+                     onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}
+                  />
 
                   <Button
                      onClick={() => setAddUserVisible(true)}
@@ -189,13 +193,7 @@ const UsersPage: React.FC = () => {
             </div>
 
             <TabsContent value="account">
-               <DataTable
-                  onPageChange={onSetPageNumber}
-                  pagination={data.data.pagination}
-                  loading={isFetching}
-                  columns={columns}
-                  data={data.data.data}
-               />
+               <DataTable onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
             </TabsContent>
          </Tabs>
       </>

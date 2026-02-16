@@ -6,12 +6,22 @@ import { CiLogout } from 'react-icons/ci';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { motion } from 'motion/react';
 
-import { sections } from '@/utils/constants';
+import { APP_ROUTES, sections } from '@/utils/constants';
+
+import useAuthStore from '@/store/auth';
 import logo from '@/assets/images/logo.jpeg';
+import { getInitials } from '@/lib/utils';
 
 const NavBar: React.FC = () => {
+   const { auth, logout } = useAuthStore();
+
    const location = useLocation();
    const navigate = useNavigate();
+
+   const handleLogout = () => {
+      logout();
+      navigate(APP_ROUTES.AUTH);
+   };
 
    return (
       <div className="h-dvh bg-gray-light p-[3rem] flex flex-col border-r border-b-border">
@@ -20,7 +30,7 @@ const NavBar: React.FC = () => {
          <div className="mt-3 flex-1">
             {sections.map((section) => (
                <React.Fragment key={section.label + section.path}>
-                  <div className="text-lg font-medium uppercase text-gray-500 tracking-wide mt-[3.75rem]">{section.label}</div>
+                  <div className="text-lg font-medium uppercase text-gray-500 tracking-wide mt-4">{section.label}</div>
 
                   <ul className="mt-[2rem]">
                      {section.subroutes.map((route) => (
@@ -28,12 +38,9 @@ const NavBar: React.FC = () => {
                            onClick={() => navigate(route.path)}
                            key={route.path}
                            whileHover={{ scale: 1.1 }}
-                           transition={{
-                              duration: 0.3,
-                              ease: [0, 0.71, 0.2, 1.01],
-                           }}
+                           transition={{ duration: 0.3, ease: [0, 0.71, 0.2, 1.01] }}
                            className={clsx({
-                              'rounded-lg flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-lg font-medium': true,
+                              'rounded-lg flex items-center gap-x-4 py-2.5 px-[1.31rem] mb-8 text-lg font-medium': true,
                               'bg-blue-light text-main border border-[rgba(2, 42, 104, 0.05)]': location.pathname === route.path,
                               'text-gray-500': location.pathname !== route.path,
                            })}
@@ -46,7 +53,7 @@ const NavBar: React.FC = () => {
                </React.Fragment>
             ))}
 
-            <button className="rounded-lg flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-lg font-medium text-red-500">
+            <button onClick={handleLogout} className="rounded-lg flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-lg font-medium text-red-500">
                <CiLogout fontSize="1.25rem" />
                <div>Logout</div>
             </button>
@@ -54,13 +61,16 @@ const NavBar: React.FC = () => {
 
          <div className="flex items-center justify-start gap-x-4">
             <Avatar className="w-[3rem] h-[3rem]">
-               <AvatarImage src="https://github.com/shadcn.png" />
-               <AvatarFallback>CN</AvatarFallback>
+               <AvatarImage src={auth?.admin.imageUrl} />
+               <AvatarFallback>{getInitials(auth?.admin.firstName + ' ' + auth?.admin.lastName)}</AvatarFallback>
             </Avatar>
 
             <div>
-               <div className="text-lg text-main font-medium">Chukwuma Marcel</div>
-               <div className="text-sm text-gray-neutral font-medium">Media HOD</div>
+               <div className="text-lg text-main font-medium">
+                  {auth?.admin.firstName} {auth?.admin.lastName}
+               </div>
+
+               <div className="text-sm text-gray-neutral font-medium">{auth?.admin.designation}</div>
             </div>
          </div>
       </div>

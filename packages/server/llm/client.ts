@@ -20,14 +20,7 @@ type GenerateTextResult = {
 };
 
 export const llmClient = {
-   async generateText({
-      model = 'gpt-4.1',
-      prompt,
-      instructions,
-      temperature = 0.2,
-      maxTokens = 300,
-      previousResponseId,
-   }: GenerateTextOptions): Promise<GenerateTextResult> {
+   async generateText({ model = 'gpt-4.1', prompt, instructions, temperature = 0.2, maxTokens = 300, previousResponseId }: GenerateTextOptions): Promise<GenerateTextResult> {
       const response = await openAIClient.responses.create({
          model,
          input: prompt,

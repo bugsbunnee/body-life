@@ -56,10 +56,7 @@ const ChatRecorder: React.FC<ChatInputProps> = ({ onSubmit }) => {
 
    return (
       <div className="flex items-center justify-center gap-x-2">
-         <Button
-            onClick={recording ? stopRecording : startRecording}
-            className={cn(['rounded-full w-9 h-9', recording ? 'bg-red-500' : 'bg-green-500'])}
-         >
+         <Button onClick={recording ? stopRecording : startRecording} className={cn(['rounded-full w-9 h-9', recording ? 'bg-red-500' : 'bg-green-500'])}>
             {recording ? <FaStop /> : <FaCircle />}
          </Button>
 

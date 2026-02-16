@@ -1,6 +1,7 @@
-import type { AuthResponse } from '../utils/entities';
 import { create } from 'zustand';
 import { getUser, logout, persistUser } from '../services/auth.service';
+
+import type { AuthResponse } from '../utils/entities';
 
 interface AuthStore {
    auth: AuthResponse | null;

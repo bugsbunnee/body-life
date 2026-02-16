@@ -1,47 +1,14 @@
 import React from 'react';
 import dayjs from 'dayjs';
 
-import {
-   Body,
-   Button,
-   Column,
-   Container,
-   Head,
-   Heading,
-   Hr,
-   Html,
-   Img,
-   Link,
-   Preview,
-   Row,
-   Section,
-   Tailwind,
-   Text,
-} from '@react-email/components';
-import type { IAnnouncement } from '../lib/schema';
-import type { Summary } from '../../generated/prisma';
+import { Body, Column, Container, Head, Heading, Hr, Html, Img, Link, Row, Section, Tailwind, Text } from '@react-email/components';
+import type { IAnnouncement } from '../database/models/announcement.model';
+import type { IMessage } from '../database/models/message.model';
 
 interface Props {
    announcements: IAnnouncement[];
-   summary: Summary;
+   message: IMessage;
 }
-
-const announcements = [
-   {
-      id: 1,
-      imageUrl: 'https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334110/image3_djnat5.png',
-      title: 'Birthday Celebrations',
-      content:
-         'This September, we celebrated the gift of life with our beloved brethren: Sister Irene, Bro Meeting, Bro Light, Sister Mishael, Sister Victory and Bro Justin. We rejoice with them and declare that the Lord will crown their new year with His goodness.',
-   },
-   {
-      id: 2,
-      imageUrl: 'https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334109/image7_msvzfh.jpg',
-      title: 'New Family Members',
-      content:
-         'Last month, our family grew! We are thrilled to welcome Bro Emeka, Bro Tunde, Sister Janet, and Sis Helen into the RCN fold. Each new soul is a divine addition, and we look forward to discovering the gifts and graces they bring to the house. Welcome home!',
-   },
-];
 
 const events = [
    {
@@ -61,7 +28,7 @@ const events = [
    },
 ];
 
-const NewsletterEmail: React.FC<Props> = ({}) => {
+const NewsletterEmail: React.FC<Props> = ({ message, announcements }) => {
    return (
       <Html>
          <Head />
@@ -105,13 +72,13 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                      </Text>
 
                      <Text className="mt-[8px]" style={leftAlignedBody}>
-                        Welcome to <strong>October</strong> 🎉 We joyfully welcome you to a season of refreshing and renewed strength.
-                        September was a time of SEPARATION, and now the Lord is calling us higher as we press deeper into His will.
+                        Welcome to <strong>October</strong> 🎉 We joyfully welcome you to a season of refreshing and renewed strength. September was a time of SEPARATION, and now
+                        the Lord is calling us higher as we press deeper into His will.
                      </Text>
 
                      <Text className="mt-[8px]" style={leftAlignedBody}>
-                        As brethren, we are reminded of Psalm 133:1 — “Behold, how good and pleasant it is for brethren to dwell together in
-                        unity!” This month, we lean into that unity with expectation for a greater outpouring of His Spirit in our midst.
+                        As brethren, we are reminded of Psalm 133:1 — “Behold, how good and pleasant it is for brethren to dwell together in unity!” This month, we lean into that
+                        unity with expectation for a greater outpouring of His Spirit in our midst.
                      </Text>
 
                      <Hr className="mt-[32px]" />
@@ -153,17 +120,16 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                      </Row>
 
                      <Text className="mt-[8px]" style={body}>
-                        September was such a beautiful month for us as a family. God’s presence was tangible in our gatherings, and our
-                        fellowship together was truly refreshing. One of the biggest highlights was the RCN Lagos Convergence; what a
-                        powerful time in God’s presence! The theme was “Separated,” and indeed the Lord set us apart afresh for Himself,
-                        calling us deeper into consecration and alignment with His purposes.
+                        September was such a beautiful month for us as a family. God’s presence was tangible in our gatherings, and our fellowship together was truly refreshing.
+                        One of the biggest highlights was the RCN Lagos Convergence; what a powerful time in God’s presence! The theme was “Separated,” and indeed the Lord set us
+                        apart afresh for Himself, calling us deeper into consecration and alignment with His purposes.
                      </Text>
 
                      <Section style={productSection}>
                         <Hr className="mt-[32px] mb-[16px]" />
 
                         {announcements.map((announcement) => (
-                           <Section key={announcement.id} style={tableRow}>
+                           <Section key={announcement.title} style={tableRow}>
                               <Img src={announcement.imageUrl} style={productImage} alt={announcement.title} className="object-contain" />
 
                               <Text style={{ ...sectionTitle, textAlign: 'left' }}>{announcement.title}</Text>
@@ -174,9 +140,7 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                   </Section>
 
                   <Section className="mt-[16px]">
-                     <Text style={{ ...sectionTitle, width: 'fit', padding: '14px', backgroundColor: '#d4412b', borderRadius: '8px' }}>
-                        MARK YOUR CALENDAR
-                     </Text>
+                     <Text style={{ ...sectionTitle, width: 'fit', padding: '14px', backgroundColor: '#d4412b', borderRadius: '8px' }}>MARK YOUR CALENDAR</Text>
 
                      <Section className="mt-[18px]">
                         <table style={table}>
@@ -210,13 +174,13 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                         <Text style={sectionTitle}>ANTICIPATE</Text>
 
                         <Text className="mt-[8px]" style={body}>
-                           📌 <strong>CRAFTSMEN 4.0 IS HERE!:</strong> Stay put, stay prayerful, and stay expectant. More details will be
-                           shared soon, but be assured that God is set to do a mighty work in our midst.
+                           📌 <strong>CRAFTSMEN 4.0 IS HERE!:</strong> Stay put, stay prayerful, and stay expectant. More details will be shared soon, but be assured that God is
+                           set to do a mighty work in our midst.
                         </Text>
 
                         <Text className="mt-[8px]" style={body}>
-                           <strong>RCNLAGOS ISLAND CHURCH ANNIVERSARY:</strong> Our anniversary is around the corner, and we can already
-                           sense the joy and glory that awaits us. Keep your hearts expectant, more details coming soon!
+                           <strong>RCNLAGOS ISLAND CHURCH ANNIVERSARY:</strong> Our anniversary is around the corner, and we can already sense the joy and glory that awaits us.
+                           Keep your hearts expectant, more details coming soon!
                         </Text>
 
                         <Hr className="my-[16px]" />
@@ -226,13 +190,12 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                         <Text style={sectionTitle}>PRAYER CELLS</Text>
 
                         <Text className="mt-[8px]" style={body}>
-                           Our prayer cells are the heartbeat of our fellowship. Beyond our corporate gatherings, these smaller circles
-                           provide the space for brethren to grow in the Word, build stronger bonds, and press deeper in prayer together.
+                           Our prayer cells are the heartbeat of our fellowship. Beyond our corporate gatherings, these smaller circles provide the space for brethren to grow in
+                           the Word, build stronger bonds, and press deeper in prayer together.
                         </Text>
 
                         <Text className="mt-[8px]" style={body}>
-                           We currently have prayer cells in{' '}
-                           <strong>Ikoyi, Victoria Island 1 & 2, Lekki, Igboefon, Alpha Beach, Badore, Sangotedo and Abijo</strong>. Please
+                           We currently have prayer cells in <strong>Ikoyi, Victoria Island 1 & 2, Lekki, Igboefon, Alpha Beach, Badore, Sangotedo and Abijo</strong>. Please
                            contact us at <strong>+234 707 779 2632</strong> to learn more and find the location closest to you.
                         </Text>
 
@@ -248,11 +211,10 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                      </Heading>
 
                      <Text className="mt-[16px]" style={body}>
-                        Remnant Christian Network (RCN) is a global apostolic movement committed to reviving authentic Christianity in our
-                        generation. Our mandate is to strive for the rebirth of apostolic Christianity across the nations by raising a
-                        people of prayer, sound doctrine, and kingdom service. Through teaching, intercession, and discipleship, RCN is
-                        equipping believers to live in alignment with God’s purposes and to be vessels of His glory in their families,
-                        communities, and nations.
+                        Remnant Christian Network (RCN) is a global apostolic movement committed to reviving authentic Christianity in our generation. Our mandate is to strive for
+                        the rebirth of apostolic Christianity across the nations by raising a people of prayer, sound doctrine, and kingdom service. Through teaching, intercession,
+                        and discipleship, RCN is equipping believers to live in alignment with God’s purposes and to be vessels of His glory in their families, communities, and
+                        nations.
                      </Text>
 
                      <Hr className="mt-[32px] mb-0" />
@@ -262,11 +224,10 @@ const NewsletterEmail: React.FC<Props> = ({}) => {
                      <Heading style={subtitle}>About RCNLagos Island Church</Heading>
 
                      <Text className="mt-[8px]" style={body}>
-                        RCNLagos Island Church is the Lagos Island expression of Remnant Christian Network Lagos. Planted with the same
-                        vision and heartbeat, the RCNLagos Island Church is a thriving family of believers passionate about prayer, the
-                        word, and fellowship. Located in the heart of Lekki, the Island Church serves as a hub for equipping, refreshing,
-                        and mobilising God’s people for kingdom impact. It’s more than a church; it’s a family where believers are
-                        strengthened, aligned, and sent out to live out apostolic Christianity in their everyday lives.
+                        RCNLagos Island Church is the Lagos Island expression of Remnant Christian Network Lagos. Planted with the same vision and heartbeat, the RCNLagos Island
+                        Church is a thriving family of believers passionate about prayer, the word, and fellowship. Located in the heart of Lekki, the Island Church serves as a hub
+                        for equipping, refreshing, and mobilising God’s people for kingdom impact. It’s more than a church; it’s a family where believers are strengthened, aligned,
+                        and sent out to live out apostolic Christianity in their everyday lives.
                      </Text>
 
                      <Hr className="mt-[32px] mb-0" />

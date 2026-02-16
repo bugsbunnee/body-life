@@ -5,14 +5,14 @@ import Cookies from 'js-cookie';
 const key = 'auth-user';
 
 export const authenticate = (email: string, password: string) => {
-   return http.post<AuthResponse>('/api/v1/auth/admin/login', {
+   return http.post<AuthResponse>('/api/auth/admin', {
       email,
       password,
    });
 };
 
 export const updatePassword = <T>(credentials: T) => {
-   return http.post<{ message: string }>('/api/v1/auth/update-password', credentials);
+   return http.post<{ message: string }>('/api/auth/admin/password', credentials);
 };
 
 export const persistUser = (authResponse: AuthResponse) => {
@@ -25,7 +25,7 @@ export const logout = () => {
 
 export const getUser = () => {
    const result = Cookies.get(key);
-   return result ? JSON.parse(result) : null;
+   return result ? (JSON.parse(result) as AuthResponse) : null;
 };
 
 const user = getUser();

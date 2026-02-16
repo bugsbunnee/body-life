@@ -4,9 +4,11 @@ import axios from 'axios';
 import { HiSparkles } from 'react-icons/hi';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { FaSpinner } from 'react-icons/fa';
 
+import Conditional from '../common/conditional';
 import Markdown from 'react-markdown';
-import UpdateMessageSummaryForm from '../forms/updated-message-summary-form';
+import UpdateMessageSummaryForm from '../forms/message/updated-message-summary-form';
 
 import type { IMessage, ISummary } from '@/utils/entities';
 import { getErrorMessage } from '@/lib/utils';
@@ -23,12 +25,9 @@ const MessageSummary: React.FC<Props> = ({ message }) => {
    const [isMessageEditVisible, setMessageEditVisible] = useState(false);
 
    const mutation = useMutation({
-      mutationFn: () => axios.post<{ data: ISummary }>(`/api/message/${message.id}/summarize`),
+      mutationFn: () => axios.post<{ data: ISummary }>(`/api/message/${message._id}/summarize`),
       onSuccess: () => window.location.reload(),
-      onError: (error) =>
-         toast('Could not add the messsage', {
-            description: getErrorMessage(error),
-         }),
+      onError: (error) => toast('Could not add the messsage', { description: getErrorMessage(error) }),
    });
 
    return (
@@ -44,41 +43,39 @@ const MessageSummary: React.FC<Props> = ({ message }) => {
          </div>
 
          <div className="px-3.5 py-4 gap-x-2">
-            {isMessageEditVisible ? (
-               <UpdateMessageSummaryForm messageId={message.id} content={message.summary!.content} />
-            ) : (
+            {message.summary && <Conditional visible={isMessageEditVisible}>{<UpdateMessageSummaryForm messageId={message._id} content={message.summary!.content} />}</Conditional>}
+
+            <Conditional visible={!isMessageEditVisible}>
                <ScrollArea className="h-80 rounded-md border p-4">
-                  {message.summary ? (
-                     <Markdown>{message.summary.content}</Markdown>
-                  ) : (
+                  {message.summary && <Markdown>{message.summary.content}</Markdown>}
+
+                  <Conditional visible={!message.summary}>
                      <div className="d-flex items-center gap-x-4">
                         <div className="mb-4 bg-blue-light rounded-md p-4 border border-border font-medium text-sm text-center text-main">
                            No summary yet. Click the button to generate
                         </div>
                      </div>
-                  )}
+                  </Conditional>
                </ScrollArea>
-            )}
+            </Conditional>
 
-            <Button
-               disabled={mutation.isPending}
-               onClick={() => mutation.mutate()}
-               className="w-full bg-main rounded-md px-4 py-6 mt-4 text-white"
-            >
-               {mutation.isPending ? (
-                  'Summarizing...'
-               ) : (
-                  <>
-                     <HiSparkles /> {message.summary ? 'Re-generate' : 'Generate'} Summary
-                  </>
-               )}
+            <Button disabled={mutation.isPending} onClick={() => mutation.mutate()} className="w-full bg-main rounded-md px-4 py-6 mt-4 text-white">
+               <Conditional visible={mutation.isPending}>
+                  <div className="animate-spin">
+                     <FaSpinner />
+                  </div>
 
-               {mutation.isPending && (
+                  <span>Summarizing...</span>
+
                   <span className="relative flex size-3 ml-4">
                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-light opacity-75"></span>
                      <span className="relative inline-flex size-3 rounded-full bg-blue-light"></span>
                   </span>
-               )}
+               </Conditional>
+
+               <Conditional visible={!mutation.isPending}>
+                  <HiSparkles /> {message.summary ? 'Re-generate' : 'Generate'} Summary
+               </Conditional>
             </Button>
          </div>
       </div>
