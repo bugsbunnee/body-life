@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { Link, useNavigate } from 'react-router-dom';
 import { APP_ROUTES } from '@/utils/constants';
 import { RangeDatePicker } from '@/components/ui/datepicker';
+import { formatDateRange } from '@/lib/utils';
 
 import AlternateDashboardGrid from '@/components/layout/dashboard/alternate-dashboard-grid';
 import AlternateDashboardGridSkeleton from '@/components/layout/dashboard/alternate-dashboard-grid-skeleton';
@@ -19,7 +20,6 @@ import Header from '@/components/common/header';
 
 import useDashboard from '@/hooks/useDashboard';
 import useQueryStore from '@/store/query';
-import { formatDateRange } from '@/lib/utils';
 
 const HomePage: React.FC = () => {
    const { dateRangeQuery, onSetSearch, onSetDateRange } = useQueryStore();
