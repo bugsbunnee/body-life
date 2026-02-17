@@ -1,4 +1,7 @@
 import axios from 'axios';
+import dayjs from 'dayjs';
+
+import * as XLSX from 'xlsx';
 
 import type { DateRange } from 'react-day-picker';
 
@@ -8,6 +11,15 @@ import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
    return twMerge(clsx(inputs));
+}
+
+export function exportToExcel<T>(data: T[], fileName: string) {
+   const worksheet = XLSX.utils.json_to_sheet(data);
+   const workbook = XLSX.utils.book_new();
+
+   XLSX.utils.book_append_sheet(workbook, worksheet, 'FollowUps');
+
+   XLSX.writeFile(workbook, fileName);
 }
 
 export function getInitials(text: string) {
@@ -24,6 +36,12 @@ export function getErrorMessage(error: unknown) {
    }
 
    return (<Error>error).message;
+}
+
+export function getIsBirthdayExpired(dateOfBirth: Date) {
+   const date = dayjs(dateOfBirth).set('year', dayjs().year());
+
+   return dayjs().isAfter(date);
 }
 
 export function formatAmount(amount: number) {

@@ -6,8 +6,6 @@ import { APP_ROUTES } from '@/utils/constants';
 import { RangeDatePicker } from '@/components/ui/datepicker';
 import { formatDateRange } from '@/lib/utils';
 
-import AlternateDashboardGrid from '@/components/layout/dashboard/alternate-dashboard-grid';
-import AlternateDashboardGridSkeleton from '@/components/layout/dashboard/alternate-dashboard-grid-skeleton';
 import Conditional from '@/components/common/conditional';
 import DashboardLineChart from '@/components/layout/dashboard/line-chart';
 import DashboardTable from '@/components/layout/dashboard/dashboard-table';
@@ -16,6 +14,7 @@ import DashboardFollowUpSkeleton from '@/components/layout/dashboard/dashboard-f
 import DashboardGrid from '@/components/layout/dashboard/dashboard-grid';
 import DashboardGridSkeleton from '@/components/layout/dashboard/dashboard-grid-skeleton';
 import EmptyState from '@/components/common/empty-state';
+import FirstTimerMetrics from '@/components/layout/first-timers/first-timer-metrics';
 import Header from '@/components/common/header';
 
 import useDashboard from '@/hooks/useDashboard';
@@ -103,41 +102,7 @@ const HomePage: React.FC = () => {
                </div>
 
                <div className="grid grid-cols-2 gap-6">
-                  <Conditional visible={isFetching}>
-                     {_.range(1, 5).map((fill) => (
-                        <AlternateDashboardGridSkeleton key={fill} />
-                     ))}
-                  </Conditional>
-
-                  <Conditional visible={!isFetching}>
-                     <AlternateDashboardGrid
-                        label={`Total First Timers (${label})`}
-                        value={data.firstTimerInsights.totalFirstTimers.current}
-                        update={data.firstTimerInsights.totalFirstTimers.trend}
-                        percentage={data.firstTimerInsights.totalFirstTimers.difference}
-                     />
-
-                     <AlternateDashboardGrid
-                        label={`Uncontacted First Timers (${label})`}
-                        value={data.firstTimerInsights.uncontactedFirstTimers.current}
-                        update={data.firstTimerInsights.uncontactedFirstTimers.trend}
-                        percentage={data.firstTimerInsights.uncontactedFirstTimers.difference}
-                     />
-
-                     <AlternateDashboardGrid
-                        label={`Due for Follow-Up (${label})`}
-                        value={data.firstTimerInsights.overdueFollowUp.current}
-                        update={data.firstTimerInsights.overdueFollowUp.trend}
-                        percentage={data.firstTimerInsights.overdueFollowUp.difference}
-                     />
-
-                     <AlternateDashboardGrid
-                        label={`Contacted First Timers (${label})`}
-                        value={data.firstTimerInsights.contactsMade.current}
-                        update={data.firstTimerInsights.contactsMade.trend}
-                        percentage={data.firstTimerInsights.contactsMade.difference}
-                     />
-                  </Conditional>
+                  <FirstTimerMetrics />
                </div>
             </div>
 

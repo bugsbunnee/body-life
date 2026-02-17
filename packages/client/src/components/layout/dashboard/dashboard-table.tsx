@@ -6,7 +6,7 @@ import EmptyState from '@/components/common/empty-state';
 
 import { formatDate } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { cn, getIsBirthdayExpired } from '@/lib/utils';
 
 import type { User } from '@/utils/entities';
 import { Badge } from '@/components/ui/badge';
@@ -50,19 +50,29 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
 
                <Conditional visible={!loading}>
                   <Conditional visible={data.length > 0}>
-                     {data.map((datum) => (
-                        <tr key={datum._id} className="text-gray-neutral font-medium text-base">
-                           <td className="pb-6">
-                              {datum.firstName} {datum.lastName}
-                           </td>
+                     {data.map((datum) => {
+                        const isExpired = getIsBirthdayExpired(datum.dateOfBirth);
+                        return (
+                           <tr key={datum._id} className="text-gray-neutral font-medium text-base">
+                              <td className="pb-6">
+                                 {datum.firstName} {datum.lastName}
+                              </td>
 
-                           <td className="pb-6">{formatDate(datum.dateOfBirth, 'dd MMMM')}</td>
+                              <td className="pb-6">{formatDate(datum.dateOfBirth, 'dd MMMM')}</td>
 
-                           <td className="pb-6 flex items-center">
-                              <Badge className="bg-orange-100 text-orange-600">Birthday</Badge>
-                           </td>
-                        </tr>
-                     ))}
+                              <td className="pb-6 flex items-center">
+                                 <Badge
+                                    className={cn({
+                                       'bg-orange-100 text-orange-600': isExpired,
+                                       'bg-green-100 text-green-600': !isExpired,
+                                    })}
+                                 >
+                                    {isExpired ? 'Expired' : 'Upcoming'}
+                                 </Badge>
+                              </td>
+                           </tr>
+                        );
+                     })}
                   </Conditional>
 
                   <Conditional visible={data.length === 0}>

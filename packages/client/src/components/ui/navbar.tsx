@@ -7,10 +7,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { motion } from 'motion/react';
 
 import { APP_ROUTES, sections } from '@/utils/constants';
+import { getInitials } from '@/lib/utils';
 
 import useAuthStore from '@/store/auth';
 import logo from '@/assets/images/logo.jpeg';
-import { getInitials } from '@/lib/utils';
 
 const NavBar: React.FC = () => {
    const { auth, logout } = useAuthStore();

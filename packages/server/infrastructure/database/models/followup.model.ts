@@ -5,8 +5,8 @@ const FollowUpAttemptSchema = new mongoose.Schema(
    {
       contactedAt: { type: Date, default: Date.now },
       contactedBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
-      channel: { type: String, enum: ['call', 'sms', 'whatsapp', 'visit', 'email'], required: true },
-      response: { type: String }, // what they said
+      channel: { type: String, required: true },
+      response: { type: String },
       successful: { type: Boolean, default: false },
    },
    { _id: false }

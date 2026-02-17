@@ -3,6 +3,7 @@ export enum FollowUpStatus {
    Assigned = 'assigned',
    Contacted = 'contacted',
    NotReachable = 'not-reachable',
+   NotInterested = 'not-interested',
    Integrated = 'integrated',
 }
 

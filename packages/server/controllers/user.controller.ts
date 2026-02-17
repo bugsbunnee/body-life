@@ -1,16 +1,19 @@
+import moment from 'moment';
 import _ from 'lodash';
 
 import type { Request, Response } from 'express';
 import type { IUser } from '../infrastructure/database/models/user.model';
+import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 
 import { StatusCodes } from 'http-status-codes';
 import { userRepository } from '../repositories/user.repository';
 import { parseUsersFromFile } from '../infrastructure/lib/utils';
 
 import { UserQuerySchema } from '../infrastructure/database/validators/user.validator';
+import { communicationService } from '../services/communication.service';
+
 import { departmentRepository } from '../repositories/department.repository';
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
-import { communicationService } from '../services/communication.service';
 import { followupRepository } from '../repositories/followup.repository';
 import { serviceReportRepository } from '../repositories/service-report.repository';
 
@@ -71,14 +74,19 @@ export const userController = {
                return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid service report provided.' });
             }
 
+            const followUpPayload = {
+               user: user._id,
+               assignedTo: assignedTo._id,
+               serviceAttended: serviceReport._id,
+               feedback: user.notes,
+               preferredContactMethod: req.body.preferredContactMethod,
+               nextActionAt: moment().add(48, 'hours').toDate(),
+            };
+
             await Promise.all([
-               followupRepository.createFollowUpEntry({
-                  user: user._id,
-                  assignedTo: assignedTo._id,
-                  serviceAttended: serviceReport._id,
-                  feedback: user.notes,
-                  preferredContactMethod: req.body.preferredContactMethod,
-               }),
+               communicationService.sendOutFollowUpAssignmentEmail(assignedTo, user, <IFollowUp>followUpPayload),
+
+               followupRepository.createFollowUpEntry(followUpPayload),
 
                communicationService.sendOutWelcomeEmail(user),
             ]);

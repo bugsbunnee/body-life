@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 
 import NavBar from '@/components/ui/navbar';
 import useAuthStore from '@/store/auth';

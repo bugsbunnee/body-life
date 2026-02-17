@@ -1,12 +1,14 @@
-import { type RouteObject } from 'react-router-dom';
+import { type RouteObject, Navigate } from 'react-router-dom';
 import { APP_ROUTES } from './constants';
 
 import ChatBot from '@/components/chat/chat-bot';
 import ErrorPage from '@/pages/ErrorPage';
 import Dashboard from '@/pages/Dashboard';
 import HomePage from '@/pages/HomePage';
+import FirstTimersPage from '@/pages/FirstTimersPage';
 import LoginPage from '@/pages/LoginPage';
 import MessagesPage from '@/pages/MessagesPage';
+import PublicRoute from '@/pages/PublicRoute';
 import ResetPassword from '@/pages/ResetPasswordPage';
 import ServiceReportPage from '@/pages/ServiceReportPage';
 import UsersPage from '@/pages/UsersPage';
@@ -14,6 +16,7 @@ import UsersPage from '@/pages/UsersPage';
 const routes: RouteObject[] = [
    {
       path: '/',
+      element: <PublicRoute />,
       errorElement: <ErrorPage />,
       children: [
          {
@@ -27,6 +30,10 @@ const routes: RouteObject[] = [
          {
             path: APP_ROUTES.SETUP_PASSWORD,
             element: <ResetPassword />,
+         },
+         {
+            path: '*',
+            element: <Navigate to={APP_ROUTES.AUTH} />,
          },
       ],
    },
@@ -42,6 +49,10 @@ const routes: RouteObject[] = [
          {
             path: APP_ROUTES.MEMBERS,
             element: <UsersPage />,
+         },
+         {
+            path: APP_ROUTES.FIRST_TIMERS,
+            element: <FirstTimersPage />,
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,

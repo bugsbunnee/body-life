@@ -1,9 +1,9 @@
 import type React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
-import { PlusIcon } from 'lucide-react';
+import { DownloadCloudIcon, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
-import { formatAmount } from '@/lib/utils';
+import { exportToExcel, formatAmount } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { ServiceReport } from '@/utils/entities';
@@ -31,6 +31,20 @@ const ServiceReportPage: React.FC = () => {
    const handleReportAddition = () => {
       setAddReportVisible(false);
       refetch();
+   };
+
+   const handleExtractedDataExport = () => {
+      const extractedData = data.data.map((datum) => ({
+         prepPrayersBy: datum.prepPrayers.firstName + ' ' + datum.prepPrayers.lastName,
+         worshipBy: datum.worship.firstName + ' ' + datum.worship.lastName,
+         sermonBy: datum.message.preacher.firstName + ' ' + datum.message.preacher.lastName,
+         seatArrangementCount: datum.seatArrangementCount,
+         firstTimerCount: datum.firstTimerCount,
+         offering: formatAmount(datum.offering),
+         totalAttendance: datum.totalAttendance,
+      }));
+
+      exportToExcel(extractedData, `ServiceReports_${formatDate(new Date(), 'PPP')}.xlsx`);
    };
 
    const columns = useMemo(() => {
@@ -189,6 +203,16 @@ const ServiceReportPage: React.FC = () => {
                >
                   <PlusIcon />
                   <span className="flex-1">Add New</span>
+               </Button>
+
+               <Button
+                  onClick={handleExtractedDataExport}
+                  variant="ghost"
+                  className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+               >
+                  <DownloadCloudIcon />
+
+                  <span className="flex-1">Export to Excel</span>
                </Button>
             </div>
          </div>

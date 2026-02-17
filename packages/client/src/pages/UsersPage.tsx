@@ -1,12 +1,12 @@
 import type React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
-import { PlusIcon } from 'lucide-react';
+import { DownloadCloudIcon, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { User } from '@/utils/entities';
-import { getInitials } from '@/lib/utils';
+import { exportToExcel, getInitials } from '@/lib/utils';
 
 import AddUserForm from '@/components/forms/user/add-user-form';
 import Header from '@/components/common/header';
@@ -35,6 +35,20 @@ const UsersPage: React.FC = () => {
    const handleMemberAddition = () => {
       setAddUserVisible(false);
       refetch();
+   };
+
+   const handleExtractedDataExport = () => {
+      const extractedData = data.data.data.map((datum) => ({
+         firstName: datum.firstName,
+         lastName: datum.lastName,
+         email: datum.email,
+         phoneNumber: datum.phoneNumber,
+         address: datum.address,
+         dateOfBirth: formatDate(datum.dateOfBirth, 'PPP'),
+         isFirstTimer: datum.isFirstTimer ? 'Yes' : 'No',
+      }));
+
+      exportToExcel(extractedData, `Members_${formatDate(new Date(), 'PPP')}.xlsx`);
    };
 
    const columns = useMemo(() => {
@@ -188,6 +202,16 @@ const UsersPage: React.FC = () => {
                   >
                      <PlusIcon />
                      <span className="flex-1">Add New</span>
+                  </Button>
+
+                  <Button
+                     onClick={handleExtractedDataExport}
+                     variant="ghost"
+                     className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  >
+                     <DownloadCloudIcon />
+
+                     <span className="flex-1">Export to Excel</span>
                   </Button>
                </div>
             </div>

@@ -31,8 +31,30 @@ export interface FollowUp {
    status: string;
    feedback: string;
    preferredContactMethod: string;
+   assignedTo: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
    user: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
-   service: Pick<ServiceReport, '_id' | 'serviceDate'>;
+}
+
+export interface FollowUpAttempt {
+   _id: string;
+   channel: string;
+   contactedAt: Date;
+   contactedBy: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
+   response: string;
+   successful: boolean;
+}
+
+export interface FirstTimer {
+   _id: string;
+   status: string;
+   feedback: string;
+   preferredContactMethod: string;
+   assignedTo: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
+   user: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
+   serviceAttended: Pick<ServiceReport, '_id' | 'serviceDate'>;
+   attempts: FollowUpAttempt[];
+   wantsToJoinDepartment: boolean;
+   nextActionAt: Date;
 }
 
 export interface IMessage {

@@ -331,7 +331,11 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                />
             </Conditional>
 
-            <Button type="submit" disabled={!form.formState.isValid || form.formState.isSubmitting} className="text-sm text-white bg-main font-semibold rounded-sm h-12">
+            <Button
+               type="submit"
+               disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
+               className="text-sm text-white bg-main font-semibold rounded-sm h-12"
+            >
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">
                      <FaSpinner />
@@ -346,50 +350,5 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
       </Form>
    );
 };
-
-const CONTACT_METHODS = [
-   {
-      id: 'Call',
-      name: 'Call',
-   },
-   {
-      id: 'SMS',
-      name: 'SMS',
-   },
-   {
-      id: 'WhatsApp',
-      name: 'WhatsApp',
-   },
-   {
-      id: 'Email',
-      name: 'Email',
-   },
-   {
-      id: 'Visit',
-      name: 'Visit',
-   },
-];
-
-const GENDERS = [
-   {
-      id: 'Male',
-      name: 'Male',
-   },
-   {
-      id: 'Female',
-      name: 'Female',
-   },
-];
-
-const MARITAL_STATUS = [
-   {
-      id: 'Single',
-      name: 'Single',
-   },
-   {
-      id: 'Married',
-      name: 'Married',
-   },
-];
 
 export default AddUserForm;

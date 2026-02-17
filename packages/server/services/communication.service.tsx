@@ -18,6 +18,8 @@ import { userRepository } from '../repositories/user.repository';
 import { emailService } from './email.service';
 import { llmClient } from '../llm/client';
 import { lib } from '../utils/lib';
+import FollowUpAssignmentEmail from '../infrastructure/emails/follow-up-assignment';
+import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 
 interface MessageTranscriptResponse {
    search_parameters: {
@@ -61,6 +63,18 @@ export const communicationService = {
          });
       } catch (error) {
          logger.error('Failed to send welcome email...', error);
+      }
+   },
+
+   async sendOutFollowUpAssignmentEmail(contact: IUser, firstTimer: IUser, followUp: IFollowUp) {
+      try {
+         await emailService.sendSingleEmail({
+            to: contact.email,
+            subject: `First Timer Assigned for Follow Up`,
+            react: <FollowUpAssignmentEmail firstTimer={firstTimer} followUp={followUp} userFirstName={contact.firstName} />,
+         });
+      } catch (error) {
+         logger.error('Failed to send follow up assignment email...', error);
       }
    },
 

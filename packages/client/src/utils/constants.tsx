@@ -1,5 +1,5 @@
 import type { Route } from './entities';
-import { Cross } from 'lucide-react';
+import { Cross, NewspaperIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { HiOutlineCog } from 'react-icons/hi';
@@ -30,6 +30,11 @@ export const sections: Route[] = [
             path: APP_ROUTES.MEMBERS,
             label: 'Members',
             Icon: BsFillPeopleFill,
+         },
+         {
+            path: APP_ROUTES.FIRST_TIMERS,
+            label: 'First Timers',
+            Icon: NewspaperIcon,
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,
@@ -64,5 +69,96 @@ export const sections: Route[] = [
             Icon: MdOutlineContactSupport,
          },
       ],
+   },
+];
+
+export const CONTACT_METHODS = [
+   {
+      id: 'Call',
+      name: 'Call',
+   },
+   {
+      id: 'SMS',
+      name: 'SMS',
+   },
+   {
+      id: 'WhatsApp',
+      name: 'WhatsApp',
+   },
+   {
+      id: 'Email',
+      name: 'Email',
+   },
+   {
+      id: 'Visit',
+      name: 'Visit',
+   },
+];
+
+export const GENDERS = [
+   {
+      id: 'Male',
+      name: 'Male',
+   },
+   {
+      id: 'Female',
+      name: 'Female',
+   },
+];
+
+export const MARITAL_STATUS = [
+   {
+      id: 'Single',
+      name: 'Single',
+   },
+   {
+      id: 'Married',
+      name: 'Married',
+   },
+];
+
+export const FOLLOW_UP_STATUS = [
+   {
+      id: 'pending',
+      name: 'pending',
+   },
+   {
+      id: 'assigned',
+      name: 'assigned',
+   },
+   {
+      id: 'contacted',
+      name: 'contacted',
+   },
+   {
+      id: 'not-reachable',
+      name: 'not-reachable',
+   },
+   {
+      id: 'not-interested',
+      name: 'not-interested',
+   },
+   {
+      id: 'integrated',
+      name: 'integrated',
+   },
+];
+
+export const FOLLOW_UP_FEEDBACK_STATUS = [
+   {
+      id: 'contacted',
+      name: 'contacted',
+   },
+   {
+      id: 'not-reachable',
+      name: 'not-reachable',
+   },
+   {
+      id: 'not-interested',
+      name: 'not-interested',
+   },
+   {
+      id: 'integrated',
+      name: 'integrated',
    },
 ];

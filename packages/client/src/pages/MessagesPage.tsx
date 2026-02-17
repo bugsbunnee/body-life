@@ -1,7 +1,7 @@
 import type React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
-import { EllipsisVertical, PlusIcon } from 'lucide-react';
+import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
@@ -23,6 +23,7 @@ import { RangeDatePicker } from '@/components/ui/datepicker';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { exportToExcel } from '@/lib/utils';
 
 const MessagesPage: React.FC = () => {
    const [isAddMessageVisible, setAddMessagesVisible] = useState(false);
@@ -34,6 +35,17 @@ const MessagesPage: React.FC = () => {
    const handleMessageddition = () => {
       setAddMessagesVisible(false);
       refetch();
+   };
+
+   const handleExtractedDataExport = () => {
+      const extractedData = data.data.data.map((datum) => ({
+         title: datum.title,
+         preacher: datum.preacher.firstName + ' ' + datum.preacher.lastName,
+         date: formatDate(datum.date, 'PPP'),
+         videoUrl: datum.videoUrl,
+      }));
+
+      exportToExcel(extractedData, `Messages_${formatDate(new Date(), 'PPP')}.xlsx`);
    };
 
    const columns = useMemo(() => {
@@ -177,6 +189,16 @@ const MessagesPage: React.FC = () => {
                >
                   <PlusIcon />
                   <span className="flex-1">Upload Message</span>
+               </Button>
+
+               <Button
+                  onClick={handleExtractedDataExport}
+                  variant="ghost"
+                  className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+               >
+                  <DownloadCloudIcon />
+
+                  <span className="flex-1">Export to Excel</span>
                </Button>
             </div>
          </div>
