@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CONTACT_METHODS, FOLLOW_UP_STATUS } from '@/utils/constants';
+import { exportToExcel } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { FirstTimer } from '@/utils/entities';
@@ -23,10 +24,9 @@ import Modal from '@/components/common/modal';
 import Summary from '@/components/common/summary';
 import UpdateFollowUpForm from '@/components/forms/first-timer/update-follow-up';
 
-import useQueryStore from '@/store/query';
 import useFirstTimers from '@/hooks/useFirstTimers';
+import useQueryStore from '@/store/query';
 import useUsers from '@/hooks/useUsers';
-import { exportToExcel } from '@/lib/utils';
 
 const FirstTimersPage: React.FC = () => {
    const { data: users } = useUsers();
@@ -257,7 +257,7 @@ const FirstTimersPage: React.FC = () => {
                >
                   <DownloadCloudIcon />
 
-                  <span className="flex-1">Export to Excel</span>
+                  <span className="flex-1">Export to spreadsheet</span>
                </Button>
             </div>
          </div>

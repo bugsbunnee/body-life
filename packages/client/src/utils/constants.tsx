@@ -1,9 +1,10 @@
 import type { Route } from './entities';
-import { Cross, NewspaperIcon } from 'lucide-react';
+import { ChurchIcon, Cross, NewspaperIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { HiOutlineCog } from 'react-icons/hi';
 import { MdOutlineContactSupport, MdReport } from 'react-icons/md';
+import _ from 'lodash';
 
 export const APP_ROUTES = {
    AUTH: '/auth',
@@ -12,6 +13,7 @@ export const APP_ROUTES = {
    FORGOT_PASSWORD: '/forgot-password',
    MESSAGES: '/dashboard/messages',
    MEMBERS: '/dashboard/members',
+   PRAYER_CELLS: '/dashboard/prayer-cells',
    SETUP_PASSWORD: '/reset-password',
    SERVICE_REPORT: '/dashboard/service-report',
 };
@@ -35,6 +37,11 @@ export const sections: Route[] = [
             path: APP_ROUTES.FIRST_TIMERS,
             label: 'First Timers',
             Icon: NewspaperIcon,
+         },
+         {
+            path: APP_ROUTES.PRAYER_CELLS,
+            label: 'Prayer Cells',
+            Icon: ChurchIcon,
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,
@@ -116,6 +123,46 @@ export const MARITAL_STATUS = [
       name: 'Married',
    },
 ];
+
+export const MEETING_DAYS = [
+   {
+      id: 'Sunday',
+      name: 'Sunday',
+   },
+   {
+      id: 'Monday',
+      name: 'Monday',
+   },
+   {
+      id: 'Tuesday',
+      name: 'Tuesday',
+   },
+   {
+      id: 'Wednesday',
+      name: 'Wednesday',
+   },
+   {
+      id: 'Thursday',
+      name: 'Thursday',
+   },
+   {
+      id: 'Friday',
+      name: 'Friday',
+   },
+   {
+      id: 'Saturday',
+      name: 'Saturday',
+   },
+];
+
+export const MEETING_TIMES = _.range(0, 24).map((hour) => {
+   const timeLabel = hour === 0 ? '12:00 AM' : hour < 12 ? `${hour}:00 AM` : hour === 12 ? '12:00 PM' : `${hour - 12}:00 PM`;
+
+   return {
+      id: timeLabel,
+      name: timeLabel,
+   };
+});
 
 export const FOLLOW_UP_STATUS = [
    {

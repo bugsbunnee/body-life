@@ -2,11 +2,14 @@ import { create } from 'zustand';
 
 import dayjs from 'dayjs';
 
-interface Query {
-   search?: string;
-   field?: string;
+interface PaginationQuery {
    pageNumber?: number;
    pageSize?: number;
+}
+
+interface Query extends PaginationQuery {
+   search?: string;
+   field?: string;
 }
 
 interface DateRangeQuery {
@@ -20,13 +23,33 @@ interface FirstTimerQuery {
    assignedTo?: string;
 }
 
+interface PrayerCellQuery {
+   name?: string;
+   leader?: string;
+   address?: string;
+   meetingDay?: string;
+   meetingTime?: string;
+}
+
+interface UserQuery extends PaginationQuery {
+   firstName?: string;
+   lastName?: string;
+   email?: string;
+   phoneNumber?: string;
+   prayerCell?: string;
+}
+
 interface QueryStore {
    query: Query;
    dateRangeQuery: DateRangeQuery;
    firstTimerQuery: FirstTimerQuery;
+   prayerCellQuery: PrayerCellQuery;
+   userQuery: UserQuery;
    resetQuery: () => void;
    onSetSearch: (search: string) => void;
    onSetFirstTimer: (firstTimer: FirstTimerQuery) => void;
+   onSetPrayerCell: (prayerCell: PrayerCellQuery) => void;
+   onSetUser: (user: UserQuery) => void;
    onSetDateRange: (dateRange: DateRangeQuery) => void;
    onSetPageNumber: (pageNumber: number) => void;
    onSetPageSize: (pageSize: number) => void;
@@ -43,7 +66,11 @@ const useQueryStore = create<QueryStore>((set) => ({
       endDate: dayjs().endOf('month').toDate(),
    },
    firstTimerQuery: {},
-   resetQuery: () => set(() => ({ query: {}, firstTimerQuery: {} })),
+   prayerCellQuery: {},
+   userQuery: {},
+   resetQuery: () => set(() => ({ query: {}, firstTimerQuery: {}, prayerCellQuery: {}, userQuery: {} })),
+   onSetPrayerCell: (prayerCell) => set((store) => ({ prayerCellQuery: { ...store.prayerCellQuery, ...prayerCell } })),
+   onSetUser: (user) => set((store) => ({ userQuery: { ...store.userQuery, ...user } })),
    onSetField: (field) => set((store) => ({ query: { ...store.query, field } })),
    onSetDateRange: (dateRange) => set((store) => ({ dateRangeQuery: { ...store.dateRangeQuery, ...dateRange } })),
    onSetPageNumber: (pageNumber) => set((store) => ({ query: { ...store.query, pageNumber } })),

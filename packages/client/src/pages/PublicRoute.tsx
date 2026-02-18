@@ -6,7 +6,7 @@ import { APP_ROUTES } from '../utils/constants';
 const PublicRoute = () => {
    const authStore = useAuthStore();
 
-   if (authStore) {
+   if (authStore.auth) {
       return <Navigate to={APP_ROUTES.DASHBOARD} />;
    }
 

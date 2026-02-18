@@ -76,6 +76,16 @@ export interface ISummary {
    expiresAt: Date;
 }
 
+export interface PrayerCell {
+   _id: string;
+   name: string;
+   meetingDay: string;
+   meetingTime: string;
+   address: string;
+   leader: Pick<User, '_id' | 'firstName' | 'lastName'>;
+   totalMembership: number;
+}
+
 export interface PaginationProps {
    pageNumber: number;
    pageSize: number;
@@ -120,6 +130,7 @@ export interface User {
    address: string;
    dateOfBirth: Date;
    isFirstTimer: boolean;
+   prayerCell: Pick<PrayerCell, '_id' | 'name'>;
    createdAt: Date;
    updatedAt: Date;
    notes: string;

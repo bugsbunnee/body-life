@@ -11,6 +11,7 @@ import { userRepository } from '../repositories/user.repository';
 
 import redisService from '../services/redis.service';
 import { followupRepository } from '../repositories/followup.repository';
+import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 
 export const serviceReportController = {
    async getServiceReportOverview(req: Request, res: Response) {
@@ -24,21 +25,34 @@ export const serviceReportController = {
          return res.json(dashboard);
       }
 
-      const [attendanceTrend, userBirthdays, currentUserInsights, previousUserInsights, uncontactedFirstTimers, currentFirstTimersInsight, previousFirstTimerInsights] =
-         await Promise.all([
-            serviceReportRepository.getServiceReportAttendanceTrend(currentDateRange),
-            userRepository.getUsersWithBirthdayInRange({ pageNumber: 1, pageSize: 10, offset: 0 }, currentDateRange),
+      const [
+         attendanceTrend,
+         currentPrayerCellInsights,
+         previousPrayerCellInsights,
+         userBirthdays,
+         currentUserInsights,
+         previousUserInsights,
+         uncontactedFirstTimers,
+         currentFirstTimersInsight,
+         previousFirstTimerInsights,
+      ] = await Promise.all([
+         serviceReportRepository.getServiceReportAttendanceTrend(currentDateRange),
 
-            userRepository.getUserInsights(currentDateRange),
-            userRepository.getUserInsights(previousDateRange),
+         prayerCellRepository.getPrayerCellInsights(currentDateRange),
+         prayerCellRepository.getPrayerCellInsights(previousDateRange),
 
-            followupRepository.getUncontactedFirstTimers(currentDateRange, 5),
-            followupRepository.getFirstTimersInsight(currentDateRange),
-            followupRepository.getFirstTimersInsight(previousDateRange),
-         ]);
+         userRepository.getUsersWithBirthdayInRange({ pageNumber: 1, pageSize: 10, offset: 0 }, currentDateRange),
+         userRepository.getUserInsights(currentDateRange),
+         userRepository.getUserInsights(previousDateRange),
+
+         followupRepository.getUncontactedFirstTimers(currentDateRange, 5),
+         followupRepository.getFirstTimersInsight(currentDateRange),
+         followupRepository.getFirstTimersInsight(previousDateRange),
+      ]);
 
       const response = {
          attendanceTrend,
+         prayerCellInsights: lib.computeDifference(currentPrayerCellInsights, previousPrayerCellInsights),
          userBirthdays,
          uncontactedFirstTimers,
          userInsights: lib.computeDifference(currentUserInsights, previousUserInsights),

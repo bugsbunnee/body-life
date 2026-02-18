@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 
 const prayerCellSchema = new mongoose.Schema(
    {
@@ -10,6 +11,15 @@ const prayerCellSchema = new mongoose.Schema(
    },
    { timestamps: true }
 );
+
+prayerCellSchema.virtual('totalMembership', {
+   ref: 'User',
+   localField: '_id',
+   foreignField: 'prayerCell',
+   count: true,
+});
+
+prayerCellSchema.plugin(mongooseLeanVirtuals);
 
 export type IPrayerCell = mongoose.InferSchemaType<typeof prayerCellSchema>;
 export const PrayerCell = mongoose.model<IPrayerCell>('PrayerCell', prayerCellSchema);

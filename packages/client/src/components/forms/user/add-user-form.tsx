@@ -25,6 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 import { userSchema, type IUser } from './user-schema';
 import { getErrorMessage } from '@/lib/utils';
+import { CONTACT_METHODS } from '@/utils/constants';
 
 type Props = { onAddUser: () => void };
 

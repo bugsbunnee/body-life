@@ -1,15 +1,15 @@
-import useQueryStore from '@/store/query';
-import type { ApiResponse, User } from '@/utils/entities';
-import { useQuery } from '@tanstack/react-query';
-
 import axios from 'axios';
+import useQueryStore from '@/store/query';
+
+import { useQuery } from '@tanstack/react-query';
+import type { ApiResponse, User } from '@/utils/entities';
 
 const useUsers = () => {
-   const { query } = useQueryStore();
+   const { userQuery } = useQueryStore();
 
    return useQuery({
-      queryKey: ['users', query],
-      queryFn: () => axios.get<{ data: ApiResponse<User> }>('/api/user', { params: query }).then((response) => response.data),
+      queryKey: ['users', userQuery],
+      queryFn: () => axios.get<{ data: ApiResponse<User> }>('/api/user', { params: userQuery }).then((response) => response.data),
       initialData: {
          data: {
             data: [],

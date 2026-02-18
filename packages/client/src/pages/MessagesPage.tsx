@@ -198,7 +198,7 @@ const MessagesPage: React.FC = () => {
                >
                   <DownloadCloudIcon />
 
-                  <span className="flex-1">Export to Excel</span>
+                  <span className="flex-1">Export to spreadsheet</span>
                </Button>
             </div>
          </div>

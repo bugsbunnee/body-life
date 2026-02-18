@@ -20,6 +20,9 @@ type ServiceOverview = {
    attendanceTrend: AttendanceTrend[];
    userBirthdays: ApiResponse<User>;
    uncontactedFirstTimers: FollowUp[];
+   prayerCellInsights: {
+      totalPrayerCells: ServiceItem;
+   };
    userInsights: {
       totalUsers: ServiceItem;
       totalWorkforce: ServiceItem;

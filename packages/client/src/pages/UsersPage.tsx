@@ -14,6 +14,7 @@ import Modal from '@/components/common/modal';
 import Summary from '@/components/common/summary';
 import SendMessageForm from '@/components/forms/message/send-message-form';
 
+import usePrayerCells from '@/hooks/usePrayerCells';
 import useUsers from '@/hooks/useUsers';
 import useQueryStore from '@/store/query';
 
@@ -24,13 +25,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/datatable';
 import { RangeDatePicker } from '@/components/ui/datepicker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
    const { isFetching, data, refetch } = useUsers();
-   const { dateRangeQuery, onSetDateRange, onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
+   const { data: prayerCells } = usePrayerCells();
+
+   const { dateRangeQuery, userQuery, onSetDateRange, onSetSearch, onSetUser, onSetPageNumber, resetQuery } = useQueryStore();
 
    const handleMemberAddition = () => {
       setAddUserVisible(false);
@@ -211,13 +215,29 @@ const UsersPage: React.FC = () => {
                   >
                      <DownloadCloudIcon />
 
-                     <span className="flex-1">Export to Excel</span>
+                     <span className="flex-1">Export to spreadsheet</span>
                   </Button>
                </div>
             </div>
 
+            <div className="p-6 border-b-border border-b flex items-center justify-between">
+               <Select onValueChange={(prayerCell) => onSetUser({ prayerCell })} defaultValue={userQuery.prayerCell}>
+                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                     <SelectValue placeholder="Filter by Prayer Cell" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                     {prayerCells.data.data.map((prayerCell) => (
+                        <SelectItem key={prayerCell._id} value={prayerCell._id}>
+                           {prayerCell.name}
+                        </SelectItem>
+                     ))}
+                  </SelectContent>
+               </Select>
+            </div>
+
             <TabsContent value="account">
-               <DataTable onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
+               <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
             </TabsContent>
          </Tabs>
       </>

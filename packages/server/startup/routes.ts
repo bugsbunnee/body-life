@@ -8,6 +8,7 @@ import chat from '../routes/chat.route';
 import message from '../routes/message.route';
 import birthday from '../routes/birthday.route';
 import followup from '../routes/followup.route';
+import prayerCell from '../routes/prayer-cell.route';
 import sms from '../routes/sms.route';
 import seed from '../routes/seed.route';
 import serviceReport from '../routes/service-report.route';
@@ -28,6 +29,7 @@ function configureRoutes(app: Express) {
    app.use('/api/followup', followup);
    app.use('/api/message', message);
    app.use('/api/user', user);
+   app.use('/api/prayer-cell', prayerCell);
    app.use('/api/seed', seed);
    app.use('/api/service-report', serviceReport);
    app.use('/api/sms', sms);

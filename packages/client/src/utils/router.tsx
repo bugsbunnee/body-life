@@ -8,6 +8,7 @@ import HomePage from '@/pages/HomePage';
 import FirstTimersPage from '@/pages/FirstTimersPage';
 import LoginPage from '@/pages/LoginPage';
 import MessagesPage from '@/pages/MessagesPage';
+import PrayerCellsPage from '@/pages/PrayerCellsPage';
 import PublicRoute from '@/pages/PublicRoute';
 import ResetPassword from '@/pages/ResetPasswordPage';
 import ServiceReportPage from '@/pages/ServiceReportPage';
@@ -49,6 +50,10 @@ const routes: RouteObject[] = [
          {
             path: APP_ROUTES.MEMBERS,
             element: <UsersPage />,
+         },
+         {
+            path: APP_ROUTES.PRAYER_CELLS,
+            element: <PrayerCellsPage />,
          },
          {
             path: APP_ROUTES.FIRST_TIMERS,

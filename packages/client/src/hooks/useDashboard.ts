@@ -21,6 +21,13 @@ const useDashboard = () => {
                totalPages: 0,
             },
          },
+         prayerCellInsights: {
+            totalPrayerCells: {
+               current: 0,
+               difference: '12%',
+               trend: 'increment',
+            },
+         },
          userInsights: {
             totalUsers: {
                current: 0,
