@@ -35,6 +35,7 @@ const ServiceReportPage: React.FC = () => {
 
    const handleExtractedDataExport = () => {
       const extractedData = data.data.map((datum) => ({
+         serviceDate: formatDate(datum.serviceDate, 'PPP'),
          prepPrayersBy: datum.prepPrayers.firstName + ' ' + datum.prepPrayers.lastName,
          worshipBy: datum.worship.firstName + ' ' + datum.worship.lastName,
          sermonBy: datum.message.preacher.firstName + ' ' + datum.message.preacher.lastName,
@@ -50,7 +51,7 @@ const ServiceReportPage: React.FC = () => {
    const columns = useMemo(() => {
       const columns: ColumnDef<ServiceReport>[] = [
          {
-            accessorKey: 'serviceDate',
+            accessorKey: '_id',
             header: ({ table }) => (
                <Checkbox
                   checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
@@ -61,6 +62,11 @@ const ServiceReportPage: React.FC = () => {
             cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
             enableSorting: false,
             enableHiding: false,
+         },
+         {
+            accessorKey: 'serviceDate',
+            header: 'Service Date',
+            cell: ({ row }) => <span>{formatDate(row.original.serviceDate, 'PPP')}</span>,
          },
          {
             accessorKey: 'prepPrayers',

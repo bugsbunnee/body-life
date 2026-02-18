@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getUser, logout, persistUser } from '../services/auth.service';
+import { getUser, logout, persistUser } from '../services/user.service';
 
 import type { AuthResponse } from '../utils/entities';
 

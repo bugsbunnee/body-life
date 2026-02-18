@@ -1,5 +1,6 @@
 import express from 'express';
 
+import auth from '../middleware/auth';
 import paginate from '../middleware/paginate';
 import validate from '../middleware/validate';
 
@@ -8,7 +9,7 @@ import { prayerCellController } from '../controllers/prayer-cell.controller';
 
 const router = express.Router();
 
-router.get('/', [validate(PrayerCellQuerySchema, 'query'), paginate], prayerCellController.getPrayerCells);
-router.post('/', [validate(PrayerCellCreateSchema, 'body')], prayerCellController.createPrayerCell);
+router.get('/', [auth, validate(PrayerCellQuerySchema, 'query'), paginate], prayerCellController.getPrayerCells);
+router.post('/', [auth, validate(PrayerCellCreateSchema, 'body')], prayerCellController.createPrayerCell);
 
 export default router;

@@ -1,5 +1,7 @@
 import type React from 'react';
-import axios from 'axios';
+
+import Conditional from '@/components/common/conditional';
+import http from '@/services/http.service';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -12,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 
 import { Textarea } from '../../ui/textarea';
 import { getErrorMessage } from '@/lib/utils';
+import { FaSpinner } from 'react-icons/fa';
 
 const textSchema = z.object({
    body: z.string().min(1, 'Text body is required').max(200, 'Text body is too long'),
@@ -27,16 +30,9 @@ const SendMessageForm: React.FC<Props> = ({ phoneNumber }) => {
    });
 
    const mutation = useMutation({
-      mutationFn: (body: ISMS) =>
-         axios.post('/api/sms', {
-            phoneNumber,
-            body: body.body,
-         }),
+      mutationFn: (body: ISMS) => http.post('/api/sms', { phoneNumber, body: body.body }),
       onSuccess: (response) => {
-         toast('Success!', {
-            description: response.data.message,
-         });
-
+         toast('Success!', { description: response.data.message });
          form.reset();
       },
       onError: (error) =>
@@ -73,9 +69,17 @@ const SendMessageForm: React.FC<Props> = ({ phoneNumber }) => {
                   <Button
                      type="submit"
                      disabled={!form.formState.isValid || form.formState.isSubmitting}
-                     className="text-sm text-white bg-main font-semibold rounded-sm w-full max-w-36 h-12"
+                     className="text-sm text-white bg-main font-semibold rounded-sm w-full h-12"
                   >
-                     {form.formState.isSubmitting ? 'Sending Message...' : 'Send Message'}
+                     <Conditional visible={mutation.isPending}>
+                        <div className="animate-spin">
+                           <FaSpinner />
+                        </div>
+
+                        <span>Sending Message...</span>
+                     </Conditional>
+
+                     <Conditional visible={!mutation.isPending}>Send Message...</Conditional>
                   </Button>
                </form>
             </Form>

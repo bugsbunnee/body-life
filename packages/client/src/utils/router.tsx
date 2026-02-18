@@ -4,6 +4,7 @@ import { APP_ROUTES } from './constants';
 import ChatBot from '@/components/chat/chat-bot';
 import ErrorPage from '@/pages/ErrorPage';
 import Dashboard from '@/pages/Dashboard';
+import DepartmentPage from '@/pages/DepartmentPage';
 import HomePage from '@/pages/HomePage';
 import FirstTimersPage from '@/pages/FirstTimersPage';
 import LoginPage from '@/pages/LoginPage';
@@ -13,6 +14,7 @@ import PublicRoute from '@/pages/PublicRoute';
 import ResetPassword from '@/pages/ResetPasswordPage';
 import ServiceReportPage from '@/pages/ServiceReportPage';
 import UsersPage from '@/pages/UsersPage';
+import InventoryPage from '@/pages/InventoryPage';
 
 const routes: RouteObject[] = [
    {
@@ -48,12 +50,20 @@ const routes: RouteObject[] = [
             element: <HomePage />,
          },
          {
-            path: APP_ROUTES.MEMBERS,
-            element: <UsersPage />,
+            path: APP_ROUTES.DEPARTMENT,
+            element: <DepartmentPage />,
+         },
+         {
+            path: APP_ROUTES.INVENTORY,
+            element: <InventoryPage />,
          },
          {
             path: APP_ROUTES.PRAYER_CELLS,
             element: <PrayerCellsPage />,
+         },
+         {
+            path: APP_ROUTES.MEMBERS,
+            element: <UsersPage />,
          },
          {
             path: APP_ROUTES.FIRST_TIMERS,

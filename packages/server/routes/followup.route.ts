@@ -1,5 +1,6 @@
 import express from 'express';
 
+import auth from '../middleware/auth';
 import paginate from '../middleware/paginate';
 import validate from '../middleware/validate';
 import validateObjectId from '../middleware/validateObjectId';
@@ -9,7 +10,7 @@ import { followupController } from '../controllers/followup.controller';
 
 const router = express.Router();
 
-router.get('/', [validate(FollowUpQuerySchema, 'query'), paginate], followupController.getFirstTimers);
-router.put('/:id', [validateObjectId, validate(FollowUpUpdateSchema, 'body')], followupController.updateFirstTimer);
+router.get('/', [auth, validate(FollowUpQuerySchema, 'query'), paginate], followupController.getFirstTimers);
+router.put('/:id', [auth, validateObjectId, validate(FollowUpUpdateSchema, 'body')], followupController.updateFirstTimer);
 
 export default router;

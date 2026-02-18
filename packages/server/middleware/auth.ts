@@ -1,6 +1,7 @@
+import { StatusCodes } from 'http-status-codes';
+
 import type { NextFunction, Request, Response } from 'express';
 import type { IAdmin } from '../infrastructure/database/models/admin.model';
-import { StatusCodes } from 'http-status-codes';
 
 import jwt from 'jsonwebtoken';
 

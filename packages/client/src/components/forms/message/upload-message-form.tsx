@@ -1,5 +1,5 @@
 import type React from 'react';
-import axios from 'axios';
+import http from '@/services/http.service';
 
 import { format } from 'date-fns';
 import { z } from 'zod';
@@ -41,7 +41,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
    });
 
    const mutation = useMutation({
-      mutationFn: (message: IMessage) => axios.post('/api/message', message),
+      mutationFn: (message: IMessage) => http.post('/api/message', message),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
 

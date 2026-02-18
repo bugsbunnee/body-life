@@ -12,6 +12,10 @@ interface Query extends PaginationQuery {
    field?: string;
 }
 
+interface DepartmentQuery {
+   name?: string;
+}
+
 interface DateRangeQuery {
    startDate: Date;
    endDate: Date;
@@ -21,6 +25,15 @@ interface FirstTimerQuery {
    status?: string;
    preferredContactMethod?: string;
    assignedTo?: string;
+}
+
+interface InventoryQuery {
+   search?: string;
+   department?: string;
+   datePurchasedStart?: Date;
+   datePurchasedEnd?: Date;
+   minPrice?: number;
+   maxPrice?: number;
 }
 
 interface PrayerCellQuery {
@@ -44,10 +57,14 @@ interface QueryStore {
    dateRangeQuery: DateRangeQuery;
    firstTimerQuery: FirstTimerQuery;
    prayerCellQuery: PrayerCellQuery;
+   departmentQuery: DepartmentQuery;
+   inventoryQuery: InventoryQuery;
    userQuery: UserQuery;
    resetQuery: () => void;
    onSetSearch: (search: string) => void;
    onSetFirstTimer: (firstTimer: FirstTimerQuery) => void;
+   onSetDepartment: (department: DepartmentQuery) => void;
+   onSetInventory: (inventory: InventoryQuery) => void;
    onSetPrayerCell: (prayerCell: PrayerCellQuery) => void;
    onSetUser: (user: UserQuery) => void;
    onSetDateRange: (dateRange: DateRangeQuery) => void;
@@ -67,9 +84,13 @@ const useQueryStore = create<QueryStore>((set) => ({
    },
    firstTimerQuery: {},
    prayerCellQuery: {},
+   departmentQuery: {},
+   inventoryQuery: { minPrice: 0, maxPrice: 6_000_000 },
    userQuery: {},
-   resetQuery: () => set(() => ({ query: {}, firstTimerQuery: {}, prayerCellQuery: {}, userQuery: {} })),
+   resetQuery: () => set(() => ({ query: {}, firstTimerQuery: {}, prayerCellQuery: {}, userQuery: {}, inventoryQuery: { minPrice: 0, maxPrice: 6_000_000 }, departmentQuery: {} })),
    onSetPrayerCell: (prayerCell) => set((store) => ({ prayerCellQuery: { ...store.prayerCellQuery, ...prayerCell } })),
+   onSetInventory: (inventory) => set((store) => ({ inventoryQuery: { ...store.inventoryQuery, ...inventory } })),
+   onSetDepartment: (department) => set((store) => ({ departmentQuery: { ...store.departmentQuery, ...department } })),
    onSetUser: (user) => set((store) => ({ userQuery: { ...store.userQuery, ...user } })),
    onSetField: (field) => set((store) => ({ query: { ...store.query, field } })),
    onSetDateRange: (dateRange) => set((store) => ({ dateRangeQuery: { ...store.dateRangeQuery, ...dateRange } })),

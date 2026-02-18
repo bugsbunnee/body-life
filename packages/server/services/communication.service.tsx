@@ -5,11 +5,13 @@ import axios from 'axios';
 import summarizePrompt from '../llm/prompts/summarize-message.txt';
 import logger from './logger.service';
 
+import FollowUpAssignmentEmail from '../infrastructure/emails/follow-up-assignment';
 import NewsletterEmail from '../infrastructure/emails/newsletter';
 import WelcomeEmail from '../infrastructure/emails/welcome';
 
 import type { IMessage, IMessageWithId } from '../infrastructure/database/models/message.model';
 import type { IUser } from '../infrastructure/database/models/user.model';
+import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 
 import { announcementRepository } from '../repositories/announcement.repository';
 import { messageRepository } from '../repositories/message.repository';
@@ -18,8 +20,6 @@ import { userRepository } from '../repositories/user.repository';
 import { emailService } from './email.service';
 import { llmClient } from '../llm/client';
 import { lib } from '../utils/lib';
-import FollowUpAssignmentEmail from '../infrastructure/emails/follow-up-assignment';
-import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 
 interface MessageTranscriptResponse {
    search_parameters: {

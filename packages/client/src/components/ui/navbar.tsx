@@ -24,13 +24,13 @@ const NavBar: React.FC = () => {
    };
 
    return (
-      <div className="h-dvh bg-gray-light p-[3rem] flex flex-col border-r border-b-border">
+      <div className="h-dvh bg-gray-light overflow-y-auto p-8 flex flex-col border-r border-b-border">
          <img src={logo} alt="RCNLagos Island" className="w-[6.06rem] h-[3.56rem] object-contain" />
 
          <div className="mt-3 flex-1">
             {sections.map((section) => (
                <React.Fragment key={section.label + section.path}>
-                  <div className="text-lg font-medium uppercase text-gray-500 tracking-wide mt-4">{section.label}</div>
+                  <div className="text-md font-medium uppercase text-gray-500 tracking-wide mt-4">{section.label}</div>
 
                   <ul className="mt-[2rem]">
                      {section.subroutes.map((route) => (
@@ -40,7 +40,7 @@ const NavBar: React.FC = () => {
                            whileHover={{ scale: 1.1 }}
                            transition={{ duration: 0.3, ease: [0, 0.71, 0.2, 1.01] }}
                            className={clsx({
-                              'rounded-lg flex items-center gap-x-4 py-2.5 px-[1.31rem] mb-8 text-lg font-medium': true,
+                              'rounded-lg flex items-center gap-x-4 p-4 mb-6 text-sm uppercase tracking-wide font-medium': true,
                               'bg-blue-light text-main border border-[rgba(2, 42, 104, 0.05)]': location.pathname === route.path,
                               'text-gray-500': location.pathname !== route.path,
                            })}
@@ -53,7 +53,7 @@ const NavBar: React.FC = () => {
                </React.Fragment>
             ))}
 
-            <button onClick={handleLogout} className="rounded-lg flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-lg font-medium text-red-500">
+            <button onClick={handleLogout} className="rounded-lg flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-sm uppercase font-medium text-red-500">
                <CiLogout fontSize="1.25rem" />
                <div>Logout</div>
             </button>

@@ -1,16 +1,20 @@
-import type { Route } from './entities';
-import { ChurchIcon, Cross, NewspaperIcon } from 'lucide-react';
+import _ from 'lodash';
+
+import { ChurchIcon, Cross, GroupIcon, NewspaperIcon, ToolCaseIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { HiOutlineCog } from 'react-icons/hi';
 import { MdOutlineContactSupport, MdReport } from 'react-icons/md';
-import _ from 'lodash';
+
+import type { Route } from './entities';
 
 export const APP_ROUTES = {
    AUTH: '/auth',
    DASHBOARD: '/dashboard',
+   DEPARTMENT: '/dashboard/departments',
    FIRST_TIMERS: '/dashboard/first-timers',
    FORGOT_PASSWORD: '/forgot-password',
+   INVENTORY: '/dashboard/inventory',
    MESSAGES: '/dashboard/messages',
    MEMBERS: '/dashboard/members',
    PRAYER_CELLS: '/dashboard/prayer-cells',
@@ -29,6 +33,21 @@ export const sections: Route[] = [
             Icon: CiHome,
          },
          {
+            path: APP_ROUTES.DEPARTMENT,
+            label: 'Departments',
+            Icon: GroupIcon,
+         },
+         {
+            path: APP_ROUTES.INVENTORY,
+            label: 'Inventory',
+            Icon: ToolCaseIcon,
+         },
+         {
+            path: APP_ROUTES.PRAYER_CELLS,
+            label: 'Prayer Cells',
+            Icon: ChurchIcon,
+         },
+         {
             path: APP_ROUTES.MEMBERS,
             label: 'Members',
             Icon: BsFillPeopleFill,
@@ -37,11 +56,6 @@ export const sections: Route[] = [
             path: APP_ROUTES.FIRST_TIMERS,
             label: 'First Timers',
             Icon: NewspaperIcon,
-         },
-         {
-            path: APP_ROUTES.PRAYER_CELLS,
-            label: 'Prayer Cells',
-            Icon: ChurchIcon,
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,

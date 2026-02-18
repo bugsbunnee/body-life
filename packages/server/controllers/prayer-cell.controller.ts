@@ -1,10 +1,10 @@
-import _, { create } from 'lodash';
-
+import _ from 'lodash';
 import type { Request, Response } from 'express';
+
 import { StatusCodes } from 'http-status-codes';
+import { PrayerCellQuerySchema } from '../infrastructure/database/validators/prayer-cell.validator';
 
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
-import { PrayerCellQuerySchema } from '../infrastructure/database/validators/prayer-cell.validator';
 import { userRepository } from '../repositories/user.repository';
 
 export const prayerCellController = {
@@ -27,9 +27,9 @@ export const prayerCellController = {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Leader not found' });
          }
 
-         const createdPrayerCell = await prayerCellRepository.createPrayerCell(req.body);
+         const prayerCell = await prayerCellRepository.createPrayerCell(req.body);
 
-         res.status(StatusCodes.CREATED).json({ data: createdPrayerCell });
+         res.status(StatusCodes.CREATED).json({ data: prayerCell });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create prayer cell' });
       }

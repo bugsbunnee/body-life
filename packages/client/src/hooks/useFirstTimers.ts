@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { formatDate } from 'date-fns';
@@ -7,6 +5,7 @@ import { formatDate } from 'date-fns';
 import type { ApiResponse, FirstTimer } from '@/utils/entities';
 
 import useQueryStore from '@/store/query';
+import http from '@/services/http.service';
 
 const useFirstTimers = () => {
    const { firstTimerQuery, dateRangeQuery } = useQueryStore();
@@ -21,7 +20,7 @@ const useFirstTimers = () => {
 
    return useQuery({
       queryKey: ['first-timers', query],
-      queryFn: () => axios.get<ApiResponse<FirstTimer>>('/api/followup', { params: query }).then((response) => response.data),
+      queryFn: () => http.get<ApiResponse<FirstTimer>>('/api/followup', { params: query }).then((response) => response.data),
       initialData: {
          data: [],
          pagination: {

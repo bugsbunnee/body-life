@@ -26,6 +26,23 @@ export interface AuthResponse {
    admin: Admin;
 }
 
+export interface Department {
+   _id: string;
+   name: string;
+   hod: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
+   totalMembership: number;
+}
+
+export interface InventoryItem {
+   _id: string;
+   name: string;
+   quantity: number;
+   department: Pick<Department, '_id' | 'name'>;
+   unitPrice: number;
+   datePurchased: Date;
+   description: string;
+}
+
 export interface FollowUp {
    _id: string;
    status: string;

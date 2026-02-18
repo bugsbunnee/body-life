@@ -1,12 +1,18 @@
 import axios from 'axios';
+import { getUser } from './user.service';
 
 const http = axios.create({
    baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
-const signRequests = (token: string) => {
-   http.defaults.headers.common['x-auth-token'] = token;
-};
+http.interceptors.request.use((config) => {
+   const user = getUser();
 
-export { signRequests };
+   if (user) {
+      config.headers['x-auth-token'] = user.token;
+   }
+
+   return config;
+});
+
 export default http;

@@ -1,5 +1,5 @@
 import type React from 'react';
-import axios from 'axios';
+import http from '@/services/http.service';
 
 import { format } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
@@ -35,7 +35,7 @@ const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer 
    });
 
    const mutation = useMutation({
-      mutationFn: (firstTimer: IFirstTimerUpdate) => axios.put('/api/followup/' + firstTimerId, firstTimer),
+      mutationFn: (firstTimer: IFirstTimerUpdate) => http.put('/api/followup/' + firstTimerId, firstTimer),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
 

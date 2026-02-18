@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import http from '@/services/http.service';
 
 import { HiSparkles } from 'react-icons/hi';
 import { useMutation } from '@tanstack/react-query';
@@ -25,7 +25,7 @@ const MessageSummary: React.FC<Props> = ({ message }) => {
    const [isMessageEditVisible, setMessageEditVisible] = useState(false);
 
    const mutation = useMutation({
-      mutationFn: () => axios.post<{ data: ISummary }>(`/api/message/${message._id}/summarize`),
+      mutationFn: () => http.post<{ data: ISummary }>(`/api/message/${message._id}/summarize`),
       onSuccess: () => window.location.reload(),
       onError: (error) => toast('Could not add the messsage', { description: getErrorMessage(error) }),
    });

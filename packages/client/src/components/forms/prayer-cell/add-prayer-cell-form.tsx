@@ -1,5 +1,5 @@
 import type React from 'react';
-import axios from 'axios';
+import http from '@/services/http.service';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -31,7 +31,7 @@ const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
    });
 
    const mutation = useMutation({
-      mutationFn: (prayerCell: IPrayerCellCreate) => axios.post('/api/prayer-cell', prayerCell),
+      mutationFn: (prayerCell: IPrayerCellCreate) => http.post('/api/prayer-cell', prayerCell),
       onSuccess: () => {
          toast('Success!', { description: 'Added the prayer cell successfully' });
 

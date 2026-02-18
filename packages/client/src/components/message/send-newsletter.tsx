@@ -1,5 +1,5 @@
 import type React from 'react';
-import axios from 'axios';
+import http from '@/services/http.service';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -14,7 +14,7 @@ interface Props {
 
 const SendNewsLetter: React.FC<Props> = ({ message }) => {
    const mutation = useMutation({
-      mutationFn: () => axios.post(`/api/message/${message.id}/newsletter`),
+      mutationFn: () => http.post(`/api/message/${message._id}/newsletter`),
       onSuccess: () => toast('Sent out newsletter successfully!'),
       onError: () => toast('Something failed while sending out the newsletter'),
    });

@@ -1,5 +1,4 @@
 import type React from 'react';
-import axios from 'axios';
 
 import { format } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
@@ -10,6 +9,8 @@ import { CalendarIcon } from 'lucide-react';
 import { FaSpinner } from 'react-icons/fa';
 
 import Conditional from '@/components/common/conditional';
+
+import http from '@/services/http.service';
 import useUsers from '@/hooks/useUsers';
 import useServiceReports from '@/hooks/useServiceReports';
 
@@ -25,7 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 import { userSchema, type IUser } from './user-schema';
 import { getErrorMessage } from '@/lib/utils';
-import { CONTACT_METHODS } from '@/utils/constants';
+import { CONTACT_METHODS, GENDERS, MARITAL_STATUS } from '@/utils/constants';
 
 type Props = { onAddUser: () => void };
 
@@ -38,7 +39,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
    });
 
    const mutation = useMutation({
-      mutationFn: (user: IUser) => axios.post('/api/user', user),
+      mutationFn: (user: IUser) => http.post('/api/user', user),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
 

@@ -94,7 +94,7 @@ const PrayerCellsPage: React.FC = () => {
 
                   <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
                      <DropdownMenuItem onClick={() => setSelectedPrayerCell(row.original)} className="capitalize p-3">
-                        View First Timer Details
+                        View Prayer Cell Details
                      </DropdownMenuItem>
                   </DropdownMenuContent>
                </DropdownMenu>

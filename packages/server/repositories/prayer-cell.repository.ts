@@ -42,7 +42,7 @@ export const prayerCellRepository = {
       const [prayerCells, total] = await Promise.all([
          PrayerCell.find(filter)
             .populate('totalMembership')
-            .populate('leader')
+            .populate({ path: 'leader', select: '_id firstName lastName email' })
             .skip(pagination.offset)
             .limit(pagination.pageSize)
             .sort({ name: 1 })

@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import type { ApiResponse, PrayerCell } from '@/utils/entities';
+import type { ApiResponse, Department } from '@/utils/entities';
 
 import useQueryStore from '@/store/query';
 import http from '@/services/http.service';
 
-const usePrayerCells = () => {
-   const { prayerCellQuery } = useQueryStore();
+const useDepartments = () => {
+   const { departmentQuery } = useQueryStore();
 
    return useQuery({
-      queryKey: ['prayer-cells', prayerCellQuery],
-      queryFn: () => http.get<{ data: ApiResponse<PrayerCell> }>('/api/prayer-cell', { params: prayerCellQuery }).then((response) => response.data),
+      queryKey: ['departments', departmentQuery],
+      queryFn: () => http.get<{ data: ApiResponse<Department> }>('/api/department', { params: departmentQuery }).then((response) => response.data),
       initialData: {
          data: {
             data: [],
@@ -24,4 +24,4 @@ const usePrayerCells = () => {
    });
 };
 
-export default usePrayerCells;
+export default useDepartments;

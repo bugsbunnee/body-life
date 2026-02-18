@@ -2,7 +2,7 @@ import type React from 'react';
 
 import Conditional from '@/components/common/conditional';
 import MDEditor from '@uiw/react-md-editor';
-import axios from 'axios';
+import http from '@/services/http.service';
 
 import { useMutation } from '@tanstack/react-query';
 import { FaSpinner } from 'react-icons/fa';
@@ -32,7 +32,7 @@ const UpdateMessageSummaryForm: React.FC<Props> = ({ content, messageId }) => {
    });
 
    const mutation = useMutation({
-      mutationFn: (summary: ISummary) => axios.put(`/api/message/${messageId}/summary-cleanup`, { content: summary.content }),
+      mutationFn: (summary: ISummary) => http.put(`/api/message/${messageId}/summary-cleanup`, { content: summary.content }),
       onError: (error) => toast('Could not update the message summary', { description: getErrorMessage(error), className: 'text-dark' }),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
