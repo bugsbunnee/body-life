@@ -13,7 +13,7 @@ export const userSchema = z
       dateOfBirth: z.date().max(new Date()),
       phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
 
-      isFirstTimer: z.boolean().default(false),
+      isFirstTimer: z.boolean(),
       assignTo: z.string().optional(),
       notes: z.string().optional(),
       preferredContactMethod: z.string().optional(),

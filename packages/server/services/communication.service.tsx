@@ -5,6 +5,7 @@ import axios from 'axios';
 import summarizePrompt from '../llm/prompts/summarize-message.txt';
 import logger from './logger.service';
 
+import HappyBirthdayEmail from '../infrastructure/emails/happy-birthday';
 import FollowUpAssignmentEmail from '../infrastructure/emails/follow-up-assignment';
 import NewsletterEmail from '../infrastructure/emails/newsletter';
 import WelcomeEmail from '../infrastructure/emails/welcome';
@@ -52,6 +53,22 @@ export const communicationService = {
       const transcript = response.data.transcripts.map((caption) => caption.text).join('\n\n');
 
       return transcript;
+   },
+
+   async sendOutBirthdayEmail(users: IUser[]) {
+      try {
+         const batch = users.map((user) => ({
+            to: user.email,
+            subject: `Happy Birthday, ${user.firstName}!`,
+            react: <HappyBirthdayEmail userFirstName={user.firstName} />,
+         }));
+
+         logger.info(`Sending birthday emails to ${batch.length} users`);
+
+         await emailService.sendBatchEmails(batch);
+      } catch (error) {
+         logger.error('Failed to send birthday email...', error);
+      }
    },
 
    async sendOutWelcomeEmail(user: IUser) {

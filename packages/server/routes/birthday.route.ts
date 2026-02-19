@@ -4,6 +4,6 @@ import { birthdayController } from '../controllers/birthday.controller';
 
 const router = express.Router();
 
-router.post('/', birthdayController.populateBirthdayReminders);
+router.post('/', birthdayController.sendDailyBirthdayReminders);
 
 export default router;

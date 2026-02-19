@@ -1,21 +1,18 @@
 import type { Request, Response } from 'express';
+import type { Pagination } from '../infrastructure/lib/entities';
+
 import { userRepository } from '../repositories/user.repository';
-import { googleService } from '../services/google.service';
+import { communicationService } from '../services/communication.service';
 
 export const birthdayController = {
-   async populateBirthdayReminders(req: Request, res: Response) {
-      const user = await userRepository.getOneUser({
-         email: 'marcel.chukwuma00@gmail.com',
-         phoneNumber: '08142317489',
-      });
+   async sendDailyBirthdayReminders(req: Request, res: Response) {
+      const pagination: Pagination = { offset: 0, pageNumber: 1, pageSize: 1_000_000 };
+      const users = await userRepository.getUsersWithBirthdayInRange(pagination, { startDate: new Date(), endDate: new Date() });
 
-      if (user) {
-         const response = await googleService.scheduleBirthdayForUser(user);
-         res.json({ response, message: 'Birthdays populated successfully!' });
-
-         return;
+      if (users.data.length > 0) {
+         await communicationService.sendOutBirthdayEmail(users.data);
       }
 
-      res.json({ message: 'Birthdays populated successfully!' });
+      res.json({ message: 'Birthday reminders sent successfully!' });
    },
 };

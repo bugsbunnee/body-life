@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import _, { min } from 'lodash';
+import _ from 'lodash';
 
 import { formatDate } from 'date-fns';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
