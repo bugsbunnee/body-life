@@ -2,30 +2,23 @@ import moment from 'moment';
 import mongoose from 'mongoose';
 
 import type { QueryFilter } from 'mongoose';
-import { User, type IUser } from '../infrastructure/database/models/user.model';
-
 import type { IUserQuery } from '../infrastructure/database/validators/user.validator';
 import type { Pagination } from '../infrastructure/lib/entities';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
+
+import { User, type IUser } from '../infrastructure/database/models/user.model';
 
 export const userRepository = {
    buildMessageFilterQuery(query: IUserQuery) {
       const filter: QueryFilter<IUser> = {};
 
-      if (query.firstName) {
-         filter.firstName = { $regex: query.firstName, $options: 'i' };
-      }
-
-      if (query.lastName) {
-         filter.lastName = { $regex: query.lastName, $options: 'i' };
-      }
-
-      if (query.email) {
-         filter.email = { $regex: query.email, $options: 'i' };
-      }
-
-      if (query.address) {
-         filter.address = { $regex: query.address, $options: 'i' };
+      if (query.search) {
+         filter.$or = [
+            { firstName: { $regex: query.search, $options: 'i' } },
+            { lastName: { $regex: query.search, $options: 'i' } },
+            { email: { $regex: query.search, $options: 'i' } },
+            { address: { $regex: query.search, $options: 'i' } },
+         ];
       }
 
       if (query.phoneNumber) {
@@ -40,6 +33,11 @@ export const userRepository = {
          filter.maritalStatus = query.maritalStatus;
       }
 
+      if (query.workforce) {
+         const isWorkforce = query.workforce.toLowerCase() === 'yes';
+         filter.department = isWorkforce ? { $exists: true, $ne: null } : { $in: [null, undefined as any] };
+      }
+
       if (query.dateOfBirthStart || query.dateOfBirthEnd) {
          filter.dateOfBirth = {};
 
@@ -49,18 +47,6 @@ export const userRepository = {
 
          if (query.dateOfBirthEnd) {
             filter.dateOfBirth.$lte = moment(query.dateOfBirthEnd).endOf('day').toDate();
-         }
-      }
-
-      if (query.dateJoinedStart || query.dateJoinedEnd) {
-         filter.dateJoined = {};
-
-         if (query.dateJoinedStart) {
-            filter.dateJoined.$gte = moment(query.dateJoinedStart).startOf('day').toDate();
-         }
-
-         if (query.dateJoinedEnd) {
-            filter.dateJoined.$lte = moment(query.dateJoinedEnd).endOf('day').toDate();
          }
       }
 

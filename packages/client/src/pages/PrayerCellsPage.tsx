@@ -26,7 +26,7 @@ import AddPrayerCellForm from '@/components/forms/prayer-cell/add-prayer-cell-fo
 const PrayerCellsPage: React.FC = () => {
    const { data: users } = useUsers();
    const { data, isFetching, refetch } = usePrayerCells();
-   const { prayerCellQuery, resetQuery, onSetPrayerCell, onSetPageNumber } = useQueryStore();
+   const { prayerCellQuery, resetQuery, onSetPrayerCell } = useQueryStore();
 
    const [isAddPrayerCell, setIsAddPrayerCell] = useState<boolean>(false);
    const [selectedPrayerCell, setSelectedPrayerCell] = useState<PrayerCell | null>(null);
@@ -246,7 +246,15 @@ const PrayerCellsPage: React.FC = () => {
          </div>
 
          <div className="border-r border-r-border">
-            <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
+            <DataTable
+               onSizeChange={(size) => onSetPrayerCell({ pageSize: size })}
+               onPageChange={(page) => onSetPrayerCell({ pageNumber: page })}
+               filtering={false}
+               pagination={data.data.pagination}
+               loading={isFetching}
+               columns={columns}
+               data={data.data.data}
+            />
          </div>
       </React.Fragment>
    );

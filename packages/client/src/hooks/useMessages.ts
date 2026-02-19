@@ -5,11 +5,11 @@ import type { ApiResponse, IMessage } from '@/utils/entities';
 import { useQuery } from '@tanstack/react-query';
 
 const useMessages = () => {
-   const { query } = useQueryStore();
+   const { messageQuery } = useQueryStore();
 
    return useQuery({
-      queryKey: ['message', query],
-      queryFn: () => http.get<{ data: ApiResponse<IMessage> }>('/api/message', { params: query }).then((response) => response.data),
+      queryKey: ['message', messageQuery],
+      queryFn: () => http.get<{ data: ApiResponse<IMessage> }>('/api/message', { params: messageQuery }).then((response) => response.data),
       initialData: {
          data: {
             data: [],

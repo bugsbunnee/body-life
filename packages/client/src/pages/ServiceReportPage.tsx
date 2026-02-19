@@ -26,7 +26,7 @@ const ServiceReportPage: React.FC = () => {
    const [selectedReport, setSelectedReport] = useState<ServiceReport | null>(null);
 
    const { isFetching, data, refetch } = useServiceReports();
-   const { dateRangeQuery, onSetDateRange, onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
+   const { serviceReportQuery, onSetSearch, onSetServiceReport, resetQuery } = useQueryStore();
 
    const handleReportAddition = () => {
       setAddReportVisible(false);
@@ -198,8 +198,8 @@ const ServiceReportPage: React.FC = () => {
 
             <div className="flex gap-x-4">
                <RangeDatePicker
-                  dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
-                  onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}
+                  dateRange={{ from: serviceReportQuery.startDate, to: serviceReportQuery.endDate }}
+                  onSelectRange={(range) => onSetServiceReport({ startDate: range.from!, endDate: range.to! })}
                />
 
                <Button
@@ -223,7 +223,15 @@ const ServiceReportPage: React.FC = () => {
             </div>
          </div>
 
-         <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.pagination} loading={isFetching} columns={columns} data={data.data} />
+         <DataTable
+            filtering={false}
+            onSizeChange={(size) => onSetServiceReport({ pageSize: size })}
+            onPageChange={(page) => onSetServiceReport({ pageNumber: page })}
+            pagination={data.pagination}
+            loading={isFetching}
+            columns={columns}
+            data={data.data}
+         />
       </>
    );
 };

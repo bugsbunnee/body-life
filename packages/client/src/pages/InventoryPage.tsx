@@ -32,7 +32,7 @@ import useInventory from '@/hooks/useInventory';
 const InventoryPage: React.FC = () => {
    const { data: departments } = useDepartments();
    const { data, isFetching, refetch } = useInventory();
-   const { inventoryQuery, resetQuery, onSetInventory, onSetPageNumber } = useQueryStore();
+   const { inventoryQuery, resetQuery, onSetInventory } = useQueryStore();
 
    const [localPrice, setLocalPrice] = useState({ minPrice: inventoryQuery.minPrice!, maxPrice: inventoryQuery.maxPrice! });
    const [isAddInventory, setIsAddInventory] = useState<boolean>(false);
@@ -270,7 +270,15 @@ const InventoryPage: React.FC = () => {
          </div>
 
          <div className="border-r border-r-border">
-            <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
+            <DataTable
+               filtering={false}
+               onSizeChange={(size) => onSetInventory({ pageSize: size })}
+               onPageChange={(page) => onSetInventory({ pageNumber: page })}
+               pagination={data.data.pagination}
+               loading={isFetching}
+               columns={columns}
+               data={data.data.data}
+            />
          </div>
       </React.Fragment>
    );

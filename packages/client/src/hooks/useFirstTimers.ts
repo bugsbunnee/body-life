@@ -1,26 +1,15 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { formatDate } from 'date-fns';
-
 import type { ApiResponse, FirstTimer } from '@/utils/entities';
 
 import useQueryStore from '@/store/query';
 import http from '@/services/http.service';
 
 const useFirstTimers = () => {
-   const { firstTimerQuery, dateRangeQuery } = useQueryStore();
-
-   const query = useMemo(() => {
-      return {
-         ...firstTimerQuery,
-         dateJoinedStart: formatDate(dateRangeQuery.startDate, 'yyyy-MM-dd'),
-         dateJoinedEnd: formatDate(dateRangeQuery.endDate, 'yyyy-MM-dd'),
-      };
-   }, [firstTimerQuery, dateRangeQuery]);
+   const { firstTimerQuery } = useQueryStore();
 
    return useQuery({
-      queryKey: ['first-timers', query],
-      queryFn: () => http.get<ApiResponse<FirstTimer>>('/api/followup', { params: query }).then((response) => response.data),
+      queryKey: ['first-timers', firstTimerQuery],
+      queryFn: () => http.get<ApiResponse<FirstTimer>>('/api/followup', { params: firstTimerQuery }).then((response) => response.data),
       initialData: {
          data: [],
          pagination: {

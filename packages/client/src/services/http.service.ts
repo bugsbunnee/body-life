@@ -1,5 +1,7 @@
-import axios from 'axios';
-import { getUser } from './user.service';
+import axios, { HttpStatusCode } from 'axios';
+
+import { getUser, logout } from './user.service';
+import { APP_ROUTES } from '@/utils/constants';
 
 const http = axios.create({
    baseURL: import.meta.env.VITE_APP_BASE_URL,
@@ -14,5 +16,17 @@ http.interceptors.request.use((config) => {
 
    return config;
 });
+
+http.interceptors.response.use(
+   (response) => response,
+   (error) => {
+      if (error.response && error.response.status === HttpStatusCode.Forbidden) {
+         logout();
+         window.location.href = APP_ROUTES.AUTH;
+      }
+
+      return Promise.reject(error);
+   }
+);
 
 export default http;

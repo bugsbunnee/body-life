@@ -4,11 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import useQueryStore from '@/store/query';
 
 const useServiceReports = () => {
-   const { dateRangeQuery } = useQueryStore();
+   const { serviceReportQuery } = useQueryStore();
 
    return useQuery({
-      queryKey: ['service-reports', dateRangeQuery],
-      queryFn: () => getServiceReports(dateRangeQuery.startDate, dateRangeQuery.endDate),
+      queryKey: ['service-reports', serviceReportQuery],
+      queryFn: () => getServiceReports(serviceReportQuery.startDate!, serviceReportQuery.endDate!),
       initialData: {
          data: [],
          pagination: {

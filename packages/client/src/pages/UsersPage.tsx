@@ -1,12 +1,12 @@
 import type React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
-import { DownloadCloudIcon, PlusIcon } from 'lucide-react';
+import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
+import { exportToExcel, getInitials } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { User } from '@/utils/entities';
-import { exportToExcel, getInitials } from '@/lib/utils';
 
 import AddUserForm from '@/components/forms/user/add-user-form';
 import Header from '@/components/common/header';
@@ -14,6 +14,7 @@ import Modal from '@/components/common/modal';
 import Summary from '@/components/common/summary';
 import SendMessageForm from '@/components/forms/message/send-message-form';
 
+import useDepartments from '@/hooks/useDepartments';
 import usePrayerCells from '@/hooks/usePrayerCells';
 import useUsers from '@/hooks/useUsers';
 import useQueryStore from '@/store/query';
@@ -23,9 +24,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/datatable';
-import { RangeDatePicker } from '@/components/ui/datepicker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { GENDERS, MARITAL_STATUS, OPTIONS } from '@/utils/constants';
 
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
@@ -33,8 +35,9 @@ const UsersPage: React.FC = () => {
 
    const { isFetching, data, refetch } = useUsers();
    const { data: prayerCells } = usePrayerCells();
+   const { data: departments } = useDepartments();
 
-   const { dateRangeQuery, userQuery, onSetDateRange, onSetSearch, onSetUser, onSetPageNumber, resetQuery } = useQueryStore();
+   const { userQuery, onSetUser, resetQuery } = useQueryStore();
 
    const handleMemberAddition = () => {
       setAddUserVisible(false);
@@ -58,7 +61,7 @@ const UsersPage: React.FC = () => {
    const columns = useMemo(() => {
       const columns: ColumnDef<User>[] = [
          {
-            accessorKey: 'createdAt',
+            accessorKey: 'dateOfBirth',
             header: ({ table }) => (
                <Checkbox
                   checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
@@ -105,6 +108,28 @@ const UsersPage: React.FC = () => {
             accessorKey: 'email',
             header: 'Email',
          },
+         {
+            accessorKey: 'createdAt',
+            header: '',
+            cell: ({ row }) => (
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                     <Button
+                        variant="outline"
+                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                     >
+                        <EllipsisVertical />
+                     </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                     <DropdownMenuItem onClick={() => setSelectedUser(row.original)} className="capitalize p-3">
+                        View Member Details
+                     </DropdownMenuItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            ),
+         },
       ];
 
       return columns;
@@ -116,7 +141,7 @@ const UsersPage: React.FC = () => {
 
    return (
       <>
-         <Header title="Members" onSearch={onSetSearch} />
+         <Header title="Members" onSearch={(search) => onSetUser({ search })} />
 
          <Modal onClose={() => setAddUserVisible(false)} title="Add Member" visible={isAddUserVisible}>
             <AddUserForm onAddUser={handleMemberAddition} />
@@ -126,7 +151,7 @@ const UsersPage: React.FC = () => {
             <Modal onClose={() => setSelectedUser(null)} title="Member Details" visible>
                <div className="grid grid-cols-2 gap-4">
                   <Summary
-                     title="General Information"
+                     title="Personal Information"
                      labels={[
                         {
                            key: 'First Name',
@@ -135,6 +160,20 @@ const UsersPage: React.FC = () => {
                         {
                            key: 'Last Name',
                            value: selectedUser.lastName,
+                        },
+                        {
+                           key: 'Gender',
+                           value: selectedUser.gender,
+                        },
+                     ]}
+                  />
+
+                  <Summary
+                     title="Contact Information"
+                     labels={[
+                        {
+                           key: 'Home Address',
+                           value: selectedUser.address,
                         },
                         {
                            key: 'Email Address',
@@ -148,11 +187,19 @@ const UsersPage: React.FC = () => {
                   />
 
                   <Summary
-                     title="Others"
+                     title="Additional Information"
                      labels={[
                         {
-                           key: 'Home Address',
-                           value: selectedUser.address,
+                           key: 'Marital Status',
+                           value: selectedUser.maritalStatus,
+                        },
+                        {
+                           key: 'Prayer Cell',
+                           value: selectedUser.prayerCell ? selectedUser.prayerCell.name : 'None',
+                        },
+                        {
+                           key: 'Department',
+                           value: selectedUser.department ? selectedUser.department.name : 'None',
                         },
                         {
                            key: 'Birthday',
@@ -194,11 +241,6 @@ const UsersPage: React.FC = () => {
                </div>
 
                <div className="flex gap-x-4">
-                  <RangeDatePicker
-                     dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
-                     onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}
-                  />
-
                   <Button
                      onClick={() => setAddUserVisible(true)}
                      variant="ghost"
@@ -220,7 +262,49 @@ const UsersPage: React.FC = () => {
                </div>
             </div>
 
-            <div className="p-6 border-b-border border-b flex items-center justify-between">
+            <div className="p-6 border-b-border border-b flex items-center justify-between gap-x-6">
+               <Select onValueChange={(workforce) => onSetUser({ workforce })} defaultValue={userQuery.workforce}>
+                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                     <SelectValue placeholder="Filter by workforce" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                     {OPTIONS.map((option) => (
+                        <SelectItem key={option.id} value={option.id}>
+                           {option.name}
+                        </SelectItem>
+                     ))}
+                  </SelectContent>
+               </Select>
+
+               <Select onValueChange={(gender) => onSetUser({ gender })} defaultValue={userQuery.gender}>
+                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                     <SelectValue placeholder="Filter by gender" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                     {GENDERS.map((gender) => (
+                        <SelectItem key={gender.id} value={gender.id}>
+                           {gender.name}
+                        </SelectItem>
+                     ))}
+                  </SelectContent>
+               </Select>
+
+               <Select onValueChange={(maritalStatus) => onSetUser({ maritalStatus })} defaultValue={userQuery.maritalStatus}>
+                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                     <SelectValue placeholder="Filter by marital status" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                     {MARITAL_STATUS.map((maritalStatus) => (
+                        <SelectItem key={maritalStatus.id} value={maritalStatus.id}>
+                           {maritalStatus.name}
+                        </SelectItem>
+                     ))}
+                  </SelectContent>
+               </Select>
+
                <Select onValueChange={(prayerCell) => onSetUser({ prayerCell })} defaultValue={userQuery.prayerCell}>
                   <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
                      <SelectValue placeholder="Filter by Prayer Cell" />
@@ -234,10 +318,32 @@ const UsersPage: React.FC = () => {
                      ))}
                   </SelectContent>
                </Select>
+
+               <Select onValueChange={(department) => onSetUser({ department })} defaultValue={userQuery.department}>
+                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                     <SelectValue placeholder="Filter by Department" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                     {departments.data.data.map((department) => (
+                        <SelectItem key={department._id} value={department._id}>
+                           {department.name}
+                        </SelectItem>
+                     ))}
+                  </SelectContent>
+               </Select>
             </div>
 
             <TabsContent value="account">
-               <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
+               <DataTable
+                  filtering={false}
+                  onSizeChange={(size) => onSetUser({ pageSize: size })}
+                  onPageChange={(page) => onSetUser({ pageNumber: page })}
+                  pagination={data.data.pagination}
+                  loading={isFetching}
+                  columns={columns}
+                  data={data.data.data}
+               />
             </TabsContent>
          </Tabs>
       </>

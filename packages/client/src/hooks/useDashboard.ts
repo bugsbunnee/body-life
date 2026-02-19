@@ -8,7 +8,7 @@ const useDashboard = () => {
 
    return useQuery({
       queryKey: ['dashboard', dateRangeQuery],
-      queryFn: () => getServiceOverview(dateRangeQuery.startDate, dateRangeQuery.endDate),
+      queryFn: () => getServiceOverview(dateRangeQuery.startDate!, dateRangeQuery.endDate!),
       initialData: {
          attendanceTrend: [],
          uncontactedFirstTimers: [],

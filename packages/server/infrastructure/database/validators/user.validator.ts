@@ -5,12 +5,10 @@ import { lib } from '../../../utils/lib';
 import { PhoneNumberSchema } from './base.validator';
 
 export const UserQuerySchema = z.object({
-   firstName: z.string().optional(),
-   lastName: z.string().optional(),
-   address: z.string().optional(),
-   email: z.string().optional(),
+   search: z.string().optional(),
    maritalStatus: z.string().optional(),
    gender: z.string().optional(),
+   workforce: z.string().optional(),
    dateOfBirthStart: z.coerce
       .date()
       .refine((value) => moment(value).isBefore(moment()), { error: 'Date of birth start must be in the past!' })

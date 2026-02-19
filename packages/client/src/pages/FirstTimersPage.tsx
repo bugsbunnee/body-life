@@ -31,7 +31,7 @@ import useUsers from '@/hooks/useUsers';
 const FirstTimersPage: React.FC = () => {
    const { data: users } = useUsers();
    const { data, isFetching, refetch } = useFirstTimers();
-   const { dateRangeQuery, firstTimerQuery, resetQuery, onSetDateRange, onSetFirstTimer, onSetPageNumber, onSetSearch } = useQueryStore();
+   const { firstTimerQuery, resetQuery, onSetFirstTimer, onSetSearch } = useQueryStore();
 
    const [selectedDataToView, setSelectedDataToView] = useState<FirstTimer | null>(null);
    const [selectedDataToUpdate, setSelectedDataToUpdate] = useState<FirstTimer | null>(null);
@@ -246,8 +246,8 @@ const FirstTimersPage: React.FC = () => {
 
             <div className="flex gap-x-4">
                <RangeDatePicker
-                  dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
-                  onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}
+                  dateRange={{ from: firstTimerQuery.dateJoinedStart, to: firstTimerQuery.dateJoinedEnd }}
+                  onSelectRange={(range) => onSetFirstTimer({ dateJoinedStart: range.from!, dateJoinedEnd: range.to! })}
                />
 
                <Button
@@ -311,7 +311,15 @@ const FirstTimersPage: React.FC = () => {
          </div>
 
          <div className="border-r border-r-border">
-            <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.pagination} loading={isFetching} columns={columns} data={data.data} />
+            <DataTable
+               filtering={false}
+               onSizeChange={(size) => onSetFirstTimer({ pageSize: size })}
+               onPageChange={(page) => onSetFirstTimer({ pageNumber: page })}
+               pagination={data.pagination}
+               loading={isFetching}
+               columns={columns}
+               data={data.data}
+            />
          </div>
       </React.Fragment>
    );

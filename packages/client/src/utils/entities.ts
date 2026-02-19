@@ -146,8 +146,11 @@ export interface User {
    phoneNumber: string;
    address: string;
    dateOfBirth: Date;
+   gender: string;
+   maritalStatus: string;
+   department?: Pick<Department, '_id' | 'name'> | null;
+   prayerCell?: Pick<PrayerCell, '_id' | 'name'>;
    isFirstTimer: boolean;
-   prayerCell: Pick<PrayerCell, '_id' | 'name'>;
    createdAt: Date;
    updatedAt: Date;
    notes: string;

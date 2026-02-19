@@ -4,7 +4,7 @@ import { ChurchIcon, Cross, GroupIcon, NewspaperIcon, ToolCaseIcon } from 'lucid
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { HiOutlineCog } from 'react-icons/hi';
-import { MdOutlineContactSupport, MdReport } from 'react-icons/md';
+import { MdReport } from 'react-icons/md';
 
 import type { Route } from './entities';
 
@@ -80,17 +80,6 @@ export const sections: Route[] = [
          },
       ],
    },
-   {
-      path: 'none',
-      label: 'Help',
-      subroutes: [
-         {
-            path: '/support',
-            label: 'Support',
-            Icon: MdOutlineContactSupport,
-         },
-      ],
-   },
 ];
 
 export const CONTACT_METHODS = [
@@ -124,6 +113,17 @@ export const GENDERS = [
    {
       id: 'Female',
       name: 'Female',
+   },
+];
+
+export const OPTIONS = [
+   {
+      id: 'Yes',
+      name: 'Yes',
+   },
+   {
+      id: 'No',
+      name: 'No',
    },
 ];
 

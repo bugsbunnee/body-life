@@ -22,7 +22,7 @@ import useQueryStore from '@/store/query';
 
 const DepartmentPage: React.FC = () => {
    const { data, isFetching, refetch } = useDepartments();
-   const { resetQuery, onSetDepartment, onSetPageNumber } = useQueryStore();
+   const { resetQuery, onSetDepartment } = useQueryStore();
 
    const [isAddDepartment, setIsAddDepartment] = useState<boolean>(false);
    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
@@ -169,7 +169,15 @@ const DepartmentPage: React.FC = () => {
          </div>
 
          <div className="border-r border-r-border">
-            <DataTable filtering={false} onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
+            <DataTable
+               filtering={false}
+               onSizeChange={(size) => onSetDepartment({ pageSize: size })}
+               onPageChange={(page) => onSetDepartment({ pageNumber: page })}
+               pagination={data.data.pagination}
+               loading={isFetching}
+               columns={columns}
+               data={data.data.data}
+            />
          </div>
       </React.Fragment>
    );

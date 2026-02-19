@@ -1,11 +1,12 @@
 import _ from 'lodash';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { type PaginationProps } from '@/utils/entities';
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Skeleton } from './skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -18,6 +19,7 @@ import useQueryStore from '@/store/query';
 
 interface DataTableProps<TData, TValue> {
    onPageChange: (page: number) => void;
+   onSizeChange: (size: number) => void;
    columns: ColumnDef<TData, TValue>[];
    data: TData[];
    pagination: PaginationProps;
@@ -25,7 +27,7 @@ interface DataTableProps<TData, TValue> {
    filtering?: boolean;
 }
 
-export function DataTable<TData, TValue>({ columns, data, loading, pagination, filtering = true, onPageChange }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, loading, pagination, filtering = true, onPageChange, onSizeChange }: DataTableProps<TData, TValue>) {
    const { query, onSetSearch, onSetField } = useQueryStore();
    const { getAllColumns, getHeaderGroups, getRowModel } = useReactTable({
       data,
@@ -35,6 +37,12 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
 
    const [searchValue, setSearchValue] = useState('');
    const [isPending, startTransition] = useTransition();
+
+   const rows = getRowModel().rows ?? [];
+
+   const isFetching = useMemo(() => {
+      return loading || isPending;
+   }, [loading, isPending]);
 
    useEffect(() => {
       const timeout = setTimeout(() => {
@@ -122,9 +130,10 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
                      </TableRow>
                   ))}
                </TableHeader>
+
                <TableBody>
-                  {loading || isPending ? (
-                     _.range(1, 5).map((fill) => (
+                  <Conditional visible={isFetching}>
+                     {_.range(1, 5).map((fill) => (
                         <TableRow key={fill} className="border-b-0">
                            {columns.map((_, index) => (
                               <TableCell key={index} className="p-6">
@@ -132,57 +141,81 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
                               </TableCell>
                            ))}
                         </TableRow>
-                     ))
-                  ) : getRowModel().rows?.length ? (
-                     getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} className="border-b-0" data-state={row.getIsSelected() && 'selected'}>
-                           {row.getVisibleCells().map((cell) => (
-                              <TableCell key={cell.id} className="py-8 px-6 text-gray-neutral">
-                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              </TableCell>
-                           ))}
+                     ))}
+                  </Conditional>
+
+                  <Conditional visible={!isFetching}>
+                     <Conditional visible={rows.length > 0}>
+                        {rows.map((row) => (
+                           <TableRow key={row.id} className="border-b-0" data-state={row.getIsSelected() && 'selected'}>
+                              {row.getVisibleCells().map((cell) => (
+                                 <TableCell key={cell.id} className="py-8 px-6 text-gray-neutral">
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                 </TableCell>
+                              ))}
+                           </TableRow>
+                        ))}
+                     </Conditional>
+
+                     <Conditional visible={rows.length === 0}>
+                        <TableRow className="border-none border-b-0">
+                           <TableCell colSpan={columns.length} className="h-24 text-center border-b-0">
+                              No results.
+                           </TableCell>
                         </TableRow>
-                     ))
-                  ) : (
-                     <TableRow className="border-none border-b-0">
-                        <TableCell colSpan={columns.length} className="h-24 text-center border-b-0">
-                           No results.
-                        </TableCell>
-                     </TableRow>
-                  )}
+                     </Conditional>
+                  </Conditional>
                </TableBody>
             </Table>
 
-            <Pagination className="pb-6">
-               <PaginationContent>
-                  <PaginationItem>
-                     <PaginationPrevious href="#" data-disabled={pagination.pageNumber === 1} className="data-[disabled=true]:opacity-25" onClick={() => onPageChange(1)} />
-                  </PaginationItem>
+            <div className="items-center justify-between flex p-4 border-y border-y-border">
+               <Select onValueChange={(pageSize) => onSizeChange(parseInt(pageSize))} defaultValue={pagination.pageSize.toString()}>
+                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg max-w-52 border border-border px-4 shadow-none w-full">
+                     <SelectValue placeholder="Select Rows to View" />
+                  </SelectTrigger>
 
-                  {_.range(1, pagination.totalPages + 1).map((page) => (
-                     <PaginationItem key={page}>
-                        <PaginationLink href="#" onClick={() => onPageChange(page)} isActive={page === pagination.pageNumber}>
-                           {page}
-                        </PaginationLink>
-                     </PaginationItem>
-                  ))}
+                  <SelectContent>
+                     {_.range(1, 200, 9).map((size) => (
+                        <SelectItem key={size} value={size.toString()}>
+                           {size}
+                        </SelectItem>
+                     ))}
+                  </SelectContent>
+               </Select>
 
-                  {pagination.totalPages > 2 && (
-                     <PaginationItem>
-                        <PaginationEllipsis />
-                     </PaginationItem>
-                  )}
+               <div>
+                  <Pagination className="pb-6 mt-4 max-w-52">
+                     <PaginationContent>
+                        <PaginationItem>
+                           <PaginationPrevious href="#" data-disabled={pagination.pageNumber === 1} className="data-[disabled=true]:opacity-25" onClick={() => onPageChange(1)} />
+                        </PaginationItem>
 
-                  <PaginationItem>
-                     <PaginationNext
-                        href="#"
-                        data-disabled={pagination.pageNumber === pagination.totalPages}
-                        className="data-[disabled=true]:opacity-25"
-                        onClick={() => onPageChange(pagination.totalPages)}
-                     />
-                  </PaginationItem>
-               </PaginationContent>
-            </Pagination>
+                        {_.range(1, pagination.totalPages + 1).map((page) => (
+                           <PaginationItem key={page}>
+                              <PaginationLink href="#" onClick={() => onPageChange(page)} isActive={page === pagination.pageNumber}>
+                                 {page}
+                              </PaginationLink>
+                           </PaginationItem>
+                        ))}
+
+                        {pagination.totalPages > 2 && (
+                           <PaginationItem>
+                              <PaginationEllipsis />
+                           </PaginationItem>
+                        )}
+
+                        <PaginationItem>
+                           <PaginationNext
+                              href="#"
+                              data-disabled={pagination.pageNumber === pagination.totalPages}
+                              className="data-[disabled=true]:opacity-25"
+                              onClick={() => onPageChange(pagination.totalPages)}
+                           />
+                        </PaginationItem>
+                     </PaginationContent>
+                  </Pagination>
+               </div>
+            </div>
          </div>
       </>
    );

@@ -5,6 +5,8 @@ import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
+import { exportToExcel } from '@/lib/utils';
+
 import type { ColumnDef } from '@tanstack/react-table';
 import type { IMessage } from '@/utils/entities';
 
@@ -23,14 +25,13 @@ import { RangeDatePicker } from '@/components/ui/datepicker';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { exportToExcel } from '@/lib/utils';
 
 const MessagesPage: React.FC = () => {
    const [isAddMessageVisible, setAddMessagesVisible] = useState(false);
    const [selectedMessage, setSelectedMessage] = useState<IMessage | null>(null);
 
    const { isFetching, data, refetch } = useMessages();
-   const { dateRangeQuery, onSetDateRange, onSetSearch, onSetPageNumber, resetQuery } = useQueryStore();
+   const { messageQuery, onSetMessage, resetQuery } = useQueryStore();
 
    const handleMessageddition = () => {
       setAddMessagesVisible(false);
@@ -130,7 +131,7 @@ const MessagesPage: React.FC = () => {
 
    return (
       <>
-         <Header title="Messages" onSearch={onSetSearch} />
+         <Header title="Messages" onSearch={(title) => onSetMessage({ title })} />
 
          <Modal onClose={() => setAddMessagesVisible(false)} title="Upload Message" visible={isAddMessageVisible}>
             <UploadMessageForm onAddMessage={handleMessageddition} />
@@ -178,8 +179,8 @@ const MessagesPage: React.FC = () => {
 
             <div className="flex gap-x-4">
                <RangeDatePicker
-                  dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
-                  onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}
+                  dateRange={{ from: messageQuery.startDate, to: messageQuery.endDate }}
+                  onSelectRange={(range) => onSetMessage({ startDate: range.from!, endDate: range.to! })}
                />
 
                <Button
@@ -203,7 +204,15 @@ const MessagesPage: React.FC = () => {
             </div>
          </div>
 
-         <DataTable onPageChange={onSetPageNumber} pagination={data.data.pagination} loading={isFetching} columns={columns} data={data.data.data} />
+         <DataTable
+            filtering={false}
+            onSizeChange={(size) => onSetMessage({ pageSize: size })}
+            onPageChange={(page) => onSetMessage({ pageNumber: page })}
+            pagination={data.data.pagination}
+            loading={isFetching}
+            columns={columns}
+            data={data.data.data}
+         />
       </>
    );
 };

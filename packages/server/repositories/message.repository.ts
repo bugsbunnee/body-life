@@ -13,11 +13,16 @@ export const messageRepository = {
          filter.title = { $regex: query.title, $options: 'i' };
       }
 
-      if (query.date) {
-         const startDate = moment(query.date).startOf('day').toDate();
-         const endDate = moment(query.date).endOf('day').toDate();
+      if (query.startDate || query.endDate) {
+         filter.date = {};
 
-         filter.date = { $gte: startDate, $lte: endDate };
+         if (query.startDate) {
+            filter.date.$gte = moment(query.startDate).startOf('day').toDate();
+         }
+
+         if (query.endDate) {
+            filter.date.$lte = moment(query.endDate).endOf('day').toDate();
+         }
       }
 
       if (query.videoUrl) {

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+console.log('WhatsApp API URL:', process.env.WHATSAPP_API_URL);
+console.log('WhatsApp API Token:', process.env.WHATSAPP_API_TOKEN);
 const http = axios.create({
    baseURL: process.env.WHATSAPP_API_URL,
    headers: {
@@ -13,8 +15,13 @@ export const whatsappService = {
       return http.post('/messages', {
          messaging_product: 'whatsapp',
          to,
-         type: 'text',
-         text: { body: message },
+         type: 'template',
+         template: {
+            name: 'hello_world',
+            language: {
+               code: 'en_US',
+            },
+         },
       });
    },
 };

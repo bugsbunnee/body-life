@@ -5,10 +5,8 @@ import { lib } from '../../../utils/lib';
 
 export const MessageQuerySchema = z.object({
    title: z.string().optional(),
-   date: z.coerce
-      .date()
-      .refine((value) => moment(value).isSameOrBefore(moment()))
-      .optional(),
+   startDate: z.coerce.date().optional(),
+   endDate: z.coerce.date().optional(),
    videoUrl: z.string().optional(),
    preacher: z
       .string()

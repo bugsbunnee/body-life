@@ -34,11 +34,11 @@ export const inventoryRepository = {
          filter.datePurchased = {};
 
          if (query.datePurchasedStart) {
-            filter.datePurchased.$gte = query.datePurchasedStart;
+            filter.datePurchased.$gte = moment(query.datePurchasedStart).startOf('day').toDate();
          }
 
          if (query.datePurchasedEnd) {
-            filter.datePurchased.$lte = query.datePurchasedEnd;
+            filter.datePurchased.$lte = moment(query.datePurchasedEnd).endOf('day').toDate();
          }
       }
 

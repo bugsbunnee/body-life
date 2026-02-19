@@ -22,7 +22,6 @@ const useInventory = () => {
    return useQuery({
       queryKey: ['inventory', inventoryQuery],
       queryFn: () => http.get<{ data: InventoryResponse }>('/api/inventory', { params: inventoryQuery }).then((response) => response.data),
-
       initialData: {
          data: {
             data: [],
