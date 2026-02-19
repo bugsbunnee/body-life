@@ -9,9 +9,11 @@ import { CalendarIcon } from 'lucide-react';
 import { FaSpinner } from 'react-icons/fa';
 
 import Conditional from '@/components/common/conditional';
-
 import http from '@/services/http.service';
+
+import useDepartments from '@/hooks/useDepartments';
 import useUsers from '@/hooks/useUsers';
+import usePrayerCells from '@/hooks/usePrayerCells';
 import useServiceReports from '@/hooks/useServiceReports';
 
 import { Button } from '@/components/ui/button';
@@ -31,6 +33,8 @@ import { CONTACT_METHODS, GENDERS, MARITAL_STATUS } from '@/utils/constants';
 type Props = { onAddUser: () => void };
 
 const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
+   const prayerCells = usePrayerCells();
+   const departments = useDepartments();
    const users = useUsers();
    const services = useServiceReports();
 
@@ -97,6 +101,69 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
                <FormField
                   control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel>Home Address</FormLabel>
+                        <FormControl>
+                           <Textarea rows={6} placeholder="Where do they live?" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+
+               <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel className="text-sm text-dark font-medium">Phone Number</FormLabel>
+                        <FormControl>
+                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g 08142317489" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+
+               <FormField
+                  control={form.control}
+                  name="dateOfBirth"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel className="text-sm text-dark font-medium">Date of Birth</FormLabel>
+                        <FormControl>
+                           <Popover>
+                              <PopoverTrigger asChild>
+                                 <FormControl>
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                       {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                 </FormControl>
+                              </PopoverTrigger>
+
+                              <PopoverContent className="w-auto p-0" align="start">
+                                 <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                                    captionLayout="dropdown"
+                                 />
+                              </PopoverContent>
+                           </Popover>
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+            </div>
+
+            <div className="mt-3 grid grid-cols-4 gap-6">
+               <FormField
+                  control={form.control}
                   name="gender"
                   render={({ field }) => (
                      <FormItem>
@@ -150,32 +217,27 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
                <FormField
                   control={form.control}
-                  name="dateOfBirth"
+                  name="department"
                   render={({ field }) => (
                      <FormItem>
-                        <FormLabel className="text-sm text-dark font-medium">Date of Birth</FormLabel>
-                        <FormControl>
-                           <Popover>
-                              <PopoverTrigger asChild>
-                                 <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
-                                       {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                 </FormControl>
-                              </PopoverTrigger>
+                        <FormLabel className="text-sm text-dark font-medium">Department (Optional)</FormLabel>
 
-                              <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                                    captionLayout="dropdown"
-                                 />
-                              </PopoverContent>
-                           </Popover>
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                           <FormControl>
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                                 <SelectValue placeholder="Select Department" />
+                              </SelectTrigger>
+                           </FormControl>
+
+                           <SelectContent>
+                              {departments.data.data.data.map((department) => (
+                                 <SelectItem key={department._id} value={department._id}>
+                                    {department.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+
                         <FormMessage />
                      </FormItem>
                   )}
@@ -183,27 +245,27 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
                <FormField
                   control={form.control}
-                  name="phoneNumber"
+                  name="prayerCell"
                   render={({ field }) => (
                      <FormItem>
-                        <FormLabel className="text-sm text-dark font-medium">Phone Number</FormLabel>
-                        <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g 08142317489" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
+                        <FormLabel className="text-sm text-dark font-medium">Prayer Cell (Optional)</FormLabel>
 
-               <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Home Address</FormLabel>
-                        <FormControl>
-                           <Textarea rows={6} placeholder="Where do they live?" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                           <FormControl>
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                                 <SelectValue placeholder="Select Prayer Cell" />
+                              </SelectTrigger>
+                           </FormControl>
+
+                           <SelectContent>
+                              {prayerCells.data.data.data.map((prayerCell) => (
+                                 <SelectItem key={prayerCell._id} value={prayerCell._id}>
+                                    {prayerCell.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+
                         <FormMessage />
                      </FormItem>
                   )}
@@ -212,6 +274,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
             <FormField
                control={form.control}
+               defaultValue={false}
                name="isFirstTimer"
                render={({ field }) => (
                   <div className="bg-slate-50 h-[3.5rem] flex items-center px-4 rounded-md border border-border">

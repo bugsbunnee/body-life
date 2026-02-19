@@ -103,14 +103,12 @@ adminSchema.methods.sendPasswordSetupEmail = async function () {
    const url = `${FRONTEND_BASE_URL}/reset-password?token=${token}`;
 
    try {
-      console.log('triggerting email');
       await emailService.sendSingleEmail({
          to: this.email,
          subject: `Setup your password`,
          react: <SetupPasswordEmail userFirstName={this.firstName} verificationUrl={url} expiryTimeInMinutes={PASSWORD_RESET_TIME_IN_MINUTES} />,
       });
    } catch (error) {
-      console.log('email error');
       this.passwordResetToken = null;
       this.passwordResetTokenExpiryDate = null;
 

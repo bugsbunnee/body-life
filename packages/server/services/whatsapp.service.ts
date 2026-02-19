@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-console.log('WhatsApp API URL:', process.env.WHATSAPP_API_URL);
-console.log('WhatsApp API Token:', process.env.WHATSAPP_API_TOKEN);
 const http = axios.create({
    baseURL: process.env.WHATSAPP_API_URL,
    headers: {

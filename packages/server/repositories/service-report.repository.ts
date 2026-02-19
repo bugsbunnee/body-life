@@ -115,11 +115,11 @@ export const serviceReportRepository = {
 
    async getServiceReportAttendanceTrend(range: IDateRange) {
       const startDate = moment(range.startDate).startOf('day').toDate();
-      const endDate = moment(range.endDate).startOf('day').toDate();
+      const endDate = moment(range.endDate).endOf('day').toDate();
 
       return ServiceReport.find({ serviceDate: { $gte: startDate, $lte: endDate } })
-         .select('serviceDate totalAttendance')
-         .sort({ serviceDate: -1 })
+         .select('serviceDate counts totalAttendance')
+         .sort({ serviceDate: 1 })
          .lean({ virtuals: true })
          .exec();
    },

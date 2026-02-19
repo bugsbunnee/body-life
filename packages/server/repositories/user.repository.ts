@@ -134,7 +134,7 @@ export const userRepository = {
                $or: this.buildBirthdayFilterFromDateRange(range),
             },
          },
-         { $sort: { month: 1, day: 1 } },
+         { $sort: { dateOfBirth: -1 } },
          {
             $facet: {
                paginatedResults: [{ $skip: pagination.offset }, { $limit: pagination.pageSize }],

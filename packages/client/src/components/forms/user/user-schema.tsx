@@ -12,7 +12,8 @@ export const userSchema = z
       email: z.email().min(1, 'Email Address is required').max(200, 'Email Address is too long (max 50 characters'),
       dateOfBirth: z.date().max(new Date()),
       phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
-
+      department: z.string().optional(),
+      prayerCell: z.string().optional(),
       isFirstTimer: z.boolean(),
       assignTo: z.string().optional(),
       notes: z.string().optional(),
