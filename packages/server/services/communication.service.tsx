@@ -13,9 +13,10 @@ import WelcomeEmail from '../infrastructure/emails/welcome';
 import type { IMessage, IMessageWithId } from '../infrastructure/database/models/message.model';
 import type { IUser } from '../infrastructure/database/models/user.model';
 import type { IFollowUp } from '../infrastructure/database/models/followup.model';
+import type { INewsletter } from '../infrastructure/database/validators/communication.validator';
 
-import { announcementRepository } from '../repositories/announcement.repository';
 import { messageRepository } from '../repositories/message.repository';
+import { programRepository } from '../repositories/program.repository';
 import { userRepository } from '../repositories/user.repository';
 
 import { emailService } from './email.service';
@@ -76,7 +77,7 @@ export const communicationService = {
          await emailService.sendSingleEmail({
             to: user.email,
             subject: `Welcome to RCNLagos Island Church`,
-            react: <WelcomeEmail firstName={user.firstName} />,
+            react: <WelcomeEmail programs={[]} userId={user._id.toString()} userFirstName={user.firstName} />,
          });
       } catch (error) {
          logger.error('Failed to send welcome email...', error);
@@ -95,21 +96,34 @@ export const communicationService = {
       }
    },
 
-   async sendOutNewsletter(message: IMessage) {
-      const announcements = await announcementRepository.getActiveAnnouncements();
-      const users = await userRepository.getAllUsers();
+   async sendOutNewsletter(newsletter: INewsletter) {
+      const users = await userRepository.getUsersForNewsletter();
+
+      if (users.length === 0) {
+         return { success: false, message: 'No users subscribed to newsletter...' };
+      }
+
+      const programs = await programRepository.getUpcomingPrograms();
 
       const emailData = users
          .filter((user) => user.email)
          .map((user) => ({
             to: user.email,
-            subject: `Church Rewind!`,
-            react: <NewsletterEmail message={message} announcements={announcements} />,
+            subject: newsletter.messageHeader,
+            react: (
+               <NewsletterEmail
+                  userId={user._id.toString()}
+                  userFirstName={user.firstName}
+                  messageBody={newsletter.messageBody}
+                  messageHeader={newsletter.messageHeader}
+                  programs={programs}
+               />
+            ),
          }));
 
       const response = await emailService.sendBatchEmails(emailData);
 
-      return response;
+      return { success: true, message: `Newsletter sent out to ${users.length} members successfully!`, data: response };
    },
 
    async generateMessageSummary(message: IMessageWithId) {

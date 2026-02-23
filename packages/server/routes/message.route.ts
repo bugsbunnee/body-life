@@ -11,7 +11,6 @@ import validateObjectId from '../middleware/validateObjectId';
 
 const router = express.Router();
 
-router.post('/:id/newsletter', [validateObjectId, validateMessage], messageController.sendNewsletterEmail);
 router.post('/:id/summarize', [validateObjectId, rateLimit({ limit: 10, windowMs: 15 * 60 * 1000 }), validateMessage], messageController.summarizeMessage);
 router.put('/:id/summary-cleanup', [validateObjectId, validate(MessageUpdateSchema, 'body'), validateMessage], messageController.updateMessageSummary);
 

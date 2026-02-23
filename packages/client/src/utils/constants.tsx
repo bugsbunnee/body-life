@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { ChurchIcon, Cross, GroupIcon, NewspaperIcon, ToolCaseIcon } from 'lucide-react';
+import { Calendar, ChurchIcon, Cross, GroupIcon, NewspaperIcon, ToolCaseIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { HiOutlineCog } from 'react-icons/hi';
@@ -17,9 +17,11 @@ export const APP_ROUTES = {
    INVENTORY: '/dashboard/inventory',
    MESSAGES: '/dashboard/messages',
    MEMBERS: '/dashboard/members',
+   PROGRAMS: '/dashboard/programs',
    PRAYER_CELLS: '/dashboard/prayer-cells',
    SETUP_PASSWORD: '/reset-password',
    SERVICE_REPORT: '/dashboard/service-report',
+   UNSUBSCRIBE: '/unsubscribe',
 };
 
 export const sections: Route[] = [
@@ -31,6 +33,16 @@ export const sections: Route[] = [
             path: APP_ROUTES.DASHBOARD,
             label: 'Home',
             Icon: CiHome,
+         },
+         {
+            path: APP_ROUTES.MEMBERS,
+            label: 'Members',
+            Icon: BsFillPeopleFill,
+         },
+         {
+            path: APP_ROUTES.FIRST_TIMERS,
+            label: 'First Timers',
+            Icon: NewspaperIcon,
          },
          {
             path: APP_ROUTES.DEPARTMENT,
@@ -48,14 +60,9 @@ export const sections: Route[] = [
             Icon: ChurchIcon,
          },
          {
-            path: APP_ROUTES.MEMBERS,
-            label: 'Members',
-            Icon: BsFillPeopleFill,
-         },
-         {
-            path: APP_ROUTES.FIRST_TIMERS,
-            label: 'First Timers',
-            Icon: NewspaperIcon,
+            path: APP_ROUTES.PROGRAMS,
+            label: 'Programs',
+            Icon: Calendar,
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,
@@ -223,3 +230,6 @@ export const FOLLOW_UP_FEEDBACK_STATUS = [
       name: 'integrated',
    },
 ];
+
+export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export const ACCEPTED_TYPES = ['image/jpeg', 'image/png'];

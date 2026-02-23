@@ -16,6 +16,7 @@ import { departmentRepository } from '../repositories/department.repository';
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 import { followupRepository } from '../repositories/followup.repository';
 import { serviceReportRepository } from '../repositories/service-report.repository';
+import { lib } from '../utils/lib';
 
 export const userController = {
    async bulkCreateUsers(req: Request, res: Response) {
@@ -109,6 +110,23 @@ export const userController = {
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             message: 'Failed to get users',
+         });
+      }
+   },
+
+   async unsubscribeFromNewsletter(req: Request, res: Response) {
+      try {
+         const userId = lib.parseObjectId(req.params.id!);
+         const user = await userRepository.unsubscribeFromNewsletter(userId, req.body.reason);
+
+         if (!user) {
+            return res.status(StatusCodes.NOT_FOUND).json({ message: 'The user with the given ID does not exist!' });
+         }
+
+         res.json({ success: true, message: 'Unsubscribed from newsletter successfully!' });
+      } catch (ex) {
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: 'Failed to unsubscribe from newsletter',
          });
       }
    },

@@ -92,6 +92,7 @@ export const userRepository = {
          maritalStatus: user.maritalStatus,
          address: user.address,
          phoneNumber: user.phoneNumber,
+         isSubscribedToNewsletter: true,
       });
    },
 
@@ -122,6 +123,7 @@ export const userRepository = {
                _id: 1,
                firstName: 1,
                lastName: 1,
+               email: 1,
                phoneNumber: 1,
                gender: 1,
                dateOfBirth: 1,
@@ -173,8 +175,8 @@ export const userRepository = {
       };
    },
 
-   async getAllUsers() {
-      return User.find().sort({ createdAt: 1 });
+   async getUsersForNewsletter() {
+      return User.find({ isSubscribedToNewsletter: true }).sort({ createdAt: 1 });
    },
 
    async getOneUser({ email, phoneNumber }: Pick<IUser, 'email' | 'phoneNumber'>) {
@@ -183,5 +185,14 @@ export const userRepository = {
 
    async getOneUserById(userId: mongoose.Types.ObjectId) {
       return User.findById(userId).exec();
+   },
+
+   async unsubscribeFromNewsletter(userId: mongoose.Types.ObjectId, reasonForUnsubscription: string) {
+      return User.findByIdAndUpdate(userId, {
+         $set: {
+            isSubscribedToNewsletter: false,
+            reasonForUnsubscription,
+         },
+      });
    },
 };

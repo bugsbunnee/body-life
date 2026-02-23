@@ -7,6 +7,7 @@ import { communicationService } from '../services/communication.service';
 import { MessageQuerySchema } from '../infrastructure/database/validators/message.validator';
 import { messageRepository } from '../repositories/message.repository';
 import { userRepository } from '../repositories/user.repository';
+
 import logger from '../services/logger.service';
 
 export const messageController = {
@@ -34,20 +35,6 @@ export const messageController = {
          res.status(StatusCodes.CREATED).json({ data: response });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create the user' });
-      }
-   },
-
-   async sendNewsletterEmail(req: Request, res: Response) {
-      try {
-         if (!req.message.summary) {
-            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Please generate the summary first!' });
-         }
-
-         const response = await communicationService.sendOutNewsletter(req.message);
-
-         res.json({ data: response });
-      } catch (ex) {
-         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Could not send the newsletter' });
       }
    },
 

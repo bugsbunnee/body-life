@@ -8,6 +8,7 @@ import { COUNTRY_CODE } from './constants';
 import type { IUser } from '../infrastructure/database/models/user.model';
 import type { ReportAnalysis } from '../infrastructure/database/entities/interfaces/report-analysis';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
+import axios from 'axios';
 
 export const lib = {
    cleanPhoneNumber(phoneNumber: string) {
@@ -83,6 +84,14 @@ export const lib = {
 
    getObjectIdIsValid(objectId: string) {
       return mongoose.Types.ObjectId.isValid(objectId);
+   },
+
+   getErrorMessage(error: unknown) {
+      if (axios.isAxiosError(error)) {
+         return error.response?.data;
+      }
+
+      return (<Error>error).message;
    },
 
    async hashPassword(password: string) {

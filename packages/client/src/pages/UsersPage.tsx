@@ -24,7 +24,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/datatable';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { GENDERS, MARITAL_STATUS, OPTIONS } from '@/utils/constants';
@@ -217,135 +216,115 @@ const UsersPage: React.FC = () => {
             </Modal>
          )}
 
-         <Tabs defaultValue="account" className="w-full pt-8 gap-0">
-            <TabsList className="w-full bg-transparent border-b-border border-b justify-start">
-               <TabsTrigger
-                  className="max-w-fit p-4 text-base text-gray-500 font-medium data-[state=active]:shadow-none data-[state=active]:rounded-none data-[state=active]:text-main data-[state=active]:bg-blue-light data-[state=active]:border-b-main"
-                  value="workforce"
-               >
-                  Workforce
-               </TabsTrigger>
-
-               <TabsTrigger
-                  className="max-w-fit px-4 text-base text-gray-500 font-medium data-[state=active]:shadow-none data-[state=active]:rounded-none data-[state=active]:text-main data-[state=active]:bg-blue-light data-[state=active]:border-b-main"
-                  value="non-workforce"
-               >
-                  Non-Workforce
-               </TabsTrigger>
-            </TabsList>
-
-            <div className="p-6 border-b-border border-b flex items-center justify-between">
-               <div className="">
-                  <div className="text-base text-black font-semibold">Members Chart</div>
-                  <div className="text-base text-gray-neutral mt-[0.25rem]">Track the activities of your members</div>
-               </div>
-
-               <div className="flex gap-x-4">
-                  <Button
-                     onClick={() => setAddUserVisible(true)}
-                     variant="ghost"
-                     className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
-                  >
-                     <PlusIcon />
-                     <span className="flex-1">Add New</span>
-                  </Button>
-
-                  <Button
-                     onClick={handleExtractedDataExport}
-                     variant="ghost"
-                     className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
-                  >
-                     <DownloadCloudIcon />
-
-                     <span className="flex-1">Export to spreadsheet</span>
-                  </Button>
-               </div>
+         <div className="p-6 border-b-border border-b flex items-center justify-between">
+            <div className="">
+               <div className="text-base text-black font-semibold">Members Chart</div>
+               <div className="text-base text-gray-neutral mt-[0.25rem]">Track the activities of your members</div>
             </div>
 
-            <div className="p-6 border-b-border border-b flex items-center justify-between gap-x-6">
-               <Select onValueChange={(workforce) => onSetUser({ workforce })} defaultValue={userQuery.workforce}>
-                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                     <SelectValue placeholder="Filter by workforce" />
-                  </SelectTrigger>
+            <div className="flex gap-x-4">
+               <Button
+                  onClick={() => setAddUserVisible(true)}
+                  variant="ghost"
+                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+               >
+                  <PlusIcon />
+                  <span className="flex-1">Add New</span>
+               </Button>
 
-                  <SelectContent>
-                     {OPTIONS.map((option) => (
-                        <SelectItem key={option.id} value={option.id}>
-                           {option.name}
-                        </SelectItem>
-                     ))}
-                  </SelectContent>
-               </Select>
+               <Button
+                  onClick={handleExtractedDataExport}
+                  variant="ghost"
+                  className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+               >
+                  <DownloadCloudIcon />
 
-               <Select onValueChange={(gender) => onSetUser({ gender })} defaultValue={userQuery.gender}>
-                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                     <SelectValue placeholder="Filter by gender" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                     {GENDERS.map((gender) => (
-                        <SelectItem key={gender.id} value={gender.id}>
-                           {gender.name}
-                        </SelectItem>
-                     ))}
-                  </SelectContent>
-               </Select>
-
-               <Select onValueChange={(maritalStatus) => onSetUser({ maritalStatus })} defaultValue={userQuery.maritalStatus}>
-                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                     <SelectValue placeholder="Filter by marital status" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                     {MARITAL_STATUS.map((maritalStatus) => (
-                        <SelectItem key={maritalStatus.id} value={maritalStatus.id}>
-                           {maritalStatus.name}
-                        </SelectItem>
-                     ))}
-                  </SelectContent>
-               </Select>
-
-               <Select onValueChange={(prayerCell) => onSetUser({ prayerCell })} defaultValue={userQuery.prayerCell}>
-                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                     <SelectValue placeholder="Filter by Prayer Cell" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                     {prayerCells.data.data.map((prayerCell) => (
-                        <SelectItem key={prayerCell._id} value={prayerCell._id}>
-                           {prayerCell.name}
-                        </SelectItem>
-                     ))}
-                  </SelectContent>
-               </Select>
-
-               <Select onValueChange={(department) => onSetUser({ department })} defaultValue={userQuery.department}>
-                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                     <SelectValue placeholder="Filter by Department" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                     {departments.data.data.map((department) => (
-                        <SelectItem key={department._id} value={department._id}>
-                           {department.name}
-                        </SelectItem>
-                     ))}
-                  </SelectContent>
-               </Select>
+                  <span className="flex-1">Export to spreadsheet</span>
+               </Button>
             </div>
+         </div>
 
-            <TabsContent value="account">
-               <DataTable
-                  filtering={false}
-                  onSizeChange={(size) => onSetUser({ pageSize: size })}
-                  onPageChange={(page) => onSetUser({ pageNumber: page })}
-                  pagination={data.data.pagination}
-                  loading={isFetching}
-                  columns={columns}
-                  data={data.data.data}
-               />
-            </TabsContent>
-         </Tabs>
+         <div className="p-6 border-b-border border-b flex items-center justify-between gap-x-6">
+            <Select onValueChange={(workforce) => onSetUser({ workforce })} defaultValue={userQuery.workforce}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Filter by workforce" />
+               </SelectTrigger>
+
+               <SelectContent>
+                  {OPTIONS.map((option) => (
+                     <SelectItem key={option.id} value={option.id}>
+                        {option.name}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+
+            <Select onValueChange={(gender) => onSetUser({ gender })} defaultValue={userQuery.gender}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Filter by gender" />
+               </SelectTrigger>
+
+               <SelectContent>
+                  {GENDERS.map((gender) => (
+                     <SelectItem key={gender.id} value={gender.id}>
+                        {gender.name}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+
+            <Select onValueChange={(maritalStatus) => onSetUser({ maritalStatus })} defaultValue={userQuery.maritalStatus}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Filter by marital status" />
+               </SelectTrigger>
+
+               <SelectContent>
+                  {MARITAL_STATUS.map((maritalStatus) => (
+                     <SelectItem key={maritalStatus.id} value={maritalStatus.id}>
+                        {maritalStatus.name}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+
+            <Select onValueChange={(prayerCell) => onSetUser({ prayerCell })} defaultValue={userQuery.prayerCell}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Filter by Prayer Cell" />
+               </SelectTrigger>
+
+               <SelectContent>
+                  {prayerCells.data.data.map((prayerCell) => (
+                     <SelectItem key={prayerCell._id} value={prayerCell._id}>
+                        {prayerCell.name}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+
+            <Select onValueChange={(department) => onSetUser({ department })} defaultValue={userQuery.department}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Filter by Department" />
+               </SelectTrigger>
+
+               <SelectContent>
+                  {departments.data.data.map((department) => (
+                     <SelectItem key={department._id} value={department._id}>
+                        {department.name}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+         </div>
+
+         <DataTable
+            filtering={false}
+            onSizeChange={(size) => onSetUser({ pageSize: size })}
+            onPageChange={(page) => onSetUser({ pageNumber: page })}
+            pagination={data.data.pagination}
+            loading={isFetching}
+            columns={columns}
+            data={data.data.data}
+         />
       </>
    );
 };

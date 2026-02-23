@@ -13,6 +13,8 @@ export const CACHE_NAMES = {
 
 export const PASSWORD_RESET_TIME_IN_MINUTES = 60;
 export const FRONTEND_BASE_URL = 'http://localhost:5173';
+export const MB_IN_BYTES = 1_048_576;
+export const CHURCH_DISPLAY_NAME = 'RCNLagos Island Church';
 
 export const FEATURES = {
    ENABLE_CACHE: false,

@@ -1,463 +1,256 @@
 import React from 'react';
-import dayjs from 'dayjs';
+import parse from 'html-react-parser';
 
-import { Body, Column, Container, Head, Heading, Hr, Html, Img, Link, Row, Section, Tailwind, Text } from '@react-email/components';
-import type { IAnnouncement } from '../database/models/announcement.model';
-import type { IMessage } from '../database/models/message.model';
+import { formatDate } from 'date-fns';
+import { Body, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Text } from '@react-email/components';
+import { FRONTEND_BASE_URL } from '../../utils/constants';
+
+import type { IProgram } from '../database/models/program.model';
 
 interface Props {
-   announcements: IAnnouncement[];
-   message: IMessage;
+   userId: string;
+   userFirstName: string;
+   messageHeader: string;
+   messageBody: string;
+   programs: IProgram[];
 }
 
-const events = [
-   {
-      title: 'DOZ Prayer Meeting',
-      body: 'A time for women to gather in prayer, alignment, and intercession. Theme: Lightbearers Venue: The Forge, Budland Street, Grammar School Bus Stop, Ojodu.',
-      date: '2025-10-04',
-   },
-   {
-      title: "Brother's Hangout",
-      body: 'A time for brothers to connect, share, and be sharpened on the theme Character & Grit. Venue: The Forge, Budland Street, Grammar School Bus Stop, Ojodu.',
-      date: '2025-10-11',
-   },
-   {
-      title: "Believer's Prayer Meeting",
-      body: 'An intense atmosphere of prayer and apostolic alignment for all believers. Venue: Citilodge Hotel, 1 Akinyemi Ave, Off Goshen Estate, by Elf Bus Stop, Lekki, Lagos',
-      date: '2025-10-18',
-   },
-];
-
-const NewsletterEmail: React.FC<Props> = ({ message, announcements }) => {
+const NewsletterEmail: React.FC<Props> = ({ userId, userFirstName, messageHeader, messageBody, programs }) => {
    return (
       <Html>
          <Head />
+         <Preview>Weekly Church Newsletter</Preview>
 
-         <Tailwind>
-            <Body className="bg-[#f2f2f2] py-[16px] w-full h-full font-sans">
-               <Container className="bg-white p-[32px] h-full" style={container}>
-                  <Section className="mt-[48px]">
-                     <Img
-                        src="https://res.cloudinary.com/dezg6qoig/image/upload/v1757631238/logo_rp5wxm.jpg"
-                        width="97"
-                        height="57"
-                        alt="RCNLagos Island Church"
-                        className="object-contain"
-                     />
-                  </Section>
+         <Body style={bodyStyle}>
+            <Container style={containerStyle}>
+               <Section style={logoStyle}>
+                  <Img src={FRONTEND_BASE_URL + '/images/logo.png'} width="97" height="57" alt="RCNLagos Island Church" className="object-contain" />
+               </Section>
 
-                  <Section className="mt-[16px]">
-                     <Heading style={header}>
-                        <strong>RCNLAGOS ISLAND CHURCH</strong>
-                     </Heading>
+               <Section style={centerText}>
+                  <Text style={previewStyle}>Church Weekly Reflection</Text>
+               </Section>
 
-                     <Heading style={subheader}>
-                        <strong>REMNANT CHRISTIAN NETWORK</strong>
-                     </Heading>
+               <Hr style={primaryDividerStyle} />
 
-                     <Section style={{ width: '100%', height: '100%', maxHeight: '400px', marginTop: '48px' }}>
-                        <Img
-                           src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334145/image8_kxx4ay.png"
-                           width="100%"
-                           height="100%"
-                           alt="RCNLagos Island Church"
-                           className="object-contain"
-                        />
-                     </Section>
-                  </Section>
+               <Section style={scriptureSection}>
+                  <Text style={scriptureText}>“Now faith is confidence in what we hope for and assurance about what we do not see.” — Hebrews 11:1</Text>
+               </Section>
 
-                  <Section className="mt-[48px]">
-                     <Text style={leftAlignedBody}>
-                        <strong>Hi Family,</strong>
-                     </Text>
+               <Hr style={alternateDividerStyle} />
 
-                     <Text className="mt-[8px]" style={leftAlignedBody}>
-                        Welcome to <strong>October</strong> 🎉 We joyfully welcome you to a season of refreshing and renewed strength. September was a time of SEPARATION, and now
-                        the Lord is calling us higher as we press deeper into His will.
-                     </Text>
+               <Section>
+                  <Heading style={wordHeaderText}>Dear {userFirstName},</Heading>
+                  <Text style={wordBodyText}>
+                     I hope this message finds you well. As we continue this journey of faith together, we want you to know how much you’re valued and remembered. How are you
+                     doing? We would truly love to hear from you; whether you’re celebrating a joy, walking through a challenge, or carrying a prayer need. Simply reply and share
+                     what’s on your heart. Growing together and supporting one another is what makes our church family strong.
+                  </Text>
+               </Section>
 
-                     <Text className="mt-[8px]" style={leftAlignedBody}>
-                        As brethren, we are reminded of Psalm 133:1 — “Behold, how good and pleasant it is for brethren to dwell together in unity!” This month, we lean into that
-                        unity with expectation for a greater outpouring of His Spirit in our midst.
-                     </Text>
+               <Hr style={alternateDividerStyle} />
 
-                     <Hr className="mt-[32px]" />
-                  </Section>
+               <Section>
+                  <Heading style={wordHeaderText}>{messageHeader}</Heading>
+                  <Section style={wordBodyText}>{parse(messageBody)}</Section>
+               </Section>
 
+               <Hr style={alternateDividerStyle} />
+
+               {programs.length > 0 && (
                   <Section>
-                     <Text style={sectionTitle}>HIGHLIGHTS</Text>
+                     <Heading style={announcementSectionLabel}>This Week at Church</Heading>
 
-                     <Row align="center" style={socials}>
-                        <Column style={{ padding: '0px 10px' }}>
-                           <Img
-                              src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334112/image10_gkmiqz.jpg"
-                              width="100%"
-                              height="300"
-                              alt="Instagram"
-                              className="object-contain"
-                           />
-                        </Column>
+                     {programs.map((item, index) => (
+                        <Section key={index} style={announcementContainer}>
+                           <Img src={item.imageUrl} alt={item.title} width="100%" height="220" style={announcementImage} />
 
-                        <Column style={{ padding: '0px 10px' }}>
-                           <Img
-                              src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334095/image1_bvodfn.jpg"
-                              width="100%"
-                              height="300"
-                              alt="Instagram"
-                              className="object-contain"
-                           />
-                        </Column>
+                           <Section style={announcementDetails}>
+                              <Heading style={announcementTitle}>{item.title}</Heading>
 
-                        <Column style={{ padding: '0px 10px' }}>
-                           <Img
-                              src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334102/image2_dbiuf3.jpg"
-                              width="100%"
-                              height="300"
-                              alt="Instagram"
-                              className="object-contain"
-                           />
-                        </Column>
-                     </Row>
+                              <Text style={announcementBody}>{item.description.substring(0, 50) + '...'}</Text>
 
-                     <Text className="mt-[8px]" style={body}>
-                        September was such a beautiful month for us as a family. God’s presence was tangible in our gatherings, and our fellowship together was truly refreshing.
-                        One of the biggest highlights was the RCN Lagos Convergence; what a powerful time in God’s presence! The theme was “Separated,” and indeed the Lord set us
-                        apart afresh for Himself, calling us deeper into consecration and alignment with His purposes.
-                     </Text>
-
-                     <Section style={productSection}>
-                        <Hr className="mt-[32px] mb-[16px]" />
-
-                        {announcements.map((announcement) => (
-                           <Section key={announcement.title} style={tableRow}>
-                              <Img src={announcement.imageUrl} style={productImage} alt={announcement.title} className="object-contain" />
-
-                              <Text style={{ ...sectionTitle, textAlign: 'left' }}>{announcement.title}</Text>
-                              <Text style={productText}>{announcement.content}</Text>
+                              <Text style={announcementAddress}>
+                                 {item.address}, {formatDate(item.scheduledFor, 'PPP')}
+                              </Text>
                            </Section>
-                        ))}
-                     </Section>
+                        </Section>
+                     ))}
                   </Section>
+               )}
 
-                  <Section className="mt-[16px]">
-                     <Text style={{ ...sectionTitle, width: 'fit', padding: '14px', backgroundColor: '#d4412b', borderRadius: '8px' }}>MARK YOUR CALENDAR</Text>
+               <Hr style={alternateDividerStyle} />
 
-                     <Section className="mt-[18px]">
-                        <table style={table}>
-                           <thead>
-                              <tr>
-                                 <th style={tableHeaderColumn}>Event</th>
-                                 <th style={tableHeaderColumn}>Details</th>
-                                 <th style={tableHeaderColumn}>Date</th>
-                              </tr>
-                           </thead>
-
-                           <tbody>
-                              {events.map((event) => (
-                                 <tr key={event.title}>
-                                    <td style={tableBodyColumn}>
-                                       <span style={highlight}>{event.title}</span>
-                                    </td>
-                                    <td style={tableBodyColumn}>{event.body}</td>
-                                    <td style={tableBodyColumn}>
-                                       <span style={highlight}>{dayjs(event.date).format('DD/MM/YYYY')}</span>
-                                    </td>
-                                 </tr>
-                              ))}
-                           </tbody>
-                        </table>
-
-                        <Hr className="mt-[32px] mb-[16px]" />
-                     </Section>
-
-                     <Section>
-                        <Text style={sectionTitle}>ANTICIPATE</Text>
-
-                        <Text className="mt-[8px]" style={body}>
-                           📌 <strong>CRAFTSMEN 4.0 IS HERE!:</strong> Stay put, stay prayerful, and stay expectant. More details will be shared soon, but be assured that God is
-                           set to do a mighty work in our midst.
-                        </Text>
-
-                        <Text className="mt-[8px]" style={body}>
-                           <strong>RCNLAGOS ISLAND CHURCH ANNIVERSARY:</strong> Our anniversary is around the corner, and we can already sense the joy and glory that awaits us.
-                           Keep your hearts expectant, more details coming soon!
-                        </Text>
-
-                        <Hr className="my-[16px]" />
-                     </Section>
-
-                     <Section>
-                        <Text style={sectionTitle}>PRAYER CELLS</Text>
-
-                        <Text className="mt-[8px]" style={body}>
-                           Our prayer cells are the heartbeat of our fellowship. Beyond our corporate gatherings, these smaller circles provide the space for brethren to grow in
-                           the Word, build stronger bonds, and press deeper in prayer together.
-                        </Text>
-
-                        <Text className="mt-[8px]" style={body}>
-                           We currently have prayer cells in <strong>Ikoyi, Victoria Island 1 & 2, Lekki, Igboefon, Alpha Beach, Badore, Sangotedo and Abijo</strong>. Please
-                           contact us at <strong>+234 707 779 2632</strong> to learn more and find the location closest to you.
-                        </Text>
-
-                        <Hr className="my-[32px]" />
-                     </Section>
-                  </Section>
+               <Section style={footerSection}>
+                  <Text style={stayConnectedText}>Stay connected with us</Text>
 
                   <Section>
-                     <Text style={sectionTitle}>ABOUT US</Text>
+                     <Link href="https://www.instagram.com/images/instagram.jpg" style={socialLinkURL}>
+                        <Img src={FRONTEND_BASE_URL + '/images/instagram.jpg'} width="36" height="36" alt="Instagram" style={socialLinkImage} />
+                     </Link>
 
-                     <Heading className="mt-[16px]" style={subtitle}>
-                        About RCN (Remnant Christian Network)
-                     </Heading>
+                     <Link href="https://web.facebook.com/profile.php?id=61553792941216" style={socialLinkURL}>
+                        <Img src={FRONTEND_BASE_URL + '/images/facebook.jpg'} width="36" height="36" alt="Facebook" style={socialLinkImage} />
+                     </Link>
 
-                     <Text className="mt-[16px]" style={body}>
-                        Remnant Christian Network (RCN) is a global apostolic movement committed to reviving authentic Christianity in our generation. Our mandate is to strive for
-                        the rebirth of apostolic Christianity across the nations by raising a people of prayer, sound doctrine, and kingdom service. Through teaching, intercession,
-                        and discipleship, RCN is equipping believers to live in alignment with God’s purposes and to be vessels of His glory in their families, communities, and
-                        nations.
-                     </Text>
-
-                     <Hr className="mt-[32px] mb-0" />
+                     <Link href="https://www.youtube.com/@rcnlagosisland" style={socialLinkURL}>
+                        <Img src={FRONTEND_BASE_URL + '/images/youtube.png'} width="36" height="36" alt="YouTube" style={socialLinkImage} />
+                     </Link>
                   </Section>
+               </Section>
 
-                  <Section className="mt-[16px]">
-                     <Heading style={subtitle}>About RCNLagos Island Church</Heading>
+               <Section style={centerText}>
+                  <Text style={salutationName}>© {new Date().getFullYear()} RCNLagos Island Church</Text>
 
-                     <Text className="mt-[8px]" style={body}>
-                        RCNLagos Island Church is the Lagos Island expression of Remnant Christian Network Lagos. Planted with the same vision and heartbeat, the RCNLagos Island
-                        Church is a thriving family of believers passionate about prayer, the word, and fellowship. Located in the heart of Lekki, the Island Church serves as a hub
-                        for equipping, refreshing, and mobilising God’s people for kingdom impact. It’s more than a church; it’s a family where believers are strengthened, aligned,
-                        and sent out to live out apostolic Christianity in their everyday lives.
-                     </Text>
+                  <Text style={salutationName}>
+                     You are receiving this email because you provided us your email address to keep in touch. Want to change how you receive these emails?
+                  </Text>
 
-                     <Hr className="mt-[32px] mb-0" />
-                  </Section>
-
-                  <Section className="mt-[16px]">
-                     <Heading style={subtitle}>Feeback & Suggestions</Heading>
-
-                     <Text className="mt-[8px]" style={body}>
-                        We’d love to hear from you! 💌 Share your feedback and suggestions with us by filling out this short form:{' '}
-                        <Link href="https://forms.gle/xR7rxMvh3eKRWf5i6" style={link}>
-                           Feeback Form
-                        </Link>
-                     </Text>
-
-                     <Text className="mt-[8px]" style={body}>
-                        ✨ For daily inspiration and timely updates, follow us across our social media platforms below.
-                     </Text>
-
-                     <Hr className="mt-[32px] mb-0" />
-                  </Section>
-
-                  <Section className="mt-[48px]">
-                     <Text style={salutationHeader}>With Love</Text>
-
-                     <Text style={salutationBody}>Reverend. Michael Nsofor</Text>
-                  </Section>
-
-                  <Section className="mt-[48px]">
-                     <Text style={salutationBody}>
-                        Contact Us: <Link style={{ ...link, fontSize: '20px' }}>info@rcnlagosisland.com</Link>
-                     </Text>
-
-                     <Hr color="#000000" className="mt-[64px] mb-0" />
-                  </Section>
-
-                  <Section className="mt-[24px] justify-center flex w-full">
-                     <Row align="center" style={socials}>
-                        <Column>
-                           <Link href="https://www.instagram.com/rcnlagosisland/">
-                              <Img
-                                 src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334093/image6_tkovsi.jpg"
-                                 width="40"
-                                 height="40"
-                                 alt="Instagram"
-                                 className="object-contain"
-                              />
-                           </Link>
-                        </Column>
-
-                        <Column style={socialSeparator}>
-                           <Link href="https://web.facebook.com/profile.php?id=61553792941216">
-                              <Img
-                                 src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334094/image9_ng3nh5.jpg"
-                                 width="40"
-                                 height="40"
-                                 alt="FaceBook"
-                                 className="object-contain"
-                              />
-                           </Link>
-                        </Column>
-
-                        <Column>
-                           <Link href="https://www.youtube.com/@RCNLagosIsland">
-                              <Img
-                                 src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1759334096/image11_snnxaf.png"
-                                 width="60"
-                                 height="50"
-                                 alt="YouTube"
-                                 className="object-contain"
-                              />
-                           </Link>
-                        </Column>
-                     </Row>
-                  </Section>
-
-                  <Section className="mt-[24px]">
-                     <Text style={footer}>
-                        {process.env.SENDER_NAME} © {new Date().getFullYear()}.
-                        <br />
-                        Striving for the rebirth of apostolic Christianity.
-                     </Text>
-                  </Section>
-               </Container>
-            </Body>
-         </Tailwind>
+                  <Text style={unsubscribeTextMain}>
+                     <Link href={FRONTEND_BASE_URL + '/unsubscribe?id=' + userId} style={unsubscribeText}>
+                        Unsubscribe
+                     </Link>
+                  </Text>
+               </Section>
+            </Container>
+         </Body>
       </Html>
    );
 };
 
-const body = {
-   fontSize: '16px',
-   lineHeight: '24px',
-   fontWeight: '500',
-   color: '#333333',
-   textAlign: 'center' as const,
+const announcementContainer = {
+   borderRadius: '16px',
+   overflow: 'hidden',
+   marginBottom: '26px',
+   backgroundColor: '#fff1e6',
 };
 
-const container = {
-   maxWidth: '900px',
-   width: '100%',
-};
+const announcementDetails = { padding: '20px 20px' };
 
-const footer = {
-   fontSize: '12px',
-   color: '#999999',
-   lineHeight: '16px',
-   fontWeight: '400',
-};
+const announcementImage = { objectFit: 'cover' as const, display: 'block' };
 
-const highlight = {
-   backgroundColor: '#d1d5dc',
-};
-
-const header = {
-   marginTop: '24px',
-   lineHeight: '32px',
-   fontSize: '30px',
-   fontWeight: '700',
-   color: '#000000',
-   textAlign: 'center' as const,
-   textTransform: 'uppercase' as const,
-};
-
-const leftAlignedBody = { ...body, textAlign: 'left' as const };
-
-const link = {
-   textDecoration: 'underline',
-   fontSize: '16px',
-   lineHeight: '24px',
-   fontWeight: '500',
-   textAlign: 'center' as const,
-};
-
-const subheader = {
-   marginTop: '18px',
-   fontSize: '18px',
-   fontWeight: '400',
-   color: '#000000',
-   textAlign: 'center' as const,
-   textTransform: 'uppercase' as const,
-};
-
-const productSection = {
-   width: '100%',
-   marginTop: '48px',
-};
-
-const productText = {
-   color: '#000000',
-   fontSize: '14px',
-   lineHeight: '20px',
-   textAlign: 'left' as const,
-   fontWeight: '400',
-};
-
-const productImage = {
-   width: '100%',
-   height: '350px',
-   maxHeight: '450px',
-   borderRadius: '4px',
-};
-
-const salutationBody = {
-   color: '#000000',
+const announcementSectionLabel = {
    fontSize: '20px',
-   lineHeight: '24px',
-   fontWeight: '700',
-   margin: '0px',
-   textAlign: 'center' as const,
+   fontWeight: 600,
+   color: '#2a1f16',
+   marginBottom: '22px',
 };
 
-const salutationHeader = {
-   color: '#000000',
-   fontSize: '16px',
-   lineHeight: '24px',
-   fontWeight: '400',
-   margin: '0px',
-   textAlign: 'center' as const,
-};
-
-const sectionTitle = {
-   textAlign: 'center' as const,
+const announcementTitle = {
    fontSize: '18px',
-   fontWeight: '700',
+   fontWeight: 600,
+   color: '#2a1f16',
+   margin: '0 0 6px',
 };
 
-const socials = {
+const announcementBody = {
+   fontSize: '14px',
+   lineHeight: '1.7',
+   color: '#5f4b3a',
+   margin: 0,
+};
+
+const announcementAddress = {
+   fontSize: '14px',
+   lineHeight: '1.7',
+   color: '#5f4b3a',
+   margin: 0,
+};
+
+const bodyStyle = {
+   backgroundColor: '#fff5ec',
+   margin: 0,
+   padding: '40px 0',
+   fontFamily: 'Helvetica, Arial, sans-serif',
+};
+
+const centerText = { textAlign: 'center' as const };
+
+const containerStyle = {
+   maxWidth: '560px',
+   margin: '0 auto',
+   backgroundColor: '#ffffff',
+   padding: '42px 36px',
+};
+
+const logoStyle = {
+   marginBottom: '24px',
+};
+
+const previewStyle = {
+   fontSize: '11px',
+   letterSpacing: '4px',
+   textTransform: 'uppercase' as const,
+   color: '#d97706',
+};
+
+const primaryDividerStyle = {
+   border: 'none',
+   borderTop: '1px solid #f3d5c0',
    width: '100%',
    marginBottom: '24px',
-   display: 'flex',
-   justifyContent: 'center',
-   alignItems: 'center',
 };
 
-const socialSeparator = {
-   padding: '0 16px',
+const alternateDividerStyle = {
+   border: 'none',
+   borderTop: '1px solid #f3d5c0',
+   width: '100%',
+   margin: '24px 0',
 };
 
-const subtitle = {
+const scriptureSection = {
+   backgroundColor: '#fff1e6',
+   borderRadius: '14px',
+   padding: '28px 24px',
+   textAlign: 'center' as const,
+};
+
+const scriptureText = {
    fontSize: '18px',
-   fontWeight: '700',
-   textAlign: 'center' as const,
+   lineHeight: '1.7',
+   fontStyle: 'italic',
+   color: '#3b2a1a',
+   margin: 0,
 };
 
-const table = {
-   width: '100%',
-   borderCollapse: 'collapse' as const,
-   border: '5px solid #000000',
+const wordHeaderText = {
+   fontSize: '20px',
+   fontWeight: 600,
+   color: '#2a1f16',
+   marginBottom: '12px',
+   textTransform: 'capitalize' as const,
 };
 
-const tableRow = {
-   width: '100%',
-   borderBottom: '1px solid #d6d6d6',
-   marginBottom: '16px',
+const wordBodyText = {
+   fontSize: '15px',
+   lineHeight: '1.8',
+   color: '#5f4b3a',
 };
 
-const tableBodyColumn = {
-   padding: '16px',
-   fontSize: '16px',
-   color: '#000000',
-   textAlign: 'center' as const,
+const socialLinkURL = { margin: '0 6px', display: 'inline-block' };
+
+const socialLinkImage = {
+   backgroundColor: '#fff1e6',
+   borderRadius: '10px',
+   padding: '6px',
 };
 
-const tableHeaderColumn = {
-   fontSize: '14px',
-   fontWeight: '700',
-   textAlign: 'center' as const,
-   padding: '16px',
-   textTransform: 'uppercase' as const,
+const salutationName = {
+   fontSize: '12px',
+   color: '#a0836d',
+   marginBottom: '8px',
 };
+
+const stayConnectedText = {
+   fontSize: '13px',
+   color: '#8a6d5a',
+   marginBottom: '14px',
+};
+
+const footerSection = { textAlign: 'center' as const, marginBottom: '18px' };
+
+const unsubscribeText = { color: '#a0836d', textDecoration: 'underline' };
+
+const unsubscribeTextMain = { fontSize: '12px' };
 
 export default NewsletterEmail;

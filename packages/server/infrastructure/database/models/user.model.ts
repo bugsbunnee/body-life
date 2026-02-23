@@ -14,11 +14,16 @@ const userSchema = new mongoose.Schema(
       prayerCell: { type: mongoose.Schema.ObjectId, ref: 'PrayerCell', required: false },
       notes: { type: String, required: false },
       isFirstTimer: { type: Boolean, default: false },
+      isSubscribedToNewsletter: { type: Boolean, default: true },
+      reasonForUnsubscription: { type: String, required: false },
    },
    {
       timestamps: true,
    }
 );
 
-export type IUser = mongoose.InferSchemaType<typeof userSchema>;
+export type IUser = mongoose.InferSchemaType<typeof userSchema> & {
+   _id: mongoose.Types.ObjectId;
+};
+
 export const User = mongoose.model<IUser>('User', userSchema);

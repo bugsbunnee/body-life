@@ -55,6 +55,10 @@ interface UserQuery extends PaginationQuery {
    prayerCell?: string;
 }
 
+interface ProgramQuery extends PaginationQuery, DateRangeQuery {
+   search?: string;
+}
+
 interface MessageQuery extends PaginationQuery, DateRangeQuery {
    title?: string;
 }
@@ -71,7 +75,9 @@ interface QueryStore {
    userQuery: UserQuery;
    messageQuery: MessageQuery;
    serviceReportQuery: ServiceReportQuery;
+   programQuery: ProgramQuery;
    resetQuery: () => void;
+   onSetProgram: (program: ProgramQuery) => void;
    onSetSearch: (search: string) => void;
    onSetServiceReport: (serviceReport: ServiceReportQuery) => void;
    onSetFirstTimer: (firstTimer: FirstTimerQuery) => void;
@@ -113,6 +119,10 @@ const defaultStore = {
       startDate: dayjs().startOf('year').toDate(),
       endDate: dayjs().endOf('year').toDate(),
    },
+   programQuery: {
+      startDate: dayjs().startOf('month').toDate(),
+      endDate: dayjs().endOf('month').toDate(),
+   },
    prayerCellQuery: {},
    departmentQuery: {},
    userQuery: {},
@@ -121,6 +131,7 @@ const defaultStore = {
 const useQueryStore = create<QueryStore>((set) => ({
    ...defaultStore,
    resetQuery: () => set(() => ({ ...defaultStore })),
+   onSetProgram: (program) => set((store) => ({ programQuery: { ...store.programQuery, ...program } })),
    onSetPrayerCell: (prayerCell) => set((store) => ({ prayerCellQuery: { ...store.prayerCellQuery, ...prayerCell } })),
    onSetServiceReport: (serviceReport) => set((store) => ({ serviceReportQuery: { ...store.serviceReportQuery, ...serviceReport } })),
    onSetMessage: (message) => set((store) => ({ messageQuery: { ...store.messageQuery, ...message } })),

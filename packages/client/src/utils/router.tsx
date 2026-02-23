@@ -5,16 +5,18 @@ import ChatBot from '@/components/chat/chat-bot';
 import ErrorPage from '@/pages/ErrorPage';
 import Dashboard from '@/pages/Dashboard';
 import DepartmentPage from '@/pages/DepartmentPage';
-import HomePage from '@/pages/HomePage';
 import FirstTimersPage from '@/pages/FirstTimersPage';
+import HomePage from '@/pages/HomePage';
+import InventoryPage from '@/pages/InventoryPage';
 import LoginPage from '@/pages/LoginPage';
 import MessagesPage from '@/pages/MessagesPage';
 import PrayerCellsPage from '@/pages/PrayerCellsPage';
+import ProgramsPage from '@/pages/ProgramsPage';
 import PublicRoute from '@/pages/PublicRoute';
 import ResetPassword from '@/pages/ResetPasswordPage';
 import ServiceReportPage from '@/pages/ServiceReportPage';
 import UsersPage from '@/pages/UsersPage';
-import InventoryPage from '@/pages/InventoryPage';
+import UnsubscribePage from '@/pages/UnsubscribePage';
 
 const routes: RouteObject[] = [
    {
@@ -27,12 +29,17 @@ const routes: RouteObject[] = [
             element: <ChatBot />,
          },
          {
+            index: true,
             path: APP_ROUTES.AUTH,
             element: <LoginPage />,
          },
          {
             path: APP_ROUTES.SETUP_PASSWORD,
             element: <ResetPassword />,
+         },
+         {
+            path: APP_ROUTES.UNSUBSCRIBE,
+            element: <UnsubscribePage />,
          },
          {
             path: '*',
@@ -68,6 +75,10 @@ const routes: RouteObject[] = [
          {
             path: APP_ROUTES.FIRST_TIMERS,
             element: <FirstTimersPage />,
+         },
+         {
+            path: APP_ROUTES.PROGRAMS,
+            element: <ProgramsPage />,
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,

@@ -1,7 +1,7 @@
 import express from 'express';
 
 import validate from '../middleware/validate';
-import upload from '../services/upload.service';
+import upload from '../services/multer.service';
 
 import { chatController } from '../controllers/chat.controller';
 import { ChatSchema } from '../infrastructure/database/validators/chat.validator';

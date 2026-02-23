@@ -110,6 +110,17 @@ export interface PaginationProps {
    totalPages: number;
 }
 
+export interface Program {
+   _id: string;
+   imageUrl: string;
+   title: string;
+   description: string;
+   address: string;
+   scheduledFor: Date;
+   isActive: boolean;
+   isUpcoming: boolean;
+}
+
 export interface Route {
    path: string;
    label: string;

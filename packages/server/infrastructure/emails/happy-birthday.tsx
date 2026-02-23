@@ -1,11 +1,10 @@
 import React from 'react';
 import { Body, Column, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text, Row } from '@react-email/components';
+import { FRONTEND_BASE_URL } from '../../utils/constants';
 
 interface Props {
    userFirstName: string;
 }
-
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://yourchurch.org';
 
 const HappyBirthdayEmail: React.FC<Props> = ({ userFirstName }) => (
    <Html>
@@ -15,7 +14,7 @@ const HappyBirthdayEmail: React.FC<Props> = ({ userFirstName }) => (
       <Body style={main}>
          <Container style={container}>
             <Section style={logo}>
-               <Img width={140} src={`${baseUrl}/static/church-logo.png`} alt="Church Logo" />
+               <Img width={140} src={`${FRONTEND_BASE_URL}/images/logo.png`} alt="RCNLagos Island Church" />
             </Section>
 
             <Section style={header}>
@@ -26,7 +25,7 @@ const HappyBirthdayEmail: React.FC<Props> = ({ userFirstName }) => (
                   </Column>
 
                   <Column style={headerImageContainer}>
-                     <Img style={headerImage} width={280} src={`${baseUrl}/static/birthday-cross.png`} alt="Birthday celebration" />
+                     <Img style={headerImage} width={280} src={`${FRONTEND_BASE_URL}/images/birthday.png`} alt="Birthday celebration" />
                   </Column>
                </Row>
             </Section>

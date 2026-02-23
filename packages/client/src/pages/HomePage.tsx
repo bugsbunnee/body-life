@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
 
 import { Link, useNavigate } from 'react-router-dom';
-import { APP_ROUTES } from '@/utils/constants';
+import { MessageCircleCodeIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { RangeDatePicker } from '@/components/ui/datepicker';
+import { APP_ROUTES } from '@/utils/constants';
 import { formatDateRange } from '@/lib/utils';
 
 import Conditional from '@/components/common/conditional';
@@ -16,11 +18,15 @@ import DashboardGridSkeleton from '@/components/layout/dashboard/dashboard-grid-
 import EmptyState from '@/components/common/empty-state';
 import FirstTimerMetrics from '@/components/layout/first-timers/first-timer-metrics';
 import Header from '@/components/common/header';
+import Modal from '@/components/common/modal';
+import SendNewsletterForm from '@/components/forms/newsletter/send-newsletter-form';
 
 import useDashboard from '@/hooks/useDashboard';
 import useQueryStore from '@/store/query';
 
 const HomePage: React.FC = () => {
+   const [isNewsletterVisible, setNewsletterVisible] = useState(false);
+
    const { dateRangeQuery, onSetSearch, onSetDateRange } = useQueryStore();
    const { data, isFetching } = useDashboard();
 
@@ -34,6 +40,12 @@ const HomePage: React.FC = () => {
       <>
          <Header title="Dashboard" onSearch={onSetSearch} />
 
+         <Conditional visible={isNewsletterVisible}>
+            <Modal onClose={() => setNewsletterVisible(false)} title="Send Newsletter" visible>
+               <SendNewsletterForm onSendNewsletter={() => setNewsletterVisible(false)} />
+            </Modal>
+         </Conditional>
+
          <div className="p-6 border-b-border border-b ">
             <div className="flex items-center justify-between mb-8">
                <div className="">
@@ -42,6 +54,15 @@ const HomePage: React.FC = () => {
                </div>
 
                <div className="flex gap-x-4">
+                  <Button
+                     onClick={() => setNewsletterVisible(true)}
+                     variant="ghost"
+                     className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left text-base text-white"
+                  >
+                     <MessageCircleCodeIcon className="ml-auto h-4 w-4 opacity-50" />
+                     <span>Send Newsletter</span>
+                  </Button>
+
                   <RangeDatePicker
                      dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
                      onSelectRange={(range) => onSetDateRange({ startDate: range.from!, endDate: range.to! })}

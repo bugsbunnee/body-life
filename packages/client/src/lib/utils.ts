@@ -59,3 +59,7 @@ export function formatDateRange(dateRange: DateRange) {
 
    return `${format(dateRange.from!, 'MMM d, yyyy')} - ${format(dateRange.to!, 'MMM d, yyyy')}`;
 }
+
+export function summarize(text: string, limit: number = 10) {
+   return text.length < limit ? text : text.substring(0, limit) + '...';
+}
