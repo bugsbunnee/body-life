@@ -50,6 +50,7 @@ export interface FollowUp {
    preferredContactMethod: string;
    assignedTo: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
    user: Pick<User, '_id' | 'firstName' | 'lastName' | 'phoneNumber'>;
+   service: Pick<ServiceReport, '_id' | 'serviceDate'>;
 }
 
 export interface FollowUpAttempt {
