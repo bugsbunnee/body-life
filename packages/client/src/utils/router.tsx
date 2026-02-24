@@ -26,11 +26,14 @@ const routes: RouteObject[] = [
       errorElement: <ErrorPage />,
       children: [
          {
+            index: true,
+            element: <Navigate to={APP_ROUTES.AUTH} replace />,
+         },
+         {
             path: '/chat',
             element: <ChatBot />,
          },
          {
-            index: true,
             path: APP_ROUTES.AUTH,
             element: <LoginPage />,
          },
@@ -44,7 +47,7 @@ const routes: RouteObject[] = [
          },
          {
             path: '*',
-            element: <Navigate to={APP_ROUTES.AUTH} />,
+            element: <Navigate to={APP_ROUTES.AUTH} replace />,
          },
       ],
    },
