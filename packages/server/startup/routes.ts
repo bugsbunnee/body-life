@@ -2,6 +2,8 @@ import express, { type Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
+import { FRONTEND_BASE_URL } from '../utils/constants';
+
 import auth from '../routes/auth.route';
 import chat from '../routes/chat.route';
 import communication from '../routes/communication.route';
@@ -19,11 +21,17 @@ import weeklyReview from '../routes/weekly-review.route';
 import user from '../routes/user.route';
 import error from '../middleware/error';
 
+const corsOptions = {
+   origin: FRONTEND_BASE_URL,
+   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+   credentials: true,
+};
+
 function configureRoutes(app: Express) {
    app.use(express.json());
    app.use(express.static('public'));
 
-   app.use(cors({ origin: 'https://body-life-client.vercel.app' }));
+   app.use(cors(corsOptions));
    app.use(helmet());
 
    app.use('/api/auth', auth);
