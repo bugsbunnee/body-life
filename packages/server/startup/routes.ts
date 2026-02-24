@@ -28,13 +28,13 @@ const corsOptions = {
 };
 
 function configureRoutes(app: Express) {
+   app.use(cors(corsOptions));
+   app.options('*', cors());
+
    app.use(express.json());
    app.use(express.static('public'));
 
    app.use(helmet());
-
-   app.use(cors(corsOptions));
-   app.options('*', cors());
 
    app.use('/api/auth', auth);
    app.use('/api/birthday', birthday);
