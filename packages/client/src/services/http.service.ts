@@ -4,7 +4,7 @@ import { getUser, logout } from './user.service';
 import { APP_ROUTES } from '@/utils/constants';
 
 const http = axios.create({
-   baseURL: import.meta.env.VITE_APP_BASE_URL,
+   baseURL: import.meta.env.VITE_API_URL,
 });
 
 http.interceptors.request.use((config) => {
