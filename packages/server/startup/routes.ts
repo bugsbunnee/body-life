@@ -23,7 +23,7 @@ function configureRoutes(app: Express) {
    app.use(express.json());
    app.use(express.static('public'));
 
-   app.use(cors());
+   app.use(cors({ origin: 'https://body-life-client.vercel.app' }));
    app.use(helmet());
 
    app.use('/api/auth', auth);
