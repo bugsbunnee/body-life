@@ -17,6 +17,7 @@ import ResetPassword from '@/pages/ResetPasswordPage';
 import ServiceReportPage from '@/pages/ServiceReportPage';
 import UsersPage from '@/pages/UsersPage';
 import UnsubscribePage from '@/pages/UnsubscribePage';
+import WeeklyReviewPage from '@/pages/WeeklyReviewPage';
 
 const routes: RouteObject[] = [
    {
@@ -83,6 +84,10 @@ const routes: RouteObject[] = [
          {
             path: APP_ROUTES.SERVICE_REPORT,
             element: <ServiceReportPage />,
+         },
+         {
+            path: APP_ROUTES.WEEKLY_REPORTS,
+            element: <WeeklyReviewPage />,
          },
          {
             path: APP_ROUTES.MESSAGES,

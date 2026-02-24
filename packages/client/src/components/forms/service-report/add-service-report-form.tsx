@@ -59,7 +59,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
          onAddServiceReport();
       },
       onError: (error) =>
-         toast('Could not upload the messsage', {
+         toast('Could not upload the report', {
             description: getErrorMessage(error),
          }),
    });

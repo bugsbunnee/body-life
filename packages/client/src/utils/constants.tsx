@@ -1,9 +1,8 @@
 import _ from 'lodash';
 
-import { Calendar, ChurchIcon, Cross, GroupIcon, NewspaperIcon, ToolCaseIcon } from 'lucide-react';
+import { Calendar, ChurchIcon, Cross, GroupIcon, NewspaperIcon, PaperclipIcon, ToolCaseIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
-import { HiOutlineCog } from 'react-icons/hi';
 import { MdReport } from 'react-icons/md';
 
 import type { Route } from './entities';
@@ -21,6 +20,7 @@ export const APP_ROUTES = {
    PRAYER_CELLS: '/dashboard/prayer-cells',
    SETUP_PASSWORD: '/reset-password',
    SERVICE_REPORT: '/dashboard/service-report',
+   WEEKLY_REPORTS: '/dashboard/weekly-reports',
    UNSUBSCRIBE: '/unsubscribe',
 };
 
@@ -70,20 +70,14 @@ export const sections: Route[] = [
             Icon: MdReport,
          },
          {
+            path: APP_ROUTES.WEEKLY_REPORTS,
+            label: 'Weekly Reports',
+            Icon: PaperclipIcon,
+         },
+         {
             path: APP_ROUTES.MESSAGES,
             label: 'Messages',
             Icon: Cross,
-         },
-      ],
-   },
-   {
-      path: 'none',
-      label: 'Account Pages',
-      subroutes: [
-         {
-            path: '/settings',
-            label: 'Settings',
-            Icon: HiOutlineCog,
          },
       ],
    },

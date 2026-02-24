@@ -9,11 +9,13 @@ import HappyBirthdayEmail from '../infrastructure/emails/happy-birthday';
 import FollowUpAssignmentEmail from '../infrastructure/emails/follow-up-assignment';
 import NewsletterEmail from '../infrastructure/emails/newsletter';
 import WelcomeEmail from '../infrastructure/emails/welcome';
+import WeeklyReviewEmail from '../infrastructure/emails/weekly-review';
 
 import type { IMessage, IMessageWithId } from '../infrastructure/database/models/message.model';
 import type { IUser } from '../infrastructure/database/models/user.model';
 import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 import type { INewsletter } from '../infrastructure/database/validators/communication.validator';
+import type { IWeeklyReview } from '../infrastructure/database/models/weekly-review.model';
 
 import { messageRepository } from '../repositories/message.repository';
 import { programRepository } from '../repositories/program.repository';
@@ -124,6 +126,16 @@ export const communicationService = {
       const response = await emailService.sendBatchEmails(emailData);
 
       return { success: true, message: `Newsletter sent out to ${users.length} members successfully!`, data: response };
+   },
+
+   async sendOutWeeklyReview(weeklyReview: IWeeklyReview, departmentName: string, serviceDate: string) {
+      const response = await emailService.sendSingleEmail({
+         to: ['chukwuma.marcel00@gmail.com'],
+         subject: 'Weely Report Submission by ',
+         react: <WeeklyReviewEmail weeklyReview={weeklyReview} departmentName={departmentName} formattedServiceDate={serviceDate} />,
+      });
+
+      return { success: true, message: `Email sent out to recipients successfully!`, data: response };
    },
 
    async generateMessageSummary(message: IMessageWithId) {

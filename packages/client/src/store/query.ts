@@ -59,6 +59,12 @@ interface ProgramQuery extends PaginationQuery, DateRangeQuery {
    search?: string;
 }
 
+interface WeeklyReviewQuery extends PaginationQuery, DateRangeQuery {
+   search?: string;
+   service?: string;
+   department?: string;
+}
+
 interface MessageQuery extends PaginationQuery, DateRangeQuery {
    title?: string;
 }
@@ -76,6 +82,7 @@ interface QueryStore {
    messageQuery: MessageQuery;
    serviceReportQuery: ServiceReportQuery;
    programQuery: ProgramQuery;
+   weeklyReviewQuery: WeeklyReviewQuery;
    resetQuery: () => void;
    onSetProgram: (program: ProgramQuery) => void;
    onSetSearch: (search: string) => void;
@@ -84,6 +91,7 @@ interface QueryStore {
    onSetDepartment: (department: DepartmentQuery) => void;
    onSetInventory: (inventory: InventoryQuery) => void;
    onSetPrayerCell: (prayerCell: PrayerCellQuery) => void;
+   onSetWeeklyReview: (weeklyReview: WeeklyReviewQuery) => void;
    onSetMessage: (message: MessageQuery) => void;
    onSetUser: (user: UserQuery) => void;
    onSetDateRange: (dateRange: DateRangeQuery) => void;
@@ -123,6 +131,10 @@ const defaultStore = {
       startDate: dayjs().startOf('month').toDate(),
       endDate: dayjs().endOf('month').toDate(),
    },
+   weeklyReviewQuery: {
+      startDate: dayjs().startOf('month').toDate(),
+      endDate: dayjs().endOf('month').toDate(),
+   },
    prayerCellQuery: {},
    departmentQuery: {},
    userQuery: {},
@@ -133,6 +145,7 @@ const useQueryStore = create<QueryStore>((set) => ({
    resetQuery: () => set(() => ({ ...defaultStore })),
    onSetProgram: (program) => set((store) => ({ programQuery: { ...store.programQuery, ...program } })),
    onSetPrayerCell: (prayerCell) => set((store) => ({ prayerCellQuery: { ...store.prayerCellQuery, ...prayerCell } })),
+   onSetWeeklyReview: (weeklyReview) => set((store) => ({ weeklyReviewQuery: { ...store.weeklyReviewQuery, ...weeklyReview } })),
    onSetServiceReport: (serviceReport) => set((store) => ({ serviceReportQuery: { ...store.serviceReportQuery, ...serviceReport } })),
    onSetMessage: (message) => set((store) => ({ messageQuery: { ...store.messageQuery, ...message } })),
    onSetInventory: (inventory) => set((store) => ({ inventoryQuery: { ...store.inventoryQuery, ...inventory } })),

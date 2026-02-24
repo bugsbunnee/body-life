@@ -23,7 +23,7 @@ const FollowUpAssignmentEmail: React.FC<Props> = ({ followUp, firstTimer, userFi
             <Body className="bg-[#f2f2f2] py-[16px] w-full h-full font-sans">
                <Container className="bg-white p-[64px] h-full">
                   <Section className="">
-                     <Img src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1733581974/dulux_kbafe5.png" width="97" height="57" alt="Dulux" className="object-contain" />
+                     <Img src={FRONTEND_BASE_URL + '/images/logo.png'} width="97" height="57" alt="Dulux" className="object-contain" />
 
                      <Heading style={header}>Member Assigned For Follow Up!!!</Heading>
                   </Section>
@@ -50,6 +50,7 @@ const FollowUpAssignmentEmail: React.FC<Props> = ({ followUp, firstTimer, userFi
                            <thead>
                               <tr>
                                  <th style={tableHeaderColumn}>Full Name</th>
+                                 <th style={tableHeaderColumn}>Phone Number</th>
                                  <th style={tableHeaderColumn}>Preferred Contact Method</th>
                                  <th style={tableHeaderColumn}>Notes</th>
                                  <th style={tableHeaderColumn}>Status</th>
@@ -65,7 +66,7 @@ const FollowUpAssignmentEmail: React.FC<Props> = ({ followUp, firstTimer, userFi
                                  </td>
 
                                  <td style={tableBodyColumn}>
-                                    <Text style={productText}>{followUp.preferredContactMethod}</Text>
+                                    <Text style={productText}>{firstTimer.phoneNumber}</Text>
                                  </td>
 
                                  <td style={tableBodyColumn}>
@@ -91,18 +92,30 @@ const FollowUpAssignmentEmail: React.FC<Props> = ({ followUp, firstTimer, userFi
                      <Hr className="mt-[64px] mb-0" />
                   </Section>
 
-                  <Section className="mt-[24px]">
-                     <Link>
-                        <Img
-                           src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1733577801/twitter_holpou.png"
-                           width="24"
-                           height="24"
-                           alt="Twitter"
-                           className="object-contain"
-                        />
-                     </Link>
+                  <Section style={footerSection}>
+                     <Text style={stayConnectedText}>Stay connected with us</Text>
 
-                     <Text style={footer}>Copyright © {new Date().getFullYear()} info@rcnlagosisland.com</Text>
+                     <Section>
+                        <Link href="https://www.instagram.com/images/instagram.jpg" style={socialLinkURL}>
+                           <Img src={FRONTEND_BASE_URL + '/images/instagram.jpg'} width="36" height="36" alt="Instagram" style={socialLinkImage} />
+                        </Link>
+
+                        <Link href="https://web.facebook.com/profile.php?id=61553792941216" style={socialLinkURL}>
+                           <Img src={FRONTEND_BASE_URL + '/images/facebook.jpg'} width="36" height="36" alt="Facebook" style={socialLinkImage} />
+                        </Link>
+
+                        <Link href="https://www.youtube.com/@rcnlagosisland" style={socialLinkURL}>
+                           <Img src={FRONTEND_BASE_URL + '/images/youtube.png'} width="36" height="36" alt="YouTube" style={socialLinkImage} />
+                        </Link>
+                     </Section>
+                  </Section>
+
+                  <Section style={centerText}>
+                     <Text style={salutationName}>© {new Date().getFullYear()} RCNLagos Island Church</Text>
+
+                     <Text style={salutationName}>
+                        You are receiving this email because you provided us your email address to keep in touch. Want to change how you receive these emails?
+                     </Text>
                   </Section>
                </Container>
             </Body>
@@ -117,6 +130,8 @@ const body = {
    fontWeight: '400',
    color: '#333333',
 };
+
+const centerText = { textAlign: 'center' as const };
 
 const footer = {
    fontSize: '12px',
@@ -154,6 +169,12 @@ const salutationHeader = {
    lineHeight: '24px',
    fontWeight: '400',
    margin: '0px',
+};
+
+const salutationName = {
+   fontSize: '12px',
+   color: '#a0836d',
+   marginBottom: '8px',
 };
 
 const productSection = {
@@ -203,5 +224,21 @@ const trackOrder = {
    fontWeight: '500',
    color: '#FFFFFF',
 };
+
+const socialLinkURL = { margin: '0 6px', display: 'inline-block' };
+
+const socialLinkImage = {
+   backgroundColor: '#fff1e6',
+   borderRadius: '10px',
+   padding: '6px',
+};
+
+const stayConnectedText = {
+   fontSize: '13px',
+   color: '#8a6d5a',
+   marginBottom: '14px',
+};
+
+const footerSection = { textAlign: 'center' as const, marginBottom: '18px' };
 
 export default FollowUpAssignmentEmail;

@@ -167,3 +167,16 @@ export interface User {
    updatedAt: Date;
    notes: string;
 }
+
+export interface WeeklyReview {
+   department: Pick<Department, '_id' | 'name'>;
+   serviceDate: Date;
+   submittedBy: Pick<User, '_id' | 'firstName' | 'lastName'>;
+   submittedAt: Date;
+   feedback?: string | null;
+   feedbackDueForActionAt?: Date | null;
+   fields: Array<{
+      value: string;
+      label: string;
+   }>;
+}

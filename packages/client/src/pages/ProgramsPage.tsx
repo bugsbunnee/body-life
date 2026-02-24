@@ -3,15 +3,20 @@ import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
+import { useMutation } from '@tanstack/react-query';
+import { FaSpinner } from 'react-icons/fa';
 import { cn, exportToExcel, summarize } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Program } from '@/utils/entities';
 
 import AddProgramForm from '@/components/forms/program/add-program-form';
+import Conditional from '@/components/common/conditional';
 import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
 import Summary from '@/components/common/summary';
+
+import http from '@/services/http.service';
 
 import usePrograms from '@/hooks/usePrograms';
 import useQueryStore from '@/store/query';
@@ -23,10 +28,6 @@ import { DataTable } from '@/components/ui/datatable';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RangeDatePicker } from '@/components/ui/datepicker';
-import { useMutation } from '@tanstack/react-query';
-import http from '@/services/http.service';
-import Conditional from '@/components/common/conditional';
-import { FaSpinner } from 'react-icons/fa';
 
 const ProgramsPage: React.FC = () => {
    const [isAddProgramVisible, setAddProgramVisible] = useState(false);
@@ -143,7 +144,7 @@ const ProgramsPage: React.FC = () => {
       ];
 
       return columns;
-   }, []);
+   }, [mutation]);
 
    useEffect(() => {
       resetQuery();

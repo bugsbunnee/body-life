@@ -15,6 +15,7 @@ import prayerCell from '../routes/prayer-cell.route';
 import sms from '../routes/sms.route';
 import seed from '../routes/seed.route';
 import serviceReport from '../routes/service-report.route';
+import weeklyReview from '../routes/weekly-review.route';
 import user from '../routes/user.route';
 import error from '../middleware/error';
 
@@ -35,6 +36,7 @@ function configureRoutes(app: Express) {
    app.use('/api/message', message);
    app.use('/api/program', program);
    app.use('/api/user', user);
+   app.use('/api/weekly-review', weeklyReview);
    app.use('/api/prayer-cell', prayerCell);
    app.use('/api/seed', seed);
    app.use('/api/service-report', serviceReport);

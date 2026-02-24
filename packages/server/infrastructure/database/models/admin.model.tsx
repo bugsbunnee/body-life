@@ -1,4 +1,4 @@
-import { Document, Schema, model, type InferSchemaType } from 'mongoose';
+import mongoose, { Document, Schema, model, type InferSchemaType } from 'mongoose';
 
 import _ from 'lodash';
 import crypto from 'crypto';
@@ -47,7 +47,9 @@ const adminSchema = new Schema(
    { timestamps: true }
 );
 
-export type IAdmin = InferSchemaType<typeof adminSchema>;
+export type IAdmin = InferSchemaType<typeof adminSchema> & {
+   _id: mongoose.Types.ObjectId;
+};
 
 export type IAdminDocument = IAdmin & Document & IAdminMethods;
 
