@@ -29,9 +29,7 @@ const corsOptions = {
 
 function configureRoutes(app: Express) {
    app.use(helmet());
-
    app.use(cors(corsOptions));
-   app.options('*', cors(corsOptions));
 
    app.use(express.json());
    app.use(express.static('public'));

@@ -5,7 +5,6 @@ import { APP_ROUTES } from '@/utils/constants';
 
 const http = axios.create({
    baseURL: import.meta.env.VITE_API_URL,
-   withCredentials: true,
 });
 
 http.interceptors.request.use((config) => {
