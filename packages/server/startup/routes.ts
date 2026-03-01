@@ -1,8 +1,5 @@
 import express, { type Express } from 'express';
-import cors from 'cors';
 import helmet from 'helmet';
-
-import { FRONTEND_BASE_URL } from '../utils/constants';
 
 import auth from '../routes/auth.route';
 import chat from '../routes/chat.route';
@@ -21,17 +18,7 @@ import weeklyReview from '../routes/weekly-review.route';
 import user from '../routes/user.route';
 import error from '../middleware/error';
 
-const corsOptions = {
-   origin: FRONTEND_BASE_URL,
-   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-   allowedHeaders: ['Content-Type', 'Authorization'],
-   credentials: true,
-};
-
 function configureRoutes(app: Express) {
-   app.use(cors(corsOptions));
-   app.options('*', cors(corsOptions));
-
    app.use(helmet());
    app.use(express.json());
    app.use(express.static('public'));
