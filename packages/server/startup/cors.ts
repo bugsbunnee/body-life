@@ -7,7 +7,7 @@ function configureCors(app: Express) {
    const corsOptions = {
       origin: FRONTEND_BASE_URL,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      allowedHeaders: ['X-Auth-Token', 'Content-Type', 'Authorization'],
    };
 
    app.use(cors(corsOptions));

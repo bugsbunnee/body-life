@@ -63,7 +63,7 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
                               <td className="pb-6 flex items-center">
                                  <Badge
                                     className={cn({
-                                       'bg-orange-100 text-orange-600': isExpired,
+                                       'bg-orange-100 text-orange-500': isExpired,
                                        'bg-green-100 text-green-600': !isExpired,
                                     })}
                                  >

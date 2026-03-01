@@ -8,6 +8,7 @@ import DepartmentPage from '@/pages/DepartmentPage';
 import FirstTimersPage from '@/pages/FirstTimersPage';
 import HomePage from '@/pages/HomePage';
 import InventoryPage from '@/pages/InventoryPage';
+import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import MessagesPage from '@/pages/MessagesPage';
 import PrayerCellsPage from '@/pages/PrayerCellsPage';
@@ -27,7 +28,7 @@ const routes: RouteObject[] = [
       children: [
          {
             index: true,
-            element: <Navigate to={APP_ROUTES.AUTH} replace />,
+            element: <LandingPage />,
          },
          {
             path: '/chat',

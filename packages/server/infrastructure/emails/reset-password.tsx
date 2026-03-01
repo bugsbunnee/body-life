@@ -1,5 +1,6 @@
 import React from 'react';
 import { Body, Button, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text } from '@react-email/components';
+import { FRONTEND_BASE_URL } from '../../utils/constants';
 
 interface Props {
    userFirstName: string;
@@ -16,7 +17,7 @@ const SetupPasswordEmail: React.FC<Props> = ({ userFirstName, verificationUrl, e
       <Body style={main}>
          <Container style={container}>
             <Section style={box}>
-               <Img src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1733581974/dulux_kbafe5.png" width="49" height="21" alt="Stripe" />
+               <Img src={FRONTEND_BASE_URL + '/images/logo.png'} width="97" height="57" alt="RCNLagos Island Church" className="object-contain" />
 
                <Hr style={hr} />
 

@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 
 import type { NextFunction, Request, Response } from 'express';
-import type { IAdmin } from '../infrastructure/database/models/admin.model';
+import type { IUser } from '../infrastructure/database/models/user.model';
 
 import jwt from 'jsonwebtoken';
 
@@ -13,7 +13,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
    }
 
    try {
-      req.admin = jwt.verify(token, process.env.JWT_SECRET!) as IAdmin;
+      req.admin = jwt.verify(token, process.env.JWT_SECRET!) as IUser;
    } catch (error) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid or expired token!' });
    }

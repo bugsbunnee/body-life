@@ -15,7 +15,7 @@ const DashboardTrend: React.FC<Props> = ({ percentage, update }) => {
             'flex items-center gap-x-1 text-xs font-bold rounded-xs': true,
             'bg-green-100 p-1 text-green-600': update === 'increment',
             'bg-red-100 p-1 text-red-600': update === 'decrement',
-            'bg-orange-100 p-1 text-orange-600': update === 'same',
+            'bg-orange-100 p-1 text-orange-500': update === 'same',
          })}
       >
          <Conditional visible={update === 'increment'}>

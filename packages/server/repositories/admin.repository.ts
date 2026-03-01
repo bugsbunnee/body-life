@@ -1,30 +1,26 @@
 import mongoose from 'mongoose';
 
-import { Admin } from '../infrastructure/database/models/admin.model';
 import { Role } from '../infrastructure/database/models/role.model';
-
-import type { IAdminCreate } from '../infrastructure/database/validators/auth.validator';
+import { User } from '../infrastructure/database/models/user.model';
+import { FRONTEND_BASE_URL } from '../utils/constants';
 
 export const adminRepository = {
    async getActiveAdminByEmail(email: string) {
-      return Admin.findOne({ email, isActive: true }).exec();
+      return User.findOne({ email, isAdmin: true }).exec();
    },
 
-   async createAdminAccount(admin: IAdminCreate) {
-      return Admin.create({
-         imageUrl: admin.imageUrl,
-         firstName: admin.firstName,
-         lastName: admin.lastName,
-         email: admin.email,
-         designation: admin.designation,
-         password: 'something',
-         isActive: true,
-         roles: admin.roles,
-      });
+   async assignUserAsAdmin(userId: mongoose.Types.ObjectId) {
+      return User.findByIdAndUpdate(userId, {
+         $set: {
+            isAdmin: true,
+            adminActivatedAt: new Date(),
+            imageUrl: FRONTEND_BASE_URL + '/images/admin.png',
+         },
+      }).exec();
    },
 
    async getAdminForPasswordReset(token: string) {
-      return Admin.findOne({
+      return User.findOne({
          passwordResetToken: token,
          passwordResetTokenExpiryDate: { $gt: Date.now() },
       }).exec();

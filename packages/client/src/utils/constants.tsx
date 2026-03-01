@@ -9,6 +9,7 @@ import type { Route } from './entities';
 
 export const APP_ROUTES = {
    AUTH: '/auth',
+   HOME: '/',
    DASHBOARD: '/dashboard',
    DEPARTMENT: '/dashboard/departments',
    FIRST_TIMERS: '/dashboard/first-timers',
@@ -27,7 +28,7 @@ export const APP_ROUTES = {
 export const sections: Route[] = [
    {
       path: 'none',
-      label: '',
+      label: 'Home',
       subroutes: [
          {
             path: APP_ROUTES.DASHBOARD,
@@ -224,6 +225,10 @@ export const FOLLOW_UP_FEEDBACK_STATUS = [
       name: 'integrated',
    },
 ];
+
+export const FEATURES = {
+   HIDE_ANNOUNCEMENTS: false,
+};
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 export const ACCEPTED_TYPES = ['image/jpeg', 'image/png'];

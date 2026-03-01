@@ -45,7 +45,7 @@ const UnsubscribeNewsletterForm: React.FC<Props> = ({ userId, onUnsubscribe }) =
          <form onSubmit={form.handleSubmit((user) => mutation.mutate(user))} className="space-y-4">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
                <h1 className="text-4xl md:text-5xl font-medium text-slate-900 mb-6 leading-[1.1]">
-                  We're sorry to see <span className="text-orange-600 italic">you go.</span>
+                  We're sorry to see <span className="text-orange-500 italic">you go.</span>
                </h1>
 
                <p className="text-lg text-slate-600 mb-8 leading-relaxed font-light">

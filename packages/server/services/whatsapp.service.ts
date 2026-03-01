@@ -21,7 +21,7 @@ export const whatsappService = {
             to,
             type: 'template',
             template: {
-               name: 'hello_world',
+               name: 'follow_up_notification',
                language: {
                   code: 'en_US',
                },
@@ -43,7 +43,7 @@ export const whatsappService = {
             to: user.phoneNumber,
             type: 'template',
             template: {
-               name: 'hello_world',
+               name: 'happy_birthday',
                language: {
                   code: 'en_US',
                },

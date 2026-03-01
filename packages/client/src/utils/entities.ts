@@ -122,14 +122,16 @@ export interface Program {
    isUpcoming: boolean;
 }
 
+export interface SubRoute {
+   Icon: IconType;
+   path: string;
+   label: string;
+}
+
 export interface Route {
    path: string;
    label: string;
-   subroutes: {
-      Icon: IconType;
-      path: string;
-      label: string;
-   }[];
+   subroutes: SubRoute[];
 }
 
 export interface ServiceReport {

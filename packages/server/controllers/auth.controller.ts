@@ -2,16 +2,17 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 import type { Request, Response } from 'express';
-
 import { StatusCodes } from 'http-status-codes';
-import { adminRepository } from '../repositories/admin.repository';
+
 import { lib } from '../utils/lib';
+import { adminRepository } from '../repositories/admin.repository';
+import { userRepository } from '../repositories/user.repository';
 
 export const authController = {
    async adminLogin(req: Request, res: Response) {
       const admin = await adminRepository.getActiveAdminByEmail(req.body.email);
 
-      if (!admin) {
+      if (!admin || !admin.password) {
          return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid credentials' });
       }
 
@@ -21,40 +22,31 @@ export const authController = {
          return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid credentials' });
       }
 
-      if (!admin.isActive) {
-         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The given account is inactive. Kindly contact admin.' });
-      }
-
       const response = admin.generateAuthToken();
       await admin.sendWelcomeEmail();
 
       res.json(response);
    },
 
-   async createAdmin(req: Request, res: Response) {
-      let admin = await adminRepository.getActiveAdminByEmail(req.body.email);
+   async asignUserAsAdmin(req: Request, res: Response) {
+      let user = await userRepository.getOneUserById(req.body.user);
 
-      if (admin) {
-         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'An admin with the given email already exists' });
+      if (!user) {
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user with the given email does not exist!' });
       }
 
-      const result = await adminRepository.validateRoles(req.body.roles);
-
-      if (!result.success) {
-         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'At least one invalid role provided!' });
+      if (user.isAdmin) {
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user is already an admin.' });
       }
 
-      admin = await adminRepository.createAdminAccount({
-         firstName: req.body.firstName,
-         lastName: req.body.lastName,
-         email: req.body.email,
-         imageUrl: req.body.imageUrl,
-         designation: req.body.designation,
-         roles: result.matchedRoles.map((role) => role._id),
-      });
+      user = await adminRepository.assignUserAsAdmin(user._id);
 
-      const response = admin.generateAuthToken();
-      await admin.sendPasswordSetupEmail();
+      if (!user) {
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user with the given email does not exist!' });
+      }
+
+      const response = user.generateAuthToken();
+      await user.sendPasswordSetupEmail();
 
       res.json(response);
    },

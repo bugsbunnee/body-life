@@ -6,17 +6,11 @@ export const AuthSchema = z.object({
    password: z.string(),
 });
 
-export const AdminCreateSchema = z.object({
-   imageUrl: z.url(),
-   firstName: z.string().min(1, { error: 'First Name is required' }),
-   lastName: z.string().min(1, { error: 'Last Name is required' }),
-   email: z.email(),
-   designation: z.string().min(1, { error: 'Designation is required!' }),
-   roles: z
-      .array(z.string())
-      .min(1)
-      .refine((roles) => roles.every((role) => lib.getObjectIdIsValid(role)))
-      .transform((roles) => roles.map((role) => lib.parseObjectId(role))),
+export const AdminAssignSchema = z.object({
+   user: z
+      .string()
+      .refine((value) => lib.getObjectIdIsValid(value))
+      .transform((value) => lib.parseObjectId(value)),
 });
 
 export const AdminPasswordSchema = z
@@ -37,5 +31,5 @@ export const AdminPasswordSchema = z
       path: ['confirmPassword'],
    });
 
-export type IAdminCreate = z.infer<typeof AdminCreateSchema>;
+export type IAdminCreate = z.infer<typeof AdminAssignSchema>;
 export type IAuth = z.infer<typeof AuthSchema>;

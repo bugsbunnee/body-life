@@ -97,7 +97,7 @@ const ProgramsPage: React.FC = () => {
                <Badge
                   className={cn({
                      'bg-green-50 text-green-600': row.original.isUpcoming,
-                     'bg-orange-50 text-orange-600': !row.original.isUpcoming,
+                     'bg-orange-50 text-orange-500': !row.original.isUpcoming,
                   })}
                >
                   {row.original.isUpcoming ? 'Upcoming' : 'Past'}

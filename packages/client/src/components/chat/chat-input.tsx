@@ -4,8 +4,6 @@ import { useForm } from 'react-hook-form';
 import { FaArrowUp } from 'react-icons/fa';
 import { Button } from '../ui/button';
 
-import ChatRecorder from './chat-recorder';
-
 export type ChatFormData = {
    prompt: string;
 };
@@ -46,8 +44,6 @@ const ChatInput = ({ onSubmit }: ChatInputProps) => {
             <Button disabled={!formState.isValid} className="rounded-full w-9 h-9">
                <FaArrowUp />
             </Button>
-
-            <ChatRecorder onSubmit={onSubmit} />
          </div>
       </form>
    );

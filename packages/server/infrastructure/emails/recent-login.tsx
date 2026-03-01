@@ -1,5 +1,6 @@
 import React from 'react';
 import { Body, Container, Column, Head, Heading, Html, Img, Preview, Row, Section, Text } from '@react-email/components';
+import { FRONTEND_BASE_URL } from '../../utils/constants';
 
 interface Props {
    userFirstName: string;
@@ -16,12 +17,12 @@ const RecentLoginEmail: React.FC<Props> = ({ userFirstName, loginDate }: Props) 
          <Body style={main}>
             <Container>
                <Section style={logo}>
-                  <Img src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1733581974/dulux_kbafe5.png" />
+                  <Img src={FRONTEND_BASE_URL + '/images/logo.png'} width="97" height="57" alt="RCNLagos Island Church" className="object-contain" />
                </Section>
 
                <Section style={content}>
                   <Row>
-                     <Img style={image} width={620} src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1733577799/recent-login-header_tt9yjb.png" />
+                     <Img style={image} width={620} src={FRONTEND_BASE_URL + '/images/login.png'} />
                   </Row>
 
                   <Row style={{ ...boxInfos, paddingBottom: '0' }}>
@@ -42,10 +43,6 @@ const RecentLoginEmail: React.FC<Props> = ({ userFirstName, loginDate }: Props) 
                         <Text style={paragraphWithMargin}>If this wasn't you or if you have additional questions, please see our support page.</Text>
                      </Column>
                   </Row>
-               </Section>
-
-               <Section style={containerImageFooter}>
-                  <Img style={image} width={620} src="https://res.cloudinary.com/dgdu2dyce/image/upload/v1733577800/recent-login-footer_twob1o.png" />
                </Section>
 
                <Text style={address}>© {new Date().getFullYear()} | Citilodge Hotel, 1 Akinyemi Avenue, Off Goshen Estate Road, By Elf Bus Stop, Lekki, Lagos</Text>
