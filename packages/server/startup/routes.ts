@@ -24,13 +24,15 @@ import error from '../middleware/error';
 const corsOptions = {
    origin: FRONTEND_BASE_URL,
    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+   allowedHeaders: ['Content-Type', 'Authorization'],
    credentials: true,
 };
 
 function configureRoutes(app: Express) {
-   app.use(helmet());
    app.use(cors(corsOptions));
+   app.options('*', cors(corsOptions));
 
+   app.use(helmet());
    app.use(express.json());
    app.use(express.static('public'));
 
