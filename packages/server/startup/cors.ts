@@ -11,7 +11,6 @@ function configureCors(app: Express) {
    };
 
    app.use(cors(corsOptions));
-   app.options('*', cors(corsOptions));
 }
 
 export default configureCors;
