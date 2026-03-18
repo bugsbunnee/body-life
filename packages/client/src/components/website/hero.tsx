@@ -5,14 +5,13 @@ import clsx from 'clsx';
 import { FaArrowDownLong } from 'react-icons/fa6';
 import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { MessageCircleIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 
-import bridge from '../../assets/videos/bridge.mov';
-import lagos from '../../assets/videos/city.mov';
-import grid from '../../assets/videos/grid.mov';
-import { MessageCircleIcon } from 'lucide-react';
+import video from '../../assets/videos/video.mp4';
+import welcome from '../../assets/videos/welcome.mp4';
 
-const VIDEOS = [lagos, bridge, grid];
+const VIDEOS = [welcome, video];
 
 interface Props {
    onScroll: () => void;
@@ -44,7 +43,8 @@ const Hero: React.FC<Props> = ({ onScroll }) => {
                src={VIDEOS[currentIndex]}
                ref={videoRef}
                playsInline
-               muted={false}
+               muted
+               autoPlay
                onEnded={handleVideoEnd}
                className="absolute top-0 bottom-0 left-0 right-0 w-screen h-full object-cover z-10"
                initial={{ opacity: 0 }}

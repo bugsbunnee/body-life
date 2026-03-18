@@ -23,7 +23,6 @@ import WeeklyReviewPage from '@/pages/WeeklyReviewPage';
 const routes: RouteObject[] = [
    {
       path: '/',
-      element: <PublicRoute />,
       errorElement: <ErrorPage />,
       children: [
          {
@@ -31,7 +30,18 @@ const routes: RouteObject[] = [
             element: <LandingPage />,
          },
          {
-            path: '/chat',
+            path: APP_ROUTES.UNSUBSCRIBE,
+            element: <UnsubscribePage />,
+         },
+      ],
+   },
+   {
+      path: '/admin',
+      element: <PublicRoute />,
+      errorElement: <ErrorPage />,
+      children: [
+         {
+            path: APP_ROUTES.CHAT,
             element: <ChatBot />,
          },
          {
@@ -43,59 +53,55 @@ const routes: RouteObject[] = [
             element: <ResetPassword />,
          },
          {
-            path: APP_ROUTES.UNSUBSCRIBE,
-            element: <UnsubscribePage />,
+            path: 'dashboard',
+            element: <Dashboard />,
+            errorElement: <ErrorPage />,
+            children: [
+               {
+                  index: true,
+                  element: <HomePage />,
+               },
+               {
+                  path: 'departments',
+                  element: <DepartmentPage />,
+               },
+               {
+                  path: APP_ROUTES.INVENTORY,
+                  element: <InventoryPage />,
+               },
+               {
+                  path: APP_ROUTES.PRAYER_CELLS,
+                  element: <PrayerCellsPage />,
+               },
+               {
+                  path: APP_ROUTES.MEMBERS,
+                  element: <UsersPage />,
+               },
+               {
+                  path: APP_ROUTES.FIRST_TIMERS,
+                  element: <FirstTimersPage />,
+               },
+               {
+                  path: APP_ROUTES.PROGRAMS,
+                  element: <ProgramsPage />,
+               },
+               {
+                  path: APP_ROUTES.SERVICE_REPORT,
+                  element: <ServiceReportPage />,
+               },
+               {
+                  path: APP_ROUTES.WEEKLY_REPORTS,
+                  element: <WeeklyReviewPage />,
+               },
+               {
+                  path: APP_ROUTES.MESSAGES,
+                  element: <MessagesPage />,
+               },
+            ],
          },
          {
             path: '*',
             element: <Navigate to={APP_ROUTES.AUTH} replace />,
-         },
-      ],
-   },
-   {
-      path: APP_ROUTES.DASHBOARD,
-      element: <Dashboard />,
-      errorElement: <ErrorPage />,
-      children: [
-         {
-            index: true,
-            element: <HomePage />,
-         },
-         {
-            path: APP_ROUTES.DEPARTMENT,
-            element: <DepartmentPage />,
-         },
-         {
-            path: APP_ROUTES.INVENTORY,
-            element: <InventoryPage />,
-         },
-         {
-            path: APP_ROUTES.PRAYER_CELLS,
-            element: <PrayerCellsPage />,
-         },
-         {
-            path: APP_ROUTES.MEMBERS,
-            element: <UsersPage />,
-         },
-         {
-            path: APP_ROUTES.FIRST_TIMERS,
-            element: <FirstTimersPage />,
-         },
-         {
-            path: APP_ROUTES.PROGRAMS,
-            element: <ProgramsPage />,
-         },
-         {
-            path: APP_ROUTES.SERVICE_REPORT,
-            element: <ServiceReportPage />,
-         },
-         {
-            path: APP_ROUTES.WEEKLY_REPORTS,
-            element: <WeeklyReviewPage />,
-         },
-         {
-            path: APP_ROUTES.MESSAGES,
-            element: <MessagesPage />,
          },
       ],
    },

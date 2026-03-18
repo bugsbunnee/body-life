@@ -3,6 +3,7 @@ import z from 'zod';
 
 import { lib } from '../../../utils/lib';
 import { PhoneNumberSchema } from './base.validator';
+import { USER_ROLES } from '../entities/enums/user-role.enum';
 
 export const UserQuerySchema = z.object({
    search: z.string().optional(),
@@ -20,6 +21,7 @@ export const UserQuerySchema = z.object({
    dateJoinedStart: z.coerce.date().optional(),
    dateJoinedEnd: z.coerce.date().optional(),
    phoneNumber: z.string().optional(),
+   userRole: z.enum(USER_ROLES).optional(),
    department: z
       .string()
       .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid Department' })
@@ -30,6 +32,10 @@ export const UserQuerySchema = z.object({
       .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid Prayer Cell' })
       .transform((value) => lib.parseObjectId(value))
       .optional(),
+});
+
+export const UserRoleSchema = z.object({
+   userRole: z.enum(USER_ROLES),
 });
 
 export const UserCreationSchema = PhoneNumberSchema.extend({

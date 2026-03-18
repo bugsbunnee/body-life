@@ -4,6 +4,10 @@ import { formatDate } from 'date-fns';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { DownloadCloudIcon, EllipsisVertical } from 'lucide-react';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
+import { BsEnvelope } from 'react-icons/bs';
+import { FaSpinner } from 'react-icons/fa';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { RangeDatePicker } from '@/components/ui/datepicker';
 import { DataTable } from '@/components/ui/datatable';
@@ -12,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CONTACT_METHODS, FOLLOW_UP_STATUS } from '@/utils/constants';
-import { exportToExcel } from '@/lib/utils';
+import { exportToExcel, getErrorMessage } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { FirstTimer } from '@/utils/entities';
@@ -28,6 +32,8 @@ import useFirstTimers from '@/hooks/useFirstTimers';
 import useQueryStore from '@/store/query';
 import useUsers from '@/hooks/useUsers';
 
+import http from '@/services/http.service';
+
 const FirstTimersPage: React.FC = () => {
    const { data: users } = useUsers();
    const { data, isFetching, refetch } = useFirstTimers();
@@ -35,6 +41,12 @@ const FirstTimersPage: React.FC = () => {
 
    const [selectedDataToView, setSelectedDataToView] = useState<FirstTimer | null>(null);
    const [selectedDataToUpdate, setSelectedDataToUpdate] = useState<FirstTimer | null>(null);
+
+   const mutation = useMutation({
+      mutationFn: () => http.get('/api/followup/report', { params: { startDate: firstTimerQuery.dateJoinedStart, endDate: firstTimerQuery.dateJoinedEnd } }),
+      onSuccess: (response) => toast.success(response.data.message),
+      onError: (error) => toast.error(getErrorMessage(error)),
+   });
 
    const columns = useMemo(() => {
       const columns: ColumnDef<FirstTimer>[] = [
@@ -259,6 +271,26 @@ const FirstTimersPage: React.FC = () => {
 
                   <span className="flex-1">Export to spreadsheet</span>
                </Button>
+
+               <Button
+                  onClick={() => mutation.mutate()}
+                  variant="ghost"
+                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+               >
+                  <Conditional visible={!mutation.isPending}>
+                     <BsEnvelope />
+
+                     <span className="flex-1">Generate Report</span>
+                  </Conditional>
+
+                  <Conditional visible={mutation.isPending}>
+                     <div className="animate-spin">
+                        <FaSpinner />
+                     </div>
+
+                     <span>Generating Report...</span>
+                  </Conditional>
+               </Button>
             </div>
          </div>
 
@@ -279,7 +311,7 @@ const FirstTimersPage: React.FC = () => {
 
             <Select onValueChange={(preferredContactMethod) => onSetFirstTimer({ preferredContactMethod })} defaultValue={firstTimerQuery.preferredContactMethod}>
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                  <SelectValue placeholder="Filter by Assigned Contact" />
+                  <SelectValue placeholder="Filter by Preferred Contact Method" />
                </SelectTrigger>
 
                <SelectContent>

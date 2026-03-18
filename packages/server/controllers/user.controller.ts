@@ -17,6 +17,7 @@ import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 import { followupRepository } from '../repositories/followup.repository';
 import { serviceReportRepository } from '../repositories/service-report.repository';
 import { lib } from '../utils/lib';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const userController = {
    async bulkCreateUsers(req: Request, res: Response) {
@@ -46,6 +47,7 @@ export const userController = {
                return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department provided.' });
             }
 
+            req.body.userRole = UserRole.Worker;
             req.body.department = department._id;
          }
 
@@ -129,5 +131,16 @@ export const userController = {
             message: 'Failed to unsubscribe from newsletter',
          });
       }
+   },
+
+   async updateUserRole(req: Request, res: Response) {
+      const userId = lib.parseObjectId(req.params.id!);
+      const user = await userRepository.updateUserRole(userId, req.body.userRole);
+
+      if (!user) {
+         return res.status(StatusCodes.NOT_FOUND).json({ message: 'The user with the given ID does not exist!' });
+      }
+
+      res.json({ success: true, message: 'Role updated successfully!' });
    },
 };

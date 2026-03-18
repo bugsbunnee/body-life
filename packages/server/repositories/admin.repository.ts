@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { Role } from '../infrastructure/database/models/role.model';
 import { User } from '../infrastructure/database/models/user.model';
 import { FRONTEND_BASE_URL } from '../utils/constants';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const adminRepository = {
    async getActiveAdminByEmail(email: string) {
@@ -17,6 +18,10 @@ export const adminRepository = {
             imageUrl: FRONTEND_BASE_URL + '/images/admin.png',
          },
       }).exec();
+   },
+
+   async getFirstTimerReportAdmins() {
+      return User.find({ userRole: { $in: [UserRole.Pastor] } }).exec();
    },
 
    async getAdminForPasswordReset(token: string) {

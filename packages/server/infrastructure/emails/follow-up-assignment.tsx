@@ -23,7 +23,7 @@ const FollowUpAssignmentEmail: React.FC<Props> = ({ followUp, firstTimer, userFi
             <Body className="bg-[#f2f2f2] py-[16px] w-full h-full font-sans">
                <Container className="bg-white p-[64px] h-full">
                   <Section className="">
-                     <Img src={FRONTEND_BASE_URL + '/images/logo.png'} width="97" height="57" alt="Dulux" className="object-contain" />
+                     <Img width={140} src={`${FRONTEND_BASE_URL}/images/logo.png`} alt="RCNLagos Island Church" />
 
                      <Heading style={header}>Member Assigned For Follow Up!!!</Heading>
                   </Section>
@@ -67,6 +67,10 @@ const FollowUpAssignmentEmail: React.FC<Props> = ({ followUp, firstTimer, userFi
 
                                  <td style={tableBodyColumn}>
                                     <Text style={productText}>{firstTimer.phoneNumber}</Text>
+                                 </td>
+
+                                 <td style={tableBodyColumn}>
+                                    <Text style={productText}>{followUp.preferredContactMethod}</Text>
                                  </td>
 
                                  <td style={tableBodyColumn}>

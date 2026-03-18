@@ -3,21 +3,30 @@ import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
-import { exportToExcel, getInitials } from '@/lib/utils';
+import { cn, exportToExcel, getErrorMessage, getInitials } from '@/lib/utils';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import type { User } from '@/utils/entities';
+import { UserRole, type User } from '@/utils/entities';
+import { FaSpinner } from 'react-icons/fa';
 
 import AddUserForm from '@/components/forms/user/add-user-form';
+import Conditional from '@/components/common/conditional';
 import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
+import Role from '@/components/common/role';
 import Summary from '@/components/common/summary';
 import SendMessageForm from '@/components/forms/message/send-message-form';
+import UpdateUserRoleForm from '@/components/forms/user/update-user-role-form';
 
 import useDepartments from '@/hooks/useDepartments';
 import usePrayerCells from '@/hooks/usePrayerCells';
 import useUsers from '@/hooks/useUsers';
+import useAuthStore from '@/store/auth';
 import useQueryStore from '@/store/query';
+
+import http from '@/services/http.service';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -31,15 +40,24 @@ import { GENDERS, MARITAL_STATUS, OPTIONS } from '@/utils/constants';
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+   const [selectedUserRole, setSelectedUserRole] = useState<User | null>(null);
 
    const { isFetching, data, refetch } = useUsers();
    const { data: prayerCells } = usePrayerCells();
    const { data: departments } = useDepartments();
 
+   const { auth } = useAuthStore();
    const { userQuery, onSetUser, resetQuery } = useQueryStore();
+
+   const mutation = useMutation({
+      mutationFn: (user: string) => http.post('/api/auth/admin/assign', { user }),
+      onSuccess: (response) => toast.success(response.data.message),
+      onError: (error) => toast.error(getErrorMessage(error)),
+   });
 
    const handleMemberAddition = () => {
       setAddUserVisible(false);
+      setSelectedUserRole(null);
       refetch();
    };
 
@@ -93,7 +111,17 @@ const UsersPage: React.FC = () => {
          {
             accessorKey: 'isFirstTimer',
             header: 'Is First Timer',
-            cell: ({ row }) => <Badge className={row.original.isFirstTimer ? 'bg-green-400' : 'bg-orange-400'}>{row.original.isFirstTimer ? 'Yes' : 'No'}</Badge>,
+            cell: ({ row }) => (
+               <Badge
+                  className={cn({
+                     capitalize: true,
+                     'bg-red-600': !row.original.isFirstTimer,
+                     'bg-green-600': row.original.isFirstTimer,
+                  })}
+               >
+                  {row.original.isFirstTimer ? 'Yes' : 'No'}
+               </Badge>
+            ),
          },
          {
             accessorKey: 'address',
@@ -106,6 +134,11 @@ const UsersPage: React.FC = () => {
          {
             accessorKey: 'email',
             header: 'Email',
+         },
+         {
+            accessorKey: 'userRole',
+            header: 'Role',
+            cell: ({ row }) => <Role role={row.original.userRole} />,
          },
          {
             accessorKey: 'createdAt',
@@ -125,6 +158,26 @@ const UsersPage: React.FC = () => {
                      <DropdownMenuItem onClick={() => setSelectedUser(row.original)} className="capitalize p-3">
                         View Member Details
                      </DropdownMenuItem>
+
+                     <Conditional visible={auth ? auth.admin.userRole === UserRole.Pastor : false}>
+                        <Conditional visible={!row.original.isAdmin}>
+                           <DropdownMenuItem onClick={() => mutation.mutate(row.original._id)} className="capitalize p-3">
+                              <Conditional visible={!mutation.isPending}>Onboard to Platform</Conditional>
+
+                              <Conditional visible={mutation.isPending}>
+                                 <div className="animate-spin">
+                                    <FaSpinner />
+                                 </div>
+
+                                 <span>Onboarding {row.original.firstName}...</span>
+                              </Conditional>
+                           </DropdownMenuItem>
+                        </Conditional>
+
+                        <DropdownMenuItem onClick={() => setSelectedUserRole(row.original)} className="capitalize p-3">
+                           Update Member Role
+                        </DropdownMenuItem>
+                     </Conditional>
                   </DropdownMenuContent>
                </DropdownMenu>
             ),
@@ -132,7 +185,7 @@ const UsersPage: React.FC = () => {
       ];
 
       return columns;
-   }, []);
+   }, [auth, mutation]);
 
    useEffect(() => {
       resetQuery();
@@ -145,6 +198,12 @@ const UsersPage: React.FC = () => {
          <Modal onClose={() => setAddUserVisible(false)} title="Add Member" visible={isAddUserVisible}>
             <AddUserForm onAddUser={handleMemberAddition} />
          </Modal>
+
+         {selectedUserRole && (
+            <Modal onClose={() => setSelectedUserRole(null)} title="Update Member Role" visible>
+               <UpdateUserRoleForm userId={selectedUserRole._id} onUpdateRole={handleMemberAddition} />
+            </Modal>
+         )}
 
          {selectedUser && (
             <Modal onClose={() => setSelectedUser(null)} title="Member Details" visible>
@@ -188,6 +247,10 @@ const UsersPage: React.FC = () => {
                   <Summary
                      title="Additional Information"
                      labels={[
+                        {
+                           key: 'Role',
+                           value: selectedUser.userRole,
+                        },
                         {
                            key: 'Marital Status',
                            value: selectedUser.maritalStatus,
@@ -245,6 +308,20 @@ const UsersPage: React.FC = () => {
          </div>
 
          <div className="p-6 border-b-border border-b flex items-center justify-between gap-x-6">
+            <Select onValueChange={(userRole) => onSetUser({ userRole })} defaultValue={userQuery.userRole}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="capitalize rounded-lg border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Filter by role" />
+               </SelectTrigger>
+
+               <SelectContent>
+                  {Object.values(UserRole).map((role) => (
+                     <SelectItem className="capitalize" key={role} value={role}>
+                        {role}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+
             <Select onValueChange={(workforce) => onSetUser({ workforce })} defaultValue={userQuery.workforce}>
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by workforce" />

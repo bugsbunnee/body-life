@@ -13,6 +13,7 @@ import redisService from '../../../services/redis.service';
 import { CACHE_NAMES, FRONTEND_BASE_URL, PASSWORD_RESET_TIME_IN_MINUTES } from '../../../utils/constants';
 import { lib } from '../../../utils/lib';
 import { emailService } from '../../../services/email.service';
+import { USER_ROLES, UserRole } from '../entities/enums/user-role.enum';
 
 interface TokenResponse {
    admin: Partial<IUser>;
@@ -44,6 +45,7 @@ const userSchema = new mongoose.Schema(
       isSubscribedToNewsletter: { type: Boolean, default: true },
       reasonForUnsubscription: { type: String, required: false },
 
+      userRole: { type: String, enum: USER_ROLES, default: UserRole.Member },
       imageUrl: { type: String, required: false },
       isAdmin: { type: Boolean, default: false },
       adminActivatedAt: { type: Date, required: false },

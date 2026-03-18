@@ -6,6 +6,7 @@ import { PrayerCellQuerySchema } from '../infrastructure/database/validators/pra
 
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 import { userRepository } from '../repositories/user.repository';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const prayerCellController = {
    async getPrayerCells(req: Request, res: Response) {
@@ -21,10 +22,17 @@ export const prayerCellController = {
 
    async createPrayerCell(req: Request, res: Response) {
       try {
-         const leader = await userRepository.getOneUserById(req.body.leader);
+         let leader = await userRepository.getOneUserById(req.body.leader);
 
          if (!leader) {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Leader not found' });
+         }
+
+         const isAlreadyAssigned = [UserRole.PrayerCellLeader, UserRole.Pastor].includes(leader.userRole);
+
+         if (!isAlreadyAssigned) {
+            leader.userRole = UserRole.PrayerCellLeader;
+            leader = await leader.save();
          }
 
          const prayerCell = await prayerCellRepository.createPrayerCell(req.body);

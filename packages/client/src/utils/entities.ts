@@ -1,5 +1,13 @@
 import type { IconType } from 'react-icons/lib';
 
+export enum UserRole {
+   Pastor = 'pastor',
+   Hod = 'hod',
+   Worker = 'worker',
+   Member = 'member',
+   PrayerCellLeader = 'prayer-cell-leader',
+}
+
 export interface ApiResponse<T> {
    data: T[];
    pagination: {
@@ -10,20 +18,10 @@ export interface ApiResponse<T> {
    };
 }
 
-export interface Admin {
-   imageUrl: string;
-   firstName: string;
-   lastName: string;
-   designation: string;
-   email: string;
-   isActive: boolean;
-   lastLoginAt: string;
-}
-
 export interface AuthResponse {
    token: string;
    tokenExpiresAt: Date;
-   admin: Admin;
+   admin: User;
 }
 
 export interface Department {
@@ -153,6 +151,7 @@ export interface ServiceReport {
 }
 
 export interface User {
+   imageUrl: string;
    _id: string;
    email: string;
    firstName: string;
@@ -165,6 +164,8 @@ export interface User {
    department?: Pick<Department, '_id' | 'name'> | null;
    prayerCell?: Pick<PrayerCell, '_id' | 'name'>;
    isFirstTimer: boolean;
+   isAdmin: boolean;
+   userRole: UserRole;
    createdAt: Date;
    updatedAt: Date;
    notes: string;

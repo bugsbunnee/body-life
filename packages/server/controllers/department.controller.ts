@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { DepartmentQuerySchema } from '../infrastructure/database/validators/department.validator';
 import { departmentRepository } from '../repositories/department.repository';
 import { userRepository } from '../repositories/user.repository';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const departmentController = {
    async getDepartments(req: Request, res: Response) {
@@ -21,10 +22,17 @@ export const departmentController = {
 
    async createDepartment(req: Request, res: Response) {
       try {
-         const hod = await userRepository.getOneUserById(req.body.hod);
+         let hod = await userRepository.getOneUserById(req.body.hod);
 
          if (!hod) {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: 'HOD not found' });
+         }
+
+         const isAlreadyAssigned = [UserRole.Hod, UserRole.Pastor].includes(hod.userRole);
+
+         if (!isAlreadyAssigned) {
+            hod.userRole = UserRole.Hod;
+            hod = await hod.save();
          }
 
          const department = await departmentRepository.createDepartment(req.body);

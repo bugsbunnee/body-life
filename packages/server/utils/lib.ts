@@ -15,6 +15,18 @@ export const lib = {
       return phoneNumber.replace(/\+|\s+/g, '');
    },
 
+   getDifference(currentValue: number, previousValue: number) {
+      if (previousValue === 0) {
+         if (currentValue === 0) {
+            return 0;
+         }
+
+         return 100;
+      }
+
+      return ((currentValue - previousValue) / previousValue) * 100;
+   },
+
    computeDifference(current: Record<string, number>, previous: Record<string, number>) {
       const updatedRecord: Record<string, ReportAnalysis> = {};
 
@@ -22,7 +34,7 @@ export const lib = {
          const currentValue = current[key] ?? 0;
          const previousValue = previous[key] ?? 0;
 
-         const difference = previousValue === 0 ? (currentValue > 0 ? 100 : 0) : ((currentValue - previousValue) / currentValue) * 100;
+         const difference = this.getDifference(currentValue, previousValue);
          const trend = currentValue > previousValue ? 'increment' : currentValue < previousValue ? 'decrement' : 'same';
 
          updatedRecord[key] = {

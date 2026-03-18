@@ -1,15 +1,6 @@
-import useAuthStore from '@/store/auth';
-
-import { Navigate, Outlet } from 'react-router-dom';
-import { APP_ROUTES } from '../utils/constants';
+import { Outlet } from 'react-router-dom';
 
 const PublicRoute = () => {
-   const authStore = useAuthStore();
-
-   if (authStore.auth) {
-      return <Navigate to={APP_ROUTES.DASHBOARD} />;
-   }
-
    return <Outlet />;
 };
 

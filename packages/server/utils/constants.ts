@@ -12,11 +12,11 @@ export const CACHE_NAMES = {
    GET_SERVICE_OVERVIEW: (range: IDateRange) => `report:overview:${lib.formatDate(range.startDate)}-${lib.formatDate(range.endDate)}`,
 };
 
-export const PASSWORD_RESET_TIME_IN_MINUTES = 60;
-export const MB_IN_BYTES = 1_048_576;
-export const FRONTEND_BASE_URL = 'https://body-life-client.vercel.app';
-export const CHURCH_DISPLAY_NAME = 'RCNLagos Island Church';
-
 export const FEATURES = {
    ENABLE_CACHE: false,
 };
+
+export const PASSWORD_RESET_TIME_IN_MINUTES = 60;
+export const MB_IN_BYTES = 1_048_576;
+export const FRONTEND_BASE_URL = ['https://body-life-client.vercel.app', 'http://localhost:5173'];
+export const CHURCH_DISPLAY_NAME = 'RCNLagos Island Church';

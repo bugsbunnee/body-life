@@ -13,7 +13,6 @@ export const programController = {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Please upload a valid file!' });
          }
 
-         console.log(req.file);
          const response = await uploadStream(req.file.buffer);
 
          if (!response) {
@@ -25,7 +24,6 @@ export const programController = {
          const program = await programRepository.createProgram(req.body);
          res.status(StatusCodes.CREATED).json({ data: program });
       } catch (ex) {
-         console.log(ex);
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             message: 'Could not create the program',
          });

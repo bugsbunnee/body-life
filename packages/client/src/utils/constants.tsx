@@ -8,21 +8,22 @@ import { MdReport } from 'react-icons/md';
 import type { Route } from './entities';
 
 export const APP_ROUTES = {
-   AUTH: '/auth',
    HOME: '/',
-   DASHBOARD: '/dashboard',
-   DEPARTMENT: '/dashboard/departments',
-   FIRST_TIMERS: '/dashboard/first-timers',
-   FORGOT_PASSWORD: '/forgot-password',
-   INVENTORY: '/dashboard/inventory',
-   MESSAGES: '/dashboard/messages',
-   MEMBERS: '/dashboard/members',
-   PROGRAMS: '/dashboard/programs',
-   PRAYER_CELLS: '/dashboard/prayer-cells',
-   SETUP_PASSWORD: '/reset-password',
-   SERVICE_REPORT: '/dashboard/service-report',
-   WEEKLY_REPORTS: '/dashboard/weekly-reports',
    UNSUBSCRIBE: '/unsubscribe',
+   AUTH: '/admin/auth',
+   CHAT: '/admin/chat',
+   DASHBOARD: '/admin/dashboard',
+   DEPARTMENT: '/admin/dashboard/departments',
+   FIRST_TIMERS: '/admin/dashboard/first-timers',
+   FORGOT_PASSWORD: '/admin/forgot-password',
+   INVENTORY: '/admin/dashboard/inventory',
+   MESSAGES: '/admin/dashboard/messages',
+   MEMBERS: '/admin/dashboard/members',
+   PROGRAMS: '/admin/dashboard/programs',
+   PRAYER_CELLS: '/admin/dashboard/prayer-cells',
+   SETUP_PASSWORD: '/admin/reset-password',
+   SERVICE_REPORT: '/admin/dashboard/service-report',
+   WEEKLY_REPORTS: '/admin/dashboard/weekly-reports',
 };
 
 export const sections: Route[] = [
@@ -51,14 +52,19 @@ export const sections: Route[] = [
             Icon: GroupIcon,
          },
          {
+            path: APP_ROUTES.PRAYER_CELLS,
+            label: 'Prayer Cells',
+            Icon: ChurchIcon,
+         },
+         {
             path: APP_ROUTES.INVENTORY,
             label: 'Inventory',
             Icon: ToolCaseIcon,
          },
          {
-            path: APP_ROUTES.PRAYER_CELLS,
-            label: 'Prayer Cells',
-            Icon: ChurchIcon,
+            path: APP_ROUTES.MESSAGES,
+            label: 'Messages',
+            Icon: Cross,
          },
          {
             path: APP_ROUTES.PROGRAMS,
@@ -74,11 +80,6 @@ export const sections: Route[] = [
             path: APP_ROUTES.WEEKLY_REPORTS,
             label: 'Weekly Reports',
             Icon: PaperclipIcon,
-         },
-         {
-            path: APP_ROUTES.MESSAGES,
-            label: 'Messages',
-            Icon: Cross,
          },
       ],
    },

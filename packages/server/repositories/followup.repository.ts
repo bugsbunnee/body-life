@@ -191,4 +191,20 @@ export const followupRepository = {
          { $limit: limit },
       ]);
    },
+
+   async generateFirstTimersReport(range: IDateRange) {
+      const filter = this.buildMessageFilterQuery({
+         dateJoinedStart: range.startDate,
+         dateJoinedEnd: range.endDate,
+      });
+
+      return FollowUp.find(filter)
+         .populate({ path: 'user', select: '_id firstName lastName phoneNumber' })
+         .populate({ path: 'attempts', populate: { path: 'contactedBy', select: '_id firstName lastName phoneNumber' } })
+         .populate({ path: 'serviceAttended', select: '_id serviceDate' })
+         .populate({ path: 'assignedTo', select: '_id firstName lastName phoneNumber' })
+         .sort({ createdAt: -1 })
+         .lean()
+         .exec();
+   },
 };

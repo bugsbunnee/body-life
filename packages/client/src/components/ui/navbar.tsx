@@ -1,4 +1,5 @@
 import React from 'react';
+import Role from '../common/role';
 import clsx from 'clsx';
 
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -30,8 +31,6 @@ const NavBar: React.FC = () => {
          <div className="mt-3 flex-1">
             {sections.map((section) => (
                <React.Fragment key={section.label + section.path}>
-                  <div className="text-md font-medium uppercase text-gray-500 tracking-wide mt-4">{section.label}</div>
-
                   <ul className="mt-[2rem]">
                      {section.subroutes.map((route) => (
                         <motion.li
@@ -65,13 +64,17 @@ const NavBar: React.FC = () => {
                <AvatarFallback>{getInitials(auth?.admin.firstName + ' ' + auth?.admin.lastName)}</AvatarFallback>
             </Avatar>
 
-            <div>
-               <div className="text-lg text-main font-medium">
-                  {auth?.admin.firstName} {auth?.admin.lastName}
-               </div>
+            {auth && (
+               <div>
+                  <div className="text-lg text-main font-medium">
+                     {auth.admin.firstName} {auth.admin.lastName}
+                  </div>
 
-               <div className="text-sm text-gray-neutral font-medium">{auth?.admin.designation}</div>
-            </div>
+                  <div className="text-sm text-gray-neutral capitalize font-medium">
+                     <Role role={auth.admin.userRole} />
+                  </div>
+               </div>
+            )}
          </div>
       </div>
    );

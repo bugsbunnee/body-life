@@ -1,6 +1,7 @@
 import z from 'zod';
 
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import { UserRole } from '@/utils/entities';
 
 export const userSchema = z
    .object({
@@ -38,4 +39,9 @@ export const userSchema = z
       }
    });
 
+export const userRoleSchema = z.object({
+   userRole: z.enum(Object.values(UserRole)),
+});
+
 export type IUser = z.infer<typeof userSchema>;
+export type IUserRole = z.infer<typeof userRoleSchema>;

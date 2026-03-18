@@ -1,9 +1,10 @@
 import type React from 'react';
 
+import { Button } from '@/components/ui/button';
+
 import ChatTrigger from '@/components/chat/chat-trigger';
 import Header from '@/components/website/header';
 import Hero from '@/components/website/hero';
-import { Button } from '@/components/ui/button';
 
 const LandingPage: React.FC = () => {
    return (

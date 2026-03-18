@@ -49,6 +49,7 @@ interface PrayerCellQuery extends PaginationQuery {
 interface UserQuery extends PaginationQuery {
    search?: string;
    gender?: string;
+   userRole?: string;
    workforce?: string;
    maritalStatus?: string;
    department?: string;
@@ -106,8 +107,8 @@ const defaultStore = {
       pageSize: 10,
    },
    dateRangeQuery: {
-      startDate: dayjs().startOf('month').toDate(),
-      endDate: dayjs().endOf('month').toDate(),
+      startDate: dayjs().startOf('year').toDate(),
+      endDate: dayjs().toDate(),
    },
    firstTimerQuery: {
       dateJoinedStart: dayjs().startOf('month').toDate(),

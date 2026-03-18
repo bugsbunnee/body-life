@@ -184,10 +184,15 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
                </Select>
 
                <div>
-                  <Pagination className="pb-6 mt-4 max-w-52">
+                  <Pagination className="pb-6 mt-4">
                      <PaginationContent>
                         <PaginationItem>
-                           <PaginationPrevious href="#" data-disabled={pagination.pageNumber === 1} className="data-[disabled=true]:opacity-25" onClick={() => onPageChange(1)} />
+                           <PaginationPrevious
+                              href="#"
+                              data-disabled={pagination.pageNumber === 1}
+                              className="data-[disabled=true]:opacity-25"
+                              onClick={() => onPageChange(pagination.pageNumber - 1)}
+                           />
                         </PaginationItem>
 
                         {_.range(1, pagination.totalPages + 1).map((page) => (
@@ -209,7 +214,7 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
                               href="#"
                               data-disabled={pagination.pageNumber === pagination.totalPages}
                               className="data-[disabled=true]:opacity-25"
-                              onClick={() => onPageChange(pagination.totalPages)}
+                              onClick={() => onPageChange(pagination.pageNumber + 1)}
                            />
                         </PaginationItem>
                      </PaginationContent>

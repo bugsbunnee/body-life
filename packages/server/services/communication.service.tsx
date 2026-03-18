@@ -24,6 +24,8 @@ import { userRepository } from '../repositories/user.repository';
 import { emailService } from './email.service';
 import { llmClient } from '../llm/client';
 import { lib } from '../utils/lib';
+import FollowUpReportEmail from '../infrastructure/emails/follow-up-report';
+import type { IDateRange } from '../infrastructure/database/validators/base.validator';
 
 interface MessageTranscriptResponse {
    search_parameters: {
@@ -37,6 +39,13 @@ interface MessageTranscriptResponse {
       start: number;
       duration: number;
    }[];
+}
+
+interface FollowUpReportTemplate {
+   range: IDateRange;
+   user: IUser;
+   followUps: IFollowUp[];
+   users: IUser[];
 }
 
 export const communicationService = {
@@ -83,6 +92,29 @@ export const communicationService = {
          });
       } catch (error) {
          logger.error('Failed to send welcome email...', error);
+      }
+   },
+
+   async sendOutFollowUpReportEmail(template: FollowUpReportTemplate) {
+      try {
+         await emailService.sendSingleEmail({
+            to: template.users.map((user) => user.email),
+            subject: `First-Timer Welcome and Follow Up Report`,
+            react: (
+               <FollowUpReportEmail
+                  user={template.user}
+                  startDate={template.range.startDate.toDateString()}
+                  endDate={template.range.endDate.toDateString()}
+                  followUps={template.followUps}
+               />
+            ),
+         });
+
+         return true;
+      } catch (error) {
+         logger.error('Failed to send follow up report email...', error);
+
+         return false;
       }
    },
 

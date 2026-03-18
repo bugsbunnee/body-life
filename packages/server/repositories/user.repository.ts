@@ -7,6 +7,7 @@ import type { Pagination } from '../infrastructure/lib/entities';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
 
 import { User, type IUser } from '../infrastructure/database/models/user.model';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const userRepository = {
    buildMessageFilterQuery(query: IUserQuery) {
@@ -31,6 +32,10 @@ export const userRepository = {
 
       if (query.maritalStatus) {
          filter.maritalStatus = query.maritalStatus;
+      }
+
+      if (query.userRole) {
+         filter.userRole = query.userRole;
       }
 
       if (query.workforce) {
@@ -84,8 +89,11 @@ export const userRepository = {
       return User.create({
          firstName: user.firstName,
          lastName: user.lastName,
+         userRole: user.userRole ?? UserRole.Member,
          dateOfBirth: user.dateOfBirth,
          notes: user.notes,
+         department: user.department,
+         prayerCell: user.prayerCell,
          isFirstTimer: user.isFirstTimer,
          gender: user.gender,
          email: user.email,
@@ -194,5 +202,9 @@ export const userRepository = {
             reasonForUnsubscription,
          },
       });
+   },
+
+   async updateUserRole(userId: mongoose.Types.ObjectId, userRole: UserRole) {
+      return User.findByIdAndUpdate(userId, { $set: { userRole } }).exec();
    },
 };
