@@ -1,3 +1,4 @@
+import express from 'express';
 import configureApp from './startup';
 import logger from './services/logger.service';
 
