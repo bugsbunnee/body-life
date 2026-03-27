@@ -3,13 +3,10 @@ import { StatusCodes } from 'http-status-codes';
 
 import { serviceReportRepository } from '../repositories/service-report.repository';
 import { lib } from '../utils/lib';
-import { CACHE_NAMES } from '../utils/constants';
 import { dateRangeSchema } from '../infrastructure/database/validators/base.validator';
 
 import { messageRepository } from '../repositories/message.repository';
 import { userRepository } from '../repositories/user.repository';
-
-import redisService from '../services/redis.service';
 import { followupRepository } from '../repositories/followup.repository';
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 
@@ -17,13 +14,6 @@ export const serviceReportController = {
    async getServiceReportOverview(req: Request, res: Response) {
       const currentDateRange = dateRangeSchema.parse(req.query);
       const previousDateRange = lib.getPreviousDateRange(currentDateRange);
-
-      const cacheKey = CACHE_NAMES.GET_SERVICE_OVERVIEW(currentDateRange);
-      const dashboard = await redisService.retrieveItem(cacheKey);
-
-      if (dashboard) {
-         return res.json(dashboard);
-      }
 
       const [
          attendanceTrend,
@@ -66,8 +56,6 @@ export const serviceReportController = {
             previousEndDate: previousDateRange.endDate,
          },
       };
-
-      await redisService.storeItem(cacheKey, response, 120);
 
       res.json(response);
    },

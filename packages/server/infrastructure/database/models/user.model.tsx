@@ -8,9 +8,8 @@ import jwt from 'jsonwebtoken';
 import RecentLoginEmail from '../../emails/recent-login';
 import SetupPasswordEmail from '../../emails/reset-password';
 import logger from '../../../services/logger.service';
-import redisService from '../../../services/redis.service';
 
-import { CACHE_NAMES, FRONTEND_BASE_URL, PASSWORD_RESET_TIME_IN_MINUTES } from '../../../utils/constants';
+import { FRONTEND_BASE_URL, PASSWORD_RESET_TIME_IN_MINUTES } from '../../../utils/constants';
 import { lib } from '../../../utils/lib';
 import { emailService } from '../../../services/email.service';
 import { USER_ROLES, UserRole } from '../entities/enums/user-role.enum';
@@ -83,20 +82,6 @@ userSchema.methods.generateResetPasswordToken = function () {
    this.passwordResetTokenExpiryDate = moment().add(PASSWORD_RESET_TIME_IN_MINUTES, 'minutes').toDate();
 
    return plainToken;
-};
-
-userSchema.methods.getPermissions = async function () {
-   const cacheKey = CACHE_NAMES.GET_ADMIN_PERMISSION(this._id);
-   const permissions = await redisService.retrieveItem(cacheKey);
-
-   if (permissions) {
-      return permissions;
-   }
-
-   const actionNames = await this.populate({
-      path: 'roles',
-      populate: { path: 'actions', select: 'name' },
-   });
 };
 
 userSchema.methods.sendWelcomeEmail = async function () {

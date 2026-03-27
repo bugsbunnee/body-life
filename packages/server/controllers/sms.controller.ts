@@ -1,6 +1,6 @@
 import axios from 'axios';
+import moment from 'moment';
 import crypto from 'node:crypto';
-import logger from '../services/logger.service';
 
 import type { Request, Response } from 'express';
 
@@ -8,7 +8,8 @@ import { StatusCodes } from 'http-status-codes';
 import { userRepository } from '../repositories/user.repository';
 import { smsService } from '../services/sms.service';
 import { CACHE_NAMES } from '../utils/constants';
-import moment from 'moment';
+
+import logger from '../services/logger.service';
 import redisService from '../services/redis.service';
 
 export const smsController = {
