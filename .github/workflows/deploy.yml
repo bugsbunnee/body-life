@@ -25,22 +25,19 @@ jobs:
            working-directory: packages/client
            run: bun run build
 
-         - name: Setup SSH
-           run: |
-              mkdir -p ~/.ssh
-              echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-              chmod 600 ~/.ssh/id_ed25519
-              ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+         - name: Setup SSH Agent
+           uses: webfactory/ssh-agent@v0.8.1
+           with:
+              ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
          - name: Clean Remote Directory
            run: |
-              ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-              rm -rf /home/${{ secrets.SSH_USER }}/admin.rcnlagosisland.com/*
-              EOF
+              ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+                "rm -rf /home/${{ secrets.SSH_USER }}/admin.rcnlagosisland.com/*"
 
          - name: Upload Build Files
            run: |
-              scp -P ${{ secrets.SSH_PORT }} -r ./packages/client/dist/* \
+              scp -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} -r ./packages/client/dist/* \
               ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/admin.rcnlagosisland.com/
 
          - name: Verify Deployment
