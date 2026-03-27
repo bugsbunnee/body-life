@@ -10,25 +10,25 @@ import FollowUpAssignmentEmail from '../infrastructure/emails/follow-up-assignme
 import NewsletterEmail from '../infrastructure/emails/newsletter';
 import WelcomeEmail from '../infrastructure/emails/welcome';
 import WeeklyReviewEmail from '../infrastructure/emails/weekly-review';
+import FollowUpReportEmail from '../infrastructure/emails/follow-up-report';
+import ProgramReminderEmail from '../infrastructure/emails/program-reminder';
 
 import type { IMessage, IMessageWithId } from '../infrastructure/database/models/message.model';
 import type { IUser } from '../infrastructure/database/models/user.model';
 import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 import type { INewsletter } from '../infrastructure/database/validators/communication.validator';
 import type { IWeeklyReview } from '../infrastructure/database/models/weekly-review.model';
+import type { IDateRange } from '../infrastructure/database/validators/base.validator';
+import type { IProgram } from '../infrastructure/database/models/program.model';
 
 import { messageRepository } from '../repositories/message.repository';
 import { programRepository } from '../repositories/program.repository';
 import { userRepository } from '../repositories/user.repository';
+import { adminRepository } from '../repositories/admin.repository';
 
 import { emailService } from './email.service';
 import { llmClient } from '../llm/client';
 import { lib } from '../utils/lib';
-import FollowUpReportEmail from '../infrastructure/emails/follow-up-report';
-import type { IDateRange } from '../infrastructure/database/validators/base.validator';
-import type { IProgram } from '../infrastructure/database/models/program.model';
-import ProgramReminderEmail from '../infrastructure/emails/program-reminder';
-import { adminRepository } from '../repositories/admin.repository';
 
 interface MessageTranscriptResponse {
    search_parameters: {
@@ -72,15 +72,18 @@ export const communicationService = {
 
    async sendOutBirthdayEmail(users: IUser[]) {
       try {
-         const batch = users.map((user) => ({
+         const emails = users.map((user) => ({
             to: user.email,
             subject: `Happy Birthday, ${user.firstName}!`,
             react: <HappyBirthdayEmail userFirstName={user.firstName} />,
          }));
 
-         logger.info(`Sending birthday emails to ${batch.length} users`);
+         const chunks = _.chunk(emails, 100);
 
-         await emailService.sendBatchEmails(batch);
+         for (let i = 0; i < chunks.length; i++) {
+            logger.info(`Sending batch ${i + 1} / ${chunks.length} of ${emails.length}`);
+            await emailService.sendBatchEmails(chunks[i]!);
+         }
       } catch (error) {
          logger.error('Failed to send birthday email...', error);
       }
@@ -141,8 +144,7 @@ export const communicationService = {
       }
 
       const programs = await programRepository.getUpcomingPrograms();
-
-      const emailData = users
+      const emails = users
          .filter((user) => user.email)
          .map((user) => ({
             to: user.email,
@@ -158,9 +160,14 @@ export const communicationService = {
             ),
          }));
 
-      const response = await emailService.sendBatchEmails(emailData);
+      const chunks = _.chunk(emails, 100);
 
-      return { success: true, message: `Newsletter sent out to ${users.length} members successfully!`, data: response };
+      for (let i = 0; i < chunks.length; i++) {
+         logger.info(`Sending batch ${i + 1} / ${chunks.length} of ${emails.length}`);
+         await emailService.sendBatchEmails(chunks[i]!);
+      }
+
+      return { success: true, message: `Newsletter sent out to ${users.length} members successfully!` };
    },
 
    async sendOutProgramReminder(program: IProgram) {
@@ -170,15 +177,20 @@ export const communicationService = {
          return { success: false, message: 'No users subscribed to newsletter...' };
       }
 
-      const emailData = users.map((user) => ({
+      const emails = users.map((user) => ({
          to: user.email,
          subject: `Join us at ${program.title}`,
          react: <ProgramReminderEmail userId={user._id.toString()} userFirstName={user.firstName} program={program} />,
       }));
 
-      const response = await emailService.sendBatchEmails(emailData);
+      const chunks = _.chunk(emails, 100);
 
-      return { success: true, message: `Reminder sent out to ${users.length} members successfully!`, data: response };
+      for (let i = 0; i < chunks.length; i++) {
+         logger.info(`Sending batch ${i + 1} / ${chunks.length} of ${emails.length}`);
+         await emailService.sendBatchEmails(chunks[i]!);
+      }
+
+      return { success: true, message: `Reminder sent out to ${users.length} members successfully!` };
    },
 
    async sendOutWeeklyReview(weeklyReview: IWeeklyReview, departmentName: string, serviceDate: string) {
@@ -194,9 +206,14 @@ export const communicationService = {
          react: <WeeklyReviewEmail weeklyReview={weeklyReview} departmentName={departmentName} formattedServiceDate={serviceDate} />,
       }));
 
-      const response = await emailService.sendBatchEmails(emails);
+      const chunks = _.chunk(emails, 100);
 
-      return { success: true, message: `Email sent out to recipients successfully!`, data: response };
+      for (let i = 0; i < chunks.length; i++) {
+         logger.info(`Sending batch ${i + 1} / ${chunks.length} of ${emails.length}`);
+         await emailService.sendBatchEmails(chunks[i]!);
+      }
+
+      return { success: true, message: `Email sent out to recipients successfully!` };
    },
 
    async generateMessageSummary(message: IMessageWithId) {
