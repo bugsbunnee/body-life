@@ -1,7 +1,5 @@
+import React, { useRef } from 'react';
 import { SearchIcon } from 'lucide-react';
-import type React from 'react';
-import { useRef } from 'react';
-import { FaSearch } from 'react-icons/fa';
 
 interface Props {
    title: string;
