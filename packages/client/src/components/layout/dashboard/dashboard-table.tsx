@@ -31,7 +31,7 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
    });
 
    return (
-      <div className={cn({ 'p-6 rounded-lg border': true, 'bg-slate-50': loading, 'bg-blue-light': !loading })}>
+      <div className={cn({ 'p-6 rounded-xl border': true, 'bg-slate-50': loading, 'bg-blue-light': !loading })}>
          <Conditional visible={loading}>
             <Skeleton className="h-6 w-64 rounded-sm mb-8" />
          </Conditional>
@@ -41,7 +41,7 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
                <div className="font-medium text-main text-base">{label}</div>
 
                <div>
-                  <Button variant="ghost" onClick={() => mutation.mutate()} className="text-xs text-main font-bold uppercase bg-transparent rounded-lg">
+                  <Button variant="ghost" onClick={() => mutation.mutate()} className="text-xs text-main font-bold uppercase bg-transparent rounded-xl">
                      <Conditional visible={mutation.isPending}>
                         <div className="animate-spin">
                            <FaSpinner />

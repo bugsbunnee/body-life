@@ -1,6 +1,8 @@
 import React from 'react';
 
+import ChatTrigger from '@/components/chat/chat-trigger';
 import NavBar from '@/components/ui/navbar';
+
 import useAuthStore from '@/store/auth';
 
 import { Navigate, Outlet } from 'react-router-dom';
@@ -19,6 +21,8 @@ const Dashboard: React.FC = () => {
 
          <div className="overflow-y-scroll max-h-screen">
             <Outlet />
+
+            <ChatTrigger />
          </div>
       </div>
    );

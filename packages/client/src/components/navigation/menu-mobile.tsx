@@ -17,7 +17,7 @@ const MenuMobile: React.FC = () => {
 
    return (
       <>
-         <button onClick={handleToggleOpen} className="bg-main text-white rounded-lg w-10 h-10 flex items-center justify-center text-xl border-0">
+         <button onClick={handleToggleOpen} className="bg-main text-white rounded-xl w-10 h-10 flex items-center justify-center text-xl border-0">
             <TbMenu3 />
          </button>
 

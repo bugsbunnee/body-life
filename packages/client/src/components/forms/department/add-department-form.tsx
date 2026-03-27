@@ -75,7 +75,7 @@ const AddDepartmentForm: React.FC<Props> = ({ onAddDepartment }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Department Name</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g Media" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g Media" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>

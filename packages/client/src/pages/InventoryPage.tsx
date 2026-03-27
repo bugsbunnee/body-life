@@ -251,7 +251,7 @@ const InventoryPage: React.FC = () => {
                placeholder="Filter by Department"
             />
 
-            <div className="border border-border rounded-lg p-4">
+            <div className="border border-border rounded-xl p-4">
                <div className="border border-border bg-slate-50 p-4 rounded-md items-center flex-col overflow-hidden space-y-4">
                   <div className="text-sm text-gray-500 text-center mb-4">
                      Filter by Price ({formatAmount(inventoryQuery.minPrice!)} - {formatAmount(inventoryQuery.maxPrice!)})

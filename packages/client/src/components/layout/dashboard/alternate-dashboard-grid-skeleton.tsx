@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const AlternateDashboardGridSkeleton: React.FC = () => {
    return (
-      <div className="bg-slate-50 p-6 border rounded-lg">
+      <div className="bg-slate-50 p-6 border rounded-xl">
          <div className="flex items-center justify-between">
             <div className="text-main">
                <Skeleton className="w-28 h-6" />

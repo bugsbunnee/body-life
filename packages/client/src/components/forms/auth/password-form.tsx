@@ -48,7 +48,7 @@ const PasswordForm: React.FC = () => {
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Password</FormLabel>
                      <FormControl>
-                        <Input type="password" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="Enter your password" {...field} />
+                        <Input type="password" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="Enter your password" {...field} />
                      </FormControl>
                      <FormMessage />
                   </FormItem>
@@ -62,7 +62,7 @@ const PasswordForm: React.FC = () => {
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Confirm Password</FormLabel>
                      <FormControl>
-                        <Input type="password" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="Confirm your password" {...field} />
+                        <Input type="password" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="Confirm your password" {...field} />
                      </FormControl>
                      <FormMessage />
                   </FormItem>

@@ -42,7 +42,7 @@ const ForgotPasswordForm: React.FC = () => {
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Email Address</FormLabel>
                      <FormControl>
-                        <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g john@gmail.com" {...field} />
+                        <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g john@gmail.com" {...field} />
                      </FormControl>
                      <FormMessage />
                   </FormItem>

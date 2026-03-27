@@ -80,7 +80,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                            <Popover>
                               <PopoverTrigger asChild>
                                  <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full">
                                        {field.value ? format(field.value, 'PPP') : <span>Select Service Date</span>}
                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>
@@ -180,7 +180,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
 
                         <FormControl>
                            <Input
-                              className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full"
+                              className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full"
                               placeholder="Enter the number of seats arranged"
                               disabled={field.disabled}
                               name={field.name}
@@ -202,7 +202,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                         <FormLabel className="text-sm text-dark font-medium">First Timer Count</FormLabel>
                         <FormControl>
                            <Input
-                              className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full"
+                              className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full"
                               placeholder="Enter the number of first timers"
                               disabled={field.disabled}
                               name={field.name}
@@ -224,7 +224,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                         <FormLabel className="text-sm text-dark font-medium">Total Offering Received (Cash)</FormLabel>
                         <FormControl>
                            <Input
-                              className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full"
+                              className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full"
                               placeholder="Enter the total offering received"
                               disabled={field.disabled}
                               name={field.name}
@@ -253,7 +253,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                                  <FormLabel className="text-sm text-dark font-medium">Time</FormLabel>
                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                       <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                                       <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                           <SelectValue placeholder="Select Time Interval" />
                                        </SelectTrigger>
                                     </FormControl>
@@ -280,7 +280,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                                  <FormLabel className="text-sm text-dark font-medium">Adults</FormLabel>
                                  <FormControl>
                                     <Input
-                                       className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full"
+                                       className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full"
                                        placeholder="Enter the total number of adults"
                                        disabled={field.disabled}
                                        name={field.name}
@@ -302,7 +302,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                                  <FormLabel className="text-sm text-dark font-medium">Children</FormLabel>
                                  <FormControl>
                                     <Input
-                                       className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full"
+                                       className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full"
                                        placeholder="Enter the total number of children"
                                        disabled={field.disabled}
                                        name={field.name}

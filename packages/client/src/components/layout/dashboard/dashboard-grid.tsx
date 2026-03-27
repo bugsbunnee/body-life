@@ -11,7 +11,7 @@ interface Props {
 
 const DashboardGrid: React.FC<Props> = ({ comparator, label, value, percentage, update }) => {
    return (
-      <div className="bg-blue-light p-6 border rounded-lg">
+      <div className="bg-blue-light p-6 border rounded-xl">
          <div className="text-base text-main font-medium capitalize">{label}</div>
          <div className="text-xl mt-6 text-dark font-medium capitalize">{value}</div>
 

@@ -1,7 +1,7 @@
 import type React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
-import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
+import { DownloadCloudIcon, EllipsisVertical, PlusIcon, SendIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 import { cn, exportToExcel, getErrorMessage, getInitials } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
@@ -41,6 +41,7 @@ import { GENDERS, MARITAL_STATUS, OPTIONS } from '@/utils/constants';
 
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
+   const [isSendMessageVisible, setSendMessageVisible] = useState(false);
    const [selectedUserToView, setSelectedUserToView] = useState<User | null>(null);
    const [selectedUserToUpdate, setSelectedUserToUpdate] = useState<User | null>(null);
    const [selectedUserRole, setSelectedUserRole] = useState<User | null>(null);
@@ -220,6 +221,10 @@ const UsersPage: React.FC = () => {
             <AddUserForm onAddUser={handleMemberAddition} />
          </Modal>
 
+         <Modal onClose={() => setSendMessageVisible(false)} title="Send General Message" visible={isSendMessageVisible}>
+            <SendMessageForm onSuccess={() => setSendMessageVisible(false)} />
+         </Modal>
+
          {selectedUserToUpdate && (
             <Modal onClose={() => setSelectedUserToUpdate(null)} title="Update Member Details" visible>
                <UpdateUserForm user={selectedUserToUpdate} onUpdateUser={handleMemberAddition} />
@@ -275,20 +280,8 @@ const UsersPage: React.FC = () => {
                      title="Additional Information"
                      labels={[
                         {
-                           key: 'Role',
-                           value: selectedUserToView.userRole,
-                        },
-                        {
                            key: 'Marital Status',
                            value: selectedUserToView.maritalStatus,
-                        },
-                        {
-                           key: 'Prayer Cell',
-                           value: selectedUserToView.prayerCell ? selectedUserToView.prayerCell.name : 'None',
-                        },
-                        {
-                           key: 'Department',
-                           value: selectedUserToView.department ? selectedUserToView.department.name : 'None',
                         },
                         {
                            key: 'Birthday',
@@ -301,7 +294,23 @@ const UsersPage: React.FC = () => {
                      ]}
                   />
 
-                  <SendMessageForm userId={selectedUserToView._id} />
+                  <Summary
+                     title="Workforce Information"
+                     labels={[
+                        {
+                           key: 'Role',
+                           value: selectedUserToView.userRole,
+                        },
+                        {
+                           key: 'Prayer Cell',
+                           value: selectedUserToView.prayerCell ? selectedUserToView.prayerCell.name : 'None',
+                        },
+                        {
+                           key: 'Department',
+                           value: selectedUserToView.department ? selectedUserToView.department.name : 'None',
+                        },
+                     ]}
+                  />
                </div>
             </Modal>
          )}
@@ -313,6 +322,15 @@ const UsersPage: React.FC = () => {
             </div>
 
             <div className="flex gap-x-4">
+               <Button
+                  onClick={() => setSendMessageVisible(true)}
+                  variant="ghost"
+                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+               >
+                  <SendIcon />
+                  <span className="flex-1">Send General Message</span>
+               </Button>
+
                <Button
                   onClick={() => setAddUserVisible(true)}
                   variant="ghost"
@@ -336,7 +354,7 @@ const UsersPage: React.FC = () => {
 
          <div className="p-6 border-b-border border-b flex items-center justify-between gap-x-6">
             <Select onValueChange={(userRole) => onSetUser({ userRole })} defaultValue={userQuery.userRole}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="capitalize rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="capitalize rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by role" />
                </SelectTrigger>
 
@@ -350,7 +368,7 @@ const UsersPage: React.FC = () => {
             </Select>
 
             <Select onValueChange={(workforce) => onSetUser({ workforce })} defaultValue={userQuery.workforce}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by workforce" />
                </SelectTrigger>
 
@@ -364,7 +382,7 @@ const UsersPage: React.FC = () => {
             </Select>
 
             <Select onValueChange={(gender) => onSetUser({ gender })} defaultValue={userQuery.gender}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by gender" />
                </SelectTrigger>
 
@@ -378,7 +396,7 @@ const UsersPage: React.FC = () => {
             </Select>
 
             <Select onValueChange={(maritalStatus) => onSetUser({ maritalStatus })} defaultValue={userQuery.maritalStatus}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by marital status" />
                </SelectTrigger>
 

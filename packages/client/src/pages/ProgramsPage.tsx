@@ -29,6 +29,7 @@ import { DataTable } from '@/components/ui/datatable';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RangeDatePicker } from '@/components/ui/datepicker';
+import dayjs from 'dayjs';
 
 const ProgramsPage: React.FC = () => {
    const [isAddProgramVisible, setAddProgramVisible] = useState(false);
@@ -251,10 +252,11 @@ const ProgramsPage: React.FC = () => {
          <Tabs defaultValue="upcoming" className="w-full">
             <div className="p-6 border-b-border border-b w-full flex items-center justify-between">
                <TabsList>
-                  <TabsTrigger value="upcoming" onClick={() => onSetProgram({ startDate: new Date() })}>
+                  <TabsTrigger value="upcoming" onClick={() => onSetProgram({ startDate: dayjs().toDate(), endDate: dayjs().add(90, 'days').toDate() })}>
                      Upcoming
                   </TabsTrigger>
-                  <TabsTrigger value="past" onClick={() => onSetProgram({ endDate: new Date() })}>
+
+                  <TabsTrigger value="past" onClick={() => onSetProgram({ startDate: dayjs().startOf('year').toDate(), endDate: dayjs().toDate() })}>
                      Past
                   </TabsTrigger>
                </TabsList>

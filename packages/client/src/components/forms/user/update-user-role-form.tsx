@@ -47,7 +47,7 @@ const UpdateUserRoleForm: React.FC<Props> = ({ userId, onUpdateRole }) => {
 
                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                           <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                           <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                               <SelectValue placeholder="Select a role" />
                            </SelectTrigger>
                         </FormControl>

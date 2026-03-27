@@ -302,7 +302,7 @@ const FirstTimersPage: React.FC = () => {
 
          <div className="p-6 border-b-border border-b gap-x-8 flex items-center justify-between">
             <Select onValueChange={(status) => onSetFirstTimer({ status })} defaultValue={firstTimerQuery.status}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Status" />
                </SelectTrigger>
 
@@ -316,7 +316,7 @@ const FirstTimersPage: React.FC = () => {
             </Select>
 
             <Select onValueChange={(preferredContactMethod) => onSetFirstTimer({ preferredContactMethod })} defaultValue={firstTimerQuery.preferredContactMethod}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Preferred Contact Method" />
                </SelectTrigger>
 

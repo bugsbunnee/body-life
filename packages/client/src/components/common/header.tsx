@@ -1,3 +1,4 @@
+import { SearchIcon } from 'lucide-react';
 import type React from 'react';
 import { useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
@@ -26,7 +27,7 @@ const Header: React.FC<Props> = ({ title, onSearch }) => {
             <form onSubmit={handleSubmitForm}>
                <div className="border border-gray-200 rounded-2xl h-14 px-4 min-w-[16rem] flex justify-start items-center gap-x-[0.75rem]">
                   <div className="">
-                     <FaSearch className="text-xl text-[#BEBEBE]" />
+                     <SearchIcon className="size-5 text-[#BEBEBE]" />
                   </div>
 
                   <input ref={ref} type="text" placeholder="Search anything..." className="focus:outline-hidden placeholder:text-[#D9D9D9] placeholder:text-[1rem] font-medium" />

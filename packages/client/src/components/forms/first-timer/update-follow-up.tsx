@@ -63,7 +63,7 @@ const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer 
                            <Popover>
                               <PopoverTrigger asChild>
                                  <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full">
                                        {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>
@@ -118,7 +118,7 @@ const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer 
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select Preferred Contact Method" />
                               </SelectTrigger>
                            </FormControl>
@@ -146,7 +146,7 @@ const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer 
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select Current Status" />
                               </SelectTrigger>
                            </FormControl>
@@ -207,7 +207,7 @@ const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer 
                   <FormItem>
                      <FormLabel>What Was Their Feedback</FormLabel>
                      <FormControl>
-                        <Textarea rows={6} placeholder="What did they say?" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                        <Textarea rows={6} placeholder="What did they say?" className="resize-none rounded-xl border border-border p-4 shadow-none w-full" {...field} />
                      </FormControl>
                      <FormMessage />
                   </FormItem>

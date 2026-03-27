@@ -9,11 +9,13 @@ const LoginPage: React.FC = () => {
          <div className="hidden bg-slate-50 lg:block h-screen">
             <div className="relative h-full w-full">
                <img src="/images/island.webp" alt="Body Life" className="h-full w-full object-cover" />
-               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent flex flex-col justify-end p-12 text-white">
-                  <h2 className="mb-4 text-4xl font-bold">Welcome to Body Life</h2>
-                  <p className="text-lg text-blue-100">
-                     Our mandate is to strive for the rebirth of apostolic Christianity across the nations by raising a people of prayer, sound doctrine, and kingdom service.
-                  </p>
+               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent flex flex-col justify-end p-4 text-white">
+                  <div className="p-8  rounded-xl  bg-main/60">
+                     <h2 className="mb-2 text-4xl font-bold">Welcome to Body Life</h2>
+                     <p className="text-lg text-blue-100 max-w-xl">
+                        Our mandate is to strive for the rebirth of apostolic Christianity across the nations by raising a people of prayer, sound doctrine, and kingdom service.
+                     </p>
+                  </div>
                </div>
             </div>
          </div>
@@ -24,7 +26,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="flex justify-center">
-               <div className="w-full max-w-[32.5rem] bg-white mt-[9.5rem] rounded-lg p-[1.875rem]">
+               <div className="w-full max-w-[32.5rem] bg-white mt-[9.5rem] rounded-xl p-[1.875rem]">
                   <h2 className="text-center text-dark font-bold text-2xl">Admin Sign in</h2>
 
                   <LoginForm />

@@ -169,7 +169,7 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
 
          <div className="items-center justify-between flex p-4 border-y border-y-border">
             <Select onValueChange={(pageSize) => onSizeChange(parseInt(pageSize))} defaultValue={pagination.pageSize.toString()}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg max-w-52 border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl max-w-52 border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Select Rows to View" />
                </SelectTrigger>
 

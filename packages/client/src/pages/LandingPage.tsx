@@ -41,6 +41,7 @@ const LandingPage: React.FC = () => {
                </div>
             </div>
          </div>
+
          <ChatTrigger />
       </div>
    );

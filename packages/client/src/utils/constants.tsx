@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Calendar, ChurchIcon, Cross, GroupIcon, NewspaperIcon, PaperclipIcon, ToolCaseIcon } from 'lucide-react';
+import { Calendar, ChurchIcon, Clock, Cross, FileImageIcon, GroupIcon, NewspaperIcon, PaperclipIcon, ToolCaseIcon, UsersIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { MdReport } from 'react-icons/md';
@@ -35,51 +35,76 @@ export const sections: Route[] = [
             path: APP_ROUTES.DASHBOARD,
             label: 'Home',
             Icon: CiHome,
+            subroutes: [],
          },
          {
             path: APP_ROUTES.MEMBERS,
-            label: 'Members',
-            Icon: BsFillPeopleFill,
-         },
-         {
-            path: APP_ROUTES.FIRST_TIMERS,
-            label: 'First Timers',
-            Icon: NewspaperIcon,
+            label: 'People',
+            Icon: UsersIcon,
+            subroutes: [
+               {
+                  path: APP_ROUTES.MEMBERS,
+                  label: 'Members',
+                  Icon: BsFillPeopleFill,
+               },
+               {
+                  path: APP_ROUTES.FIRST_TIMERS,
+                  label: 'First Timers',
+                  Icon: NewspaperIcon,
+               },
+            ],
          },
          {
             path: APP_ROUTES.DEPARTMENT,
             label: 'Departments',
             Icon: GroupIcon,
+            subroutes: [],
          },
          {
             path: APP_ROUTES.PRAYER_CELLS,
             label: 'Prayer Cells',
             Icon: ChurchIcon,
+            subroutes: [],
          },
          {
             path: APP_ROUTES.INVENTORY,
             label: 'Inventory',
             Icon: ToolCaseIcon,
-         },
-         {
-            path: APP_ROUTES.MESSAGES,
-            label: 'Messages',
-            Icon: Cross,
+            subroutes: [],
          },
          {
             path: APP_ROUTES.PROGRAMS,
-            label: 'Programs',
-            Icon: Calendar,
+            label: 'Meetings',
+            Icon: Clock,
+            subroutes: [
+               {
+                  path: APP_ROUTES.PROGRAMS,
+                  label: 'Programs',
+                  Icon: Calendar,
+               },
+               {
+                  path: APP_ROUTES.MESSAGES,
+                  label: 'Messages',
+                  Icon: Cross,
+               },
+            ],
          },
          {
             path: APP_ROUTES.SERVICE_REPORT,
-            label: 'Service Report',
-            Icon: MdReport,
-         },
-         {
-            path: APP_ROUTES.WEEKLY_REPORTS,
-            label: 'Weekly Reports',
-            Icon: PaperclipIcon,
+            label: 'Reports',
+            Icon: FileImageIcon,
+            subroutes: [
+               {
+                  path: APP_ROUTES.SERVICE_REPORT,
+                  label: 'Service Reports',
+                  Icon: MdReport,
+               },
+               {
+                  path: APP_ROUTES.WEEKLY_REPORTS,
+                  label: 'Weekly Reports',
+                  Icon: PaperclipIcon,
+               },
+            ],
          },
       ],
    },

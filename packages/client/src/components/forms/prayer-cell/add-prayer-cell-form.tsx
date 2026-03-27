@@ -79,7 +79,7 @@ const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Prayer Cell Name</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g Abijo Prayer Cell" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g Abijo Prayer Cell" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -93,7 +93,7 @@ const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
                      <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                           <Textarea rows={6} placeholder="Enter the address" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                           <Textarea rows={6} placeholder="Enter the address" className="resize-none rounded-xl border border-border p-4 shadow-none w-full" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -111,7 +111,7 @@ const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select Meeting Day" />
                               </SelectTrigger>
                            </FormControl>
@@ -139,7 +139,7 @@ const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select Meeting Day" />
                               </SelectTrigger>
                            </FormControl>

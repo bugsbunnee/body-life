@@ -132,7 +132,7 @@ const HomePage: React.FC = () => {
                   <h2>Attendance Trend for Services</h2>
                </div>
 
-               <div className="p-4 bg-white rounded-lg border">
+               <div className="p-4 bg-white rounded-xl border">
                   <DashboardLineChart data={data.attendanceTrend} labelKey="serviceDate" valueKey="totalAttendance" />
                </div>
             </div>

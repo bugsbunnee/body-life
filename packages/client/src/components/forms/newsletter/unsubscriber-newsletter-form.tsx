@@ -63,7 +63,7 @@ const UnsubscribeNewsletterForm: React.FC<Props> = ({ userId, onUnsubscribe }) =
                            <MessageSquare className="w-4 h-4 text-slate-400" /> Help us improve our content
                         </FormLabel>
                         <FormControl>
-                           <Textarea rows={6} placeholder="What did they say?" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                           <Textarea rows={6} placeholder="What did they say?" className="resize-none rounded-xl border border-border p-4 shadow-none w-full" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>

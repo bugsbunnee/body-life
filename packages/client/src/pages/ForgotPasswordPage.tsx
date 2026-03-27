@@ -24,7 +24,7 @@ const ForgotPassword: React.FC = () => {
             </div>
 
             <div className="flex justify-center">
-               <div className="w-full max-w-[32.5rem] bg-white mt-[9.5rem] rounded-lg p-[1.875rem]">
+               <div className="w-full max-w-[32.5rem] bg-white mt-[9.5rem] rounded-xl p-[1.875rem]">
                   <h2 className="text-center text-dark font-bold text-2xl">Forgot Password</h2>
 
                   <ForgotPasswordForm />

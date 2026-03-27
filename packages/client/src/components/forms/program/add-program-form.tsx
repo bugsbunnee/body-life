@@ -80,7 +80,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Title</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g Thanksgiving Service" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g Thanksgiving Service" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -94,7 +94,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Address</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="Enter address" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="Enter address" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -108,7 +108,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                      <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                           <Textarea rows={6} placeholder="Enter the description" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                           <Textarea rows={6} placeholder="Enter the description" className="resize-none rounded-xl border border-border p-4 shadow-none w-full" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -125,7 +125,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                            <Popover>
                               <PopoverTrigger asChild>
                                  <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full">
                                        {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>

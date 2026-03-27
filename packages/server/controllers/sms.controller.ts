@@ -5,24 +5,39 @@ import logger from '../services/logger.service';
 import type { Request, Response } from 'express';
 
 import { StatusCodes } from 'http-status-codes';
-import { whatsappService } from '../services/whatsapp.service';
 import { userRepository } from '../repositories/user.repository';
+import { smsService } from '../services/sms.service';
+import { CACHE_NAMES } from '../utils/constants';
+import moment from 'moment';
+import redisService from '../services/redis.service';
 
 export const smsController = {
    async sendMessage(req: Request, res: Response) {
       try {
-         const user = await userRepository.getOneUserById(req.body.userId);
+         const cacheKey = CACHE_NAMES.GET_DAILY_MESSAGE_LIMIT(moment().format('YYYY-MM-DD'));
+         const result = await redisService.retrieveItem(cacheKey);
 
-         if (!user) {
-            return res.status(StatusCodes.NOT_FOUND).json({ message: 'The user with the given ID does not exist.' });
+         if (result) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'You have already sent a general message today. Please wait till tomorrow.' });
          }
 
-         const response = await whatsappService.sendWelcomeMessage(user);
+         const users = await userRepository.getUsersForNewsletter();
 
-         res.json({ data: response });
+         if (users.length === 0) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No users subscribed to newsletter. We can only send sms to users subscribed to our newsletter.' });
+         }
+
+         const response = await smsService.sendSMS({
+            to: users.map((user) => user.phoneNumber).join(','),
+            body: req.body.body,
+         });
+
+         await redisService.storeItem(cacheKey, 'yes', 86_400);
+
+         res.json(response.data);
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: axios.isAxiosError(ex) ? ex.response?.data.error.message : (<Error>ex).message,
+            message: axios.isAxiosError(ex) ? ex.response?.data : (<Error>ex).message,
          });
       }
    },

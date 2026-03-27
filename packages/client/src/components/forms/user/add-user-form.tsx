@@ -75,7 +75,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">First Name</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g John" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g John" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -89,7 +89,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Last Name</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g Doe" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g Doe" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -103,7 +103,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Email Address</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g john@gmail.com" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g john@gmail.com" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -117,7 +117,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FormItem>
                         <FormLabel>Home Address</FormLabel>
                         <FormControl>
-                           <Textarea rows={6} placeholder="Where do they live?" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                           <Textarea rows={6} placeholder="Where do they live?" className="resize-none rounded-xl border border-border p-4 shadow-none w-full" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -131,7 +131,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Phone Number</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g 08142317489" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g 08142317489" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -148,7 +148,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                            <Popover>
                               <PopoverTrigger asChild>
                                  <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full">
                                        {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>
@@ -181,7 +181,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                         <FormLabel>Gender</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select a Gender" />
                               </SelectTrigger>
                            </FormControl>
@@ -208,7 +208,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select a Marital Status" />
                               </SelectTrigger>
                            </FormControl>
@@ -347,7 +347,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
 
                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                 <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                                 <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                     <SelectValue placeholder="Select Preferred Contact Method" />
                                  </SelectTrigger>
                               </FormControl>
@@ -377,7 +377,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                            <Textarea
                               rows={6}
                               placeholder="Any thing to note like a prayer request?"
-                              className="resize-none rounded-lg border border-border p-4 shadow-none w-full"
+                              className="resize-none rounded-xl border border-border p-4 shadow-none w-full"
                               {...field}
                            />
                         </FormControl>

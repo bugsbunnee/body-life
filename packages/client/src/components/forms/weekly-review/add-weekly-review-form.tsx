@@ -102,7 +102,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select Service Report" />
                               </SelectTrigger>
                            </FormControl>
@@ -130,7 +130,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
 
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                            <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select Department" />
                               </SelectTrigger>
                            </FormControl>
@@ -160,7 +160,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                         <FormItem>
                            <FormLabel className="text-sm text-dark font-medium">{initialField.label}</FormLabel>
                            <FormControl>
-                              <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" {...field} />
+                              <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" {...field} />
                            </FormControl>
                            <FormMessage />
                         </FormItem>

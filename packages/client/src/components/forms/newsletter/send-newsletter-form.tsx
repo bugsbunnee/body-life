@@ -44,7 +44,7 @@ const SendNewsletterForm: React.FC<Props> = ({ onSendNewsletter }) => {
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Newsletter Title</FormLabel>
                      <FormControl>
-                        <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="Enter newsletter title" {...field} />
+                        <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="Enter newsletter title" {...field} />
                      </FormControl>
                      <FormMessage />
                   </FormItem>

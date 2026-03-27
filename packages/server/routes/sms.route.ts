@@ -1,10 +1,10 @@
 import express from 'express';
 
-import auth from '../middleware/auth';
-import validate from '../middleware/validate';
-
 import { smsController } from '../controllers/sms.controller';
 import { SMSSchema } from '../infrastructure/database/validators/sms.validator';
+
+import auth from '../middleware/auth';
+import validate from '../middleware/validate';
 
 const router = express.Router();
 

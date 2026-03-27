@@ -41,7 +41,7 @@ const SearchableSelect: React.FC<Props> = ({ data, placeholder, value, isTrigger
 
    return (
       <Combobox filter={null} value={value} onValueChange={onValueChange} items={data} autoHighlight onInputValueChange={handleValueInputChange}>
-         <ComboboxInput className="rounded-lg border border-border px-1 shadow-none w-full h-14" placeholder={placeholder} />
+         <ComboboxInput className="rounded-xl border focus:ring-0 focus:outline-0 focus-within:border-0 border-border px-1 shadow-none w-full h-14" placeholder={placeholder} />
 
          <ComboboxContent>
             <Conditional visible={isTriggered}>
@@ -54,18 +54,20 @@ const SearchableSelect: React.FC<Props> = ({ data, placeholder, value, isTrigger
                </div>
             </Conditional>
 
-            <Conditional visible={data.length === 0}>
-               <ComboboxEmpty className="flex items-center justify-start p-3 text-sm text-dark text-left">No items found.</ComboboxEmpty>
-            </Conditional>
+            <Conditional visible={!isTriggered}>
+               <Conditional visible={data.length === 0}>
+                  <ComboboxEmpty className="flex items-center justify-start p-3 text-sm text-dark text-left">No items found.</ComboboxEmpty>
+               </Conditional>
 
-            <Conditional visible={data.length > 0}>
-               <ComboboxList>
-                  {(item: PickerOption) => (
-                     <ComboboxItem key={item.label} value={item}>
-                        {item.label}
-                     </ComboboxItem>
-                  )}
-               </ComboboxList>
+               <Conditional visible={data.length > 0}>
+                  <ComboboxList>
+                     {(item: PickerOption) => (
+                        <ComboboxItem key={item.label} value={item}>
+                           {item.label}
+                        </ComboboxItem>
+                     )}
+                  </ComboboxList>
+               </Conditional>
             </Conditional>
          </ComboboxContent>
       </Combobox>

@@ -75,7 +75,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Title</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="e.g Posture of the Blessed" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="e.g Posture of the Blessed" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -114,7 +114,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Sermon URL (YouTube):</FormLabel>
                         <FormControl>
-                           <Input className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full" placeholder="YouTube Video URL" {...field} />
+                           <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="YouTube Video URL" {...field} />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
@@ -131,7 +131,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
                            <Popover>
                               <PopoverTrigger asChild>
                                  <FormControl>
-                                    <Button variant="ghost" className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full">
+                                    <Button variant="ghost" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full">
                                        {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>

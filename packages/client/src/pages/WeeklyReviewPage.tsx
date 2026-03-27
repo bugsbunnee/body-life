@@ -215,7 +215,7 @@ const WeeklyReviewPage: React.FC = () => {
 
          <div className="p-6 border-b-border border-b gap-x-8 grid grid-cols-2">
             <Select onValueChange={(department) => onSetWeeklyReview({ department })} defaultValue={weeklyReviewQuery.department}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Department" />
                </SelectTrigger>
 
@@ -229,7 +229,7 @@ const WeeklyReviewPage: React.FC = () => {
             </Select>
 
             <Select onValueChange={(service) => onSetWeeklyReview({ service })} defaultValue={weeklyReviewQuery.service}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Service" />
                </SelectTrigger>
 

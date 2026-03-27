@@ -120,10 +120,17 @@ export interface Program {
    isUpcoming: boolean;
 }
 
+export interface RouteItem {
+   Icon: IconType;
+   path: string;
+   label: string;
+}
+
 export interface SubRoute {
    Icon: IconType;
    path: string;
    label: string;
+   subroutes: RouteItem[];
 }
 
 export interface Route {

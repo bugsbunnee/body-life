@@ -8,6 +8,8 @@ import { lib } from './lib';
 export const COUNTRY_CODE: CountryCode = 'NG';
 
 export const CACHE_NAMES = {
+   GET_NEWSLETTER_LIMIT: (date: string) => `newsletter:date=${date}`,
+   GET_DAILY_MESSAGE_LIMIT: (date: string) => `daily-message:date=${date}`,
    GET_ADMIN_PERMISSION: (id: mongoose.Types.ObjectId) => `admin:permission:${id}`,
    GET_SERVICE_OVERVIEW: (range: IDateRange) => `report:overview:${lib.formatDate(range.startDate)}-${lib.formatDate(range.endDate)}`,
 };

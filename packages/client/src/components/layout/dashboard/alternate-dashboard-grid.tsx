@@ -10,7 +10,7 @@ interface Props {
 
 const AlternateDashboardGrid: React.FC<Props> = ({ label, value, percentage, update }) => {
    return (
-      <div className="bg-blue-light p-6 border rounded-lg">
+      <div className="bg-blue-light p-6 border rounded-xl">
          <div className="items-center flex justify-between">
             <div className="text-base text-main font-medium capitalize">{label}</div>
 

@@ -22,18 +22,20 @@ const textSchema = z.object({
 
 type ISMS = z.infer<typeof textSchema>;
 
-type Props = { userId: string };
+type Props = { onSuccess: () => void };
 
-const SendMessageForm: React.FC<Props> = ({ userId }) => {
+const SendMessageForm: React.FC<Props> = ({ onSuccess }) => {
    const form = useForm<ISMS>({
       resolver: zodResolver(textSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (body: ISMS) => http.post('/api/sms', { userId, body: body.body }),
+      mutationFn: (body: ISMS) => http.post('/api/sms', { body: body.body }),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
-         form.reset();
+
+         form.reset({ body: '' });
+         onSuccess();
       },
       onError: (error) =>
          toast('Could not send the text', {
@@ -42,24 +44,21 @@ const SendMessageForm: React.FC<Props> = ({ userId }) => {
          }),
    });
 
-   const handleCreateUser = (user: ISMS) => {
-      mutation.mutate(user);
-   };
-
    return (
       <div className="border border-[#EFEFEF] rounded-md flex flex-col">
-         <div className="border-b border-b-[#EFEFEF] bg-blue-light text-base text-main font-semibold py-3 px-3.5 capitalize">Send SMS</div>
+         <div className="border-b border-b-[#EFEFEF] bg-blue-light text-base text-main font-semibold py-3 px-3.5 capitalize">Send Message</div>
+         <p className="text-sm text-gray-600 font-medium mt-3.5 px-3.5 max-w-lg">Send a general message like a service reminder, welfare check etc.</p>
 
          <dl className="px-3.5 py-4">
             <Form {...form}>
-               <form onSubmit={form.handleSubmit(handleCreateUser)} className="space-y-4">
+               <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
                   <FormField
                      control={form.control}
                      name="body"
                      render={({ field }) => (
                         <FormItem>
                            <FormControl>
-                              <Textarea placeholder="Enter text message" className="resize-none rounded-lg border border-border p-4 shadow-none w-full" {...field} />
+                              <Textarea placeholder="Enter text message" className="resize-none rounded-xl border border-border p-4 shadow-none w-full" {...field} />
                            </FormControl>
                            <FormMessage />
                         </FormItem>

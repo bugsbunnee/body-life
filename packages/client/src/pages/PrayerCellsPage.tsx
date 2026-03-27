@@ -14,19 +14,20 @@ import { exportToExcel } from '@/lib/utils';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { PrayerCell } from '@/utils/entities';
 
+import AddPrayerCellForm from '@/components/forms/prayer-cell/add-prayer-cell-form';
 import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
+import SearchableSelect from '@/components/common/searchable-select';
 import Summary from '@/components/common/summary';
 
 import useQueryStore from '@/store/query';
 import usePrayerCells from '@/hooks/usePrayerCells';
 import useUsers from '@/hooks/useUsers';
-import AddPrayerCellForm from '@/components/forms/prayer-cell/add-prayer-cell-form';
 
 const PrayerCellsPage: React.FC = () => {
-   const { data: users } = useUsers();
+   const { data: users, isFetching: isFetchingUsers } = useUsers();
    const { data, isFetching, refetch } = usePrayerCells();
-   const { prayerCellQuery, resetQuery, onSetPrayerCell } = useQueryStore();
+   const { prayerCellQuery, resetQuery, onSetUser, onSetPrayerCell } = useQueryStore();
 
    const [isAddPrayerCell, setIsAddPrayerCell] = useState<boolean>(false);
    const [selectedPrayerCell, setSelectedPrayerCell] = useState<PrayerCell | null>(null);
@@ -104,6 +105,11 @@ const PrayerCellsPage: React.FC = () => {
 
       return columns;
    }, []);
+
+   const user = useMemo(() => {
+      const match = users.data.data.find((cell) => cell._id === prayerCellQuery.leader);
+      return match ? { label: match.firstName + ' ' + match.lastName, value: match._id } : undefined;
+   }, [users, prayerCellQuery.leader]);
 
    const handleAddPrayerCell = () => {
       setIsAddPrayerCell(false);
@@ -203,7 +209,7 @@ const PrayerCellsPage: React.FC = () => {
 
          <div className="p-6 border-b-border border-b gap-x-8 flex items-center justify-between">
             <Select onValueChange={(meetingDay) => onSetPrayerCell({ meetingDay })} defaultValue={prayerCellQuery.meetingDay}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Meeting Day" />
                </SelectTrigger>
 
@@ -217,7 +223,7 @@ const PrayerCellsPage: React.FC = () => {
             </Select>
 
             <Select onValueChange={(meetingTime) => onSetPrayerCell({ meetingTime })} defaultValue={prayerCellQuery.meetingTime}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Meeting Time" />
                </SelectTrigger>
 
@@ -230,19 +236,14 @@ const PrayerCellsPage: React.FC = () => {
                </SelectContent>
             </Select>
 
-            <Select onValueChange={(leader) => onSetPrayerCell({ leader })} defaultValue={prayerCellQuery.leader}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                  <SelectValue placeholder="Filter by Leader" />
-               </SelectTrigger>
-
-               <SelectContent>
-                  {users.data.data.map((user) => (
-                     <SelectItem key={user._id} value={user._id}>
-                        {user.firstName} {user.lastName}
-                     </SelectItem>
-                  ))}
-               </SelectContent>
-            </Select>
+            <SearchableSelect
+               isTriggered={isFetchingUsers}
+               onTriggerSearch={(search: string) => onSetUser({ search })}
+               data={users.data.data.map((cell) => ({ label: cell.firstName + ' ' + cell.lastName, value: cell._id }))}
+               value={user}
+               onValueChange={(value) => onSetPrayerCell({ leader: value ? value.value : '' })}
+               placeholder="Filter by Prayer Cell"
+            />
          </div>
 
          <div className="border-r border-r-border">
