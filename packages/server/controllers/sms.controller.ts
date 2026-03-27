@@ -42,7 +42,9 @@ export const smsController = {
          return res.status(StatusCodes.FORBIDDEN).send('Invalid signature');
       }
 
-      logger.info('Message received');
+      logger.info('Message received: ' + JSON.stringify(req.body));
+
+      res.json({ message: 'Message received.' });
    },
 
    async verifyMessage(req: Request, res: Response) {
