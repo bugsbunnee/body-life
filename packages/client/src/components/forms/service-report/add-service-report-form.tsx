@@ -11,7 +11,6 @@ import { FaSpinner } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { serviceReportSchema, type IServiceReport } from './service-report-schema';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
@@ -20,14 +19,20 @@ import { getErrorMessage } from '@/lib/utils';
 import { createServiceReport } from '@/services/dashboard.service';
 
 import Conditional from '@/components/common/conditional';
+import SearchableSelect from '@/components/common/searchable-select';
+
 import useUsers from '@/hooks/useUsers';
 import useMessages from '@/hooks/useMessages';
+import useQueryStore from '@/store/query';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Props {
    onAddServiceReport: () => void;
 }
 
 const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
+   const { onSetUser, onSetMessage } = useQueryStore();
+
    const users = useUsers();
    const messages = useMessages();
 
@@ -35,9 +40,6 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
       resolver: zodResolver(serviceReportSchema),
       defaultValues: {
          serviceDate: undefined,
-         prepPrayers: '',
-         worship: '',
-         message: '',
          seatArrangementCount: 0,
          firstTimerCount: 0,
          offering: 0,
@@ -108,21 +110,16 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Preparatory Prayers Led By</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Member" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {users.data.data.data.map((user) => (
-                                 <SelectItem key={user._id} value={user._id}>
-                                    {user.firstName} {user.lastName}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={users.isFetching}
+                              onTriggerSearch={(search: string) => onSetUser({ search })}
+                              data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Member"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>
@@ -136,21 +133,16 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Worship Led By</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Member" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {users.data.data.data.map((user) => (
-                                 <SelectItem key={user._id} value={user._id}>
-                                    {user.firstName} {user.lastName}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={users.isFetching}
+                              onTriggerSearch={(search: string) => onSetUser({ search })}
+                              data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Member"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>
@@ -164,22 +156,16 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Sermon Preached</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Sermon" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {messages.data.data.data.map((message) => (
-                                 <SelectItem key={message._id} value={message._id}>
-                                    {message.title}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
-
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={messages.isFetching}
+                              onTriggerSearch={(title: string) => onSetMessage({ title })}
+                              data={messages.data.data.data.map((message) => ({ label: message.title, value: message._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Sermon"
+                           />
+                        </FormControl>
                         <FormMessage />
                      </FormItem>
                   )}
@@ -265,13 +251,22 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                            render={({ field }) => (
                               <FormItem>
                                  <FormLabel className="text-sm text-dark font-medium">Time</FormLabel>
-                                 <FormControl>
-                                    <Input
-                                       className="h-[3.5rem] rounded-lg border border-border px-4 shadow-none w-full"
-                                       placeholder="Enter the time in the format HH:MM e.g. 19:45"
-                                       {...field}
-                                    />
-                                 </FormControl>
+                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                       <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
+                                          <SelectValue placeholder="Select Time Interval" />
+                                       </SelectTrigger>
+                                    </FormControl>
+
+                                    <SelectContent>
+                                       {countIntervals.map((interval) => (
+                                          <SelectItem key={interval} value={interval}>
+                                             {interval}
+                                          </SelectItem>
+                                       ))}
+                                    </SelectContent>
+                                 </Select>
+
                                  <FormMessage />
                               </FormItem>
                            )}
@@ -364,5 +359,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
       </Form>
    );
 };
+
+const countIntervals = ['17:00', '18:30', '19:30'];
 
 export default AddServiceReportForm;

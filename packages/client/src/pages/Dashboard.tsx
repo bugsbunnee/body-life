@@ -14,10 +14,10 @@ const Dashboard: React.FC = () => {
    }
 
    return (
-      <div className="grid grid-cols-[20rem_1fr] w-screen h-dvh overflow-hidden">
+      <div className="grid grid-cols-[20rem_1fr] w-screen h-screen overflow-hidden">
          <NavBar />
 
-         <div className="overflow-y-scroll max-h-dvh">
+         <div className="overflow-y-scroll max-h-screen">
             <Outlet />
          </div>
       </div>

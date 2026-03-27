@@ -132,6 +132,11 @@ export interface Route {
    subroutes: SubRoute[];
 }
 
+export interface PickerOption {
+   label: string;
+   value: string;
+}
+
 export interface ServiceReport {
    _id: string;
    message: Pick<IMessage, '_id' | 'title' | 'preacher'>;

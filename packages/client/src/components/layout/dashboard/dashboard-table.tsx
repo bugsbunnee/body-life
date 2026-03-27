@@ -5,11 +5,17 @@ import Conditional from '@/components/common/conditional';
 import EmptyState from '@/components/common/empty-state';
 
 import { formatDate } from 'date-fns';
+import { FaBirthdayCake, FaSpinner } from 'react-icons/fa';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn, getIsBirthdayExpired } from '@/lib/utils';
+import { cn, getErrorMessage, getIsBirthdayExpired } from '@/lib/utils';
 
 import type { User } from '@/utils/entities';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+
+import http from '@/services/http.service';
 
 interface Props {
    label: string;
@@ -18,6 +24,12 @@ interface Props {
 }
 
 const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
+   const mutation = useMutation({
+      mutationFn: () => http.get('/api/birthday'),
+      onSuccess: () => toast.success('Birthday congratulatory messages sent successfully'),
+      onError: (error) => toast.error('Failed to send congratulatory messages sent successfully', { description: getErrorMessage(error) }),
+   });
+
    return (
       <div className={cn({ 'p-6 rounded-lg border': true, 'bg-slate-50': loading, 'bg-blue-light': !loading })}>
          <Conditional visible={loading}>
@@ -25,7 +37,26 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
          </Conditional>
 
          <Conditional visible={!loading}>
-            <div className="font-medium text-main text-base mb-8">{label}</div>
+            <div className="flex items-center justify-between mb-8">
+               <div className="font-medium text-main text-base">{label}</div>
+
+               <div>
+                  <Button variant="ghost" onClick={() => mutation.mutate()} className="text-xs text-main font-bold uppercase bg-transparent rounded-lg">
+                     <Conditional visible={mutation.isPending}>
+                        <div className="animate-spin">
+                           <FaSpinner />
+                        </div>
+
+                        <span>Sending Birthday Wishes...</span>
+                     </Conditional>
+
+                     <Conditional visible={!mutation.isPending}>
+                        <FaBirthdayCake className="size-3" />
+                        Send Birthday Wishes
+                     </Conditional>
+                  </Button>
+               </div>
+            </div>
          </Conditional>
 
          <table className="w-full">
@@ -52,6 +83,7 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
                   <Conditional visible={data.length > 0}>
                      {data.map((datum) => {
                         const isExpired = getIsBirthdayExpired(datum.dateOfBirth);
+
                         return (
                            <tr key={datum._id} className="text-gray-neutral font-medium text-base">
                               <td className="pb-6">

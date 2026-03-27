@@ -1,5 +1,4 @@
 import type React from 'react';
-import http from '@/services/http.service';
 
 import { format } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
@@ -10,7 +9,11 @@ import { CalendarIcon } from 'lucide-react';
 import { FaSpinner } from 'react-icons/fa';
 
 import Conditional from '@/components/common/conditional';
+import SearchableSelect from '@/components/common/searchable-select';
+
 import useUsers from '@/hooks/useUsers';
+import useQueryStore from '@/store/query';
+import http from '@/services/http.service';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -29,20 +32,21 @@ type Props = { firstTimerId: string; onUpdateFirstTimer: () => void };
 
 const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer }) => {
    const users = useUsers();
+   const query = useQueryStore();
 
    const form = useForm<IFirstTimerUpdate>({
       resolver: zodResolver(FirstTimerUpdateSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (firstTimer: IFirstTimerUpdate) => http.put('/api/followup/' + firstTimerId, firstTimer),
+      mutationFn: (firstTimer: IFirstTimerUpdate) => http.put('/api/followup/' + firstTimerId, { ...firstTimer, contactedBy: firstTimer.contactedBy.value }),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
 
          form.reset();
          onUpdateFirstTimer();
       },
-      onError: (error) => toast('Could not add the user', { description: getErrorMessage(error) }),
+      onError: (error) => toast('Could not add the follow-up details', { description: getErrorMessage(error) }),
    });
 
    return (
@@ -89,21 +93,16 @@ const UpdateFollowUpForm: React.FC<Props> = ({ firstTimerId, onUpdateFirstTimer 
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Who Contacted Them?</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Contacted By" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {users.data.data.data.map((user) => (
-                                 <SelectItem key={user._id} value={user._id}>
-                                    {user.firstName} {user.lastName}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={users.isFetching}
+                              onTriggerSearch={(search: string) => query.onSetUser({ search })}
+                              data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Contacted By"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>

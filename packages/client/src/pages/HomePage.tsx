@@ -140,7 +140,7 @@ const HomePage: React.FC = () => {
 
          <div className="border-b-border border-b grid grid-cols-2">
             <div className="p-6 border-r border-r-border">
-               <DashboardTable label="Upcoming Celebrations" loading={isFetching} data={data.userBirthdays.data} />
+               <DashboardTable label="Upcoming Celebrations" loading={isFetching} data={data.userBirthdays.data.slice(0, 5)} />
             </div>
 
             <div className="p-6">

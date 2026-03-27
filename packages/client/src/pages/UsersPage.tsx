@@ -17,8 +17,10 @@ import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
 import Role from '@/components/common/role';
 import Summary from '@/components/common/summary';
+import SearchableSelect from '@/components/common/searchable-select';
 import SendMessageForm from '@/components/forms/message/send-message-form';
 import UpdateUserRoleForm from '@/components/forms/user/update-user-role-form';
+import UpdateUserForm from '@/components/forms/user/update-user-form';
 
 import useDepartments from '@/hooks/useDepartments';
 import usePrayerCells from '@/hooks/usePrayerCells';
@@ -39,15 +41,16 @@ import { GENDERS, MARITAL_STATUS, OPTIONS } from '@/utils/constants';
 
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
-   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+   const [selectedUserToView, setSelectedUserToView] = useState<User | null>(null);
+   const [selectedUserToUpdate, setSelectedUserToUpdate] = useState<User | null>(null);
    const [selectedUserRole, setSelectedUserRole] = useState<User | null>(null);
 
    const { isFetching, data, refetch } = useUsers();
-   const { data: prayerCells } = usePrayerCells();
-   const { data: departments } = useDepartments();
+   const { data: prayerCells, isFetching: isFetchingPrayerCells } = usePrayerCells();
+   const { data: departments, isFetching: isFetchingDepartments } = useDepartments();
 
    const { auth } = useAuthStore();
-   const { userQuery, onSetUser, resetQuery } = useQueryStore();
+   const { userQuery, onSetDepartment, onSetUser, onSetPrayerCell, resetQuery } = useQueryStore();
 
    const mutation = useMutation({
       mutationFn: (user: string) => http.post('/api/auth/admin/assign', { user }),
@@ -58,6 +61,7 @@ const UsersPage: React.FC = () => {
    const handleMemberAddition = () => {
       setAddUserVisible(false);
       setSelectedUserRole(null);
+      setSelectedUserToUpdate(null);
       refetch();
    };
 
@@ -103,7 +107,10 @@ const UsersPage: React.FC = () => {
             accessorKey: 'firstName',
             header: 'Full Name',
             cell: ({ row }) => (
-               <Button onClick={() => setSelectedUser(row.original)} className="underline bg-transparent text-main font-semibold shadow-none hover:bg-transparent cursor-pointer">
+               <Button
+                  onClick={() => setSelectedUserToView(row.original)}
+                  className="underline bg-transparent text-main font-semibold shadow-none hover:bg-transparent cursor-pointer"
+               >
                   {row.original.firstName} {row.original.lastName}
                </Button>
             ),
@@ -155,8 +162,12 @@ const UsersPage: React.FC = () => {
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
-                     <DropdownMenuItem onClick={() => setSelectedUser(row.original)} className="capitalize p-3">
+                     <DropdownMenuItem onClick={() => setSelectedUserToView(row.original)} className="capitalize p-3">
                         View Member Details
+                     </DropdownMenuItem>
+
+                     <DropdownMenuItem onClick={() => setSelectedUserToUpdate(row.original)} className="capitalize p-3">
+                        Update Member Details
                      </DropdownMenuItem>
 
                      <Conditional visible={auth ? auth.admin.userRole === UserRole.Pastor : false}>
@@ -187,6 +198,16 @@ const UsersPage: React.FC = () => {
       return columns;
    }, [auth, mutation]);
 
+   const prayerCell = useMemo(() => {
+      const match = prayerCells.data.data.find((cell) => cell._id === userQuery.prayerCell);
+      return match ? { label: match.name, value: match._id } : undefined;
+   }, [prayerCells, userQuery.prayerCell]);
+
+   const department = useMemo(() => {
+      const match = departments.data.data.find((cell) => cell._id === userQuery.department);
+      return match ? { label: match.name, value: match._id } : undefined;
+   }, [departments, userQuery.department]);
+
    useEffect(() => {
       resetQuery();
    }, [resetQuery]);
@@ -199,29 +220,35 @@ const UsersPage: React.FC = () => {
             <AddUserForm onAddUser={handleMemberAddition} />
          </Modal>
 
+         {selectedUserToUpdate && (
+            <Modal onClose={() => setSelectedUserToUpdate(null)} title="Update Member Details" visible>
+               <UpdateUserForm user={selectedUserToUpdate} onUpdateUser={handleMemberAddition} />
+            </Modal>
+         )}
+
          {selectedUserRole && (
             <Modal onClose={() => setSelectedUserRole(null)} title="Update Member Role" visible>
                <UpdateUserRoleForm userId={selectedUserRole._id} onUpdateRole={handleMemberAddition} />
             </Modal>
          )}
 
-         {selectedUser && (
-            <Modal onClose={() => setSelectedUser(null)} title="Member Details" visible>
+         {selectedUserToView && (
+            <Modal onClose={() => setSelectedUserToView(null)} title="Member Details" visible>
                <div className="grid grid-cols-2 gap-4">
                   <Summary
                      title="Personal Information"
                      labels={[
                         {
                            key: 'First Name',
-                           value: selectedUser.firstName,
+                           value: selectedUserToView.firstName,
                         },
                         {
                            key: 'Last Name',
-                           value: selectedUser.lastName,
+                           value: selectedUserToView.lastName,
                         },
                         {
                            key: 'Gender',
-                           value: selectedUser.gender,
+                           value: selectedUserToView.gender,
                         },
                      ]}
                   />
@@ -231,15 +258,15 @@ const UsersPage: React.FC = () => {
                      labels={[
                         {
                            key: 'Home Address',
-                           value: selectedUser.address,
+                           value: selectedUserToView.address,
                         },
                         {
                            key: 'Email Address',
-                           value: selectedUser.email,
+                           value: selectedUserToView.email,
                         },
                         {
                            key: 'Phone Number',
-                           value: selectedUser.phoneNumber,
+                           value: selectedUserToView.phoneNumber,
                         },
                      ]}
                   />
@@ -249,32 +276,32 @@ const UsersPage: React.FC = () => {
                      labels={[
                         {
                            key: 'Role',
-                           value: selectedUser.userRole,
+                           value: selectedUserToView.userRole,
                         },
                         {
                            key: 'Marital Status',
-                           value: selectedUser.maritalStatus,
+                           value: selectedUserToView.maritalStatus,
                         },
                         {
                            key: 'Prayer Cell',
-                           value: selectedUser.prayerCell ? selectedUser.prayerCell.name : 'None',
+                           value: selectedUserToView.prayerCell ? selectedUserToView.prayerCell.name : 'None',
                         },
                         {
                            key: 'Department',
-                           value: selectedUser.department ? selectedUser.department.name : 'None',
+                           value: selectedUserToView.department ? selectedUserToView.department.name : 'None',
                         },
                         {
                            key: 'Birthday',
-                           value: formatDate(selectedUser.dateOfBirth, 'PPP'),
+                           value: formatDate(selectedUserToView.dateOfBirth, 'PPP'),
                         },
                         {
                            key: 'Notes',
-                           value: selectedUser.notes,
+                           value: selectedUserToView.notes,
                         },
                      ]}
                   />
 
-                  <SendMessageForm phoneNumber={selectedUser.phoneNumber} />
+                  <SendMessageForm userId={selectedUserToView._id} />
                </div>
             </Modal>
          )}
@@ -364,33 +391,23 @@ const UsersPage: React.FC = () => {
                </SelectContent>
             </Select>
 
-            <Select onValueChange={(prayerCell) => onSetUser({ prayerCell })} defaultValue={userQuery.prayerCell}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                  <SelectValue placeholder="Filter by Prayer Cell" />
-               </SelectTrigger>
+            <SearchableSelect
+               isTriggered={isFetchingPrayerCells}
+               onTriggerSearch={(name: string) => onSetPrayerCell({ name })}
+               data={prayerCells.data.data.map((cell) => ({ label: cell.name, value: cell._id }))}
+               value={prayerCell}
+               onValueChange={(value) => onSetUser({ prayerCell: value ? value.value : '' })}
+               placeholder="Filter by Prayer Cell"
+            />
 
-               <SelectContent>
-                  {prayerCells.data.data.map((prayerCell) => (
-                     <SelectItem key={prayerCell._id} value={prayerCell._id}>
-                        {prayerCell.name}
-                     </SelectItem>
-                  ))}
-               </SelectContent>
-            </Select>
-
-            <Select onValueChange={(department) => onSetUser({ department })} defaultValue={userQuery.department}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                  <SelectValue placeholder="Filter by Department" />
-               </SelectTrigger>
-
-               <SelectContent>
-                  {departments.data.data.map((department) => (
-                     <SelectItem key={department._id} value={department._id}>
-                        {department.name}
-                     </SelectItem>
-                  ))}
-               </SelectContent>
-            </Select>
+            <SearchableSelect
+               isTriggered={isFetchingDepartments}
+               onTriggerSearch={(name: string) => onSetDepartment({ name })}
+               data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
+               value={department}
+               onValueChange={(value) => onSetUser({ department: value ? value.value : '' })}
+               placeholder="Filter by Department"
+            />
          </div>
 
          <DataTable

@@ -5,7 +5,7 @@ import { FRONTEND_BASE_URL } from '../utils/constants';
 
 function configureCors(app: Express) {
    const corsOptions = {
-      origin: FRONTEND_BASE_URL,
+      origin: [FRONTEND_BASE_URL, 'http://localhost:5173'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['X-Auth-Token', 'Content-Type', 'Authorization'],
    };

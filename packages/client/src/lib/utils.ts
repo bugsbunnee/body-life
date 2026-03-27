@@ -41,7 +41,7 @@ export function getErrorMessage(error: unknown) {
 export function getIsBirthdayExpired(dateOfBirth: Date) {
    const date = dayjs(dateOfBirth).set('year', dayjs().year());
 
-   return dayjs().isAfter(date);
+   return dayjs().isAfter(date, 'day');
 }
 
 export function formatAmount(amount: number) {

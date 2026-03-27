@@ -26,6 +26,8 @@ import { llmClient } from '../llm/client';
 import { lib } from '../utils/lib';
 import FollowUpReportEmail from '../infrastructure/emails/follow-up-report';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
+import type { IProgram } from '../infrastructure/database/models/program.model';
+import ProgramReminderEmail from '../infrastructure/emails/program-reminder';
 
 interface MessageTranscriptResponse {
    search_parameters: {
@@ -158,6 +160,26 @@ export const communicationService = {
       const response = await emailService.sendBatchEmails(emailData);
 
       return { success: true, message: `Newsletter sent out to ${users.length} members successfully!`, data: response };
+   },
+
+   async sendOutProgramReminder(program: IProgram) {
+      const users = await userRepository.getUsersForNewsletter();
+
+      if (users.length === 0) {
+         return { success: false, message: 'No users subscribed to newsletter...' };
+      }
+
+      const emailData = users
+         .filter((user) => user.email)
+         .map((user) => ({
+            to: user.email,
+            subject: `Join us at ${program.title}`,
+            react: <ProgramReminderEmail userId={user._id.toString()} userFirstName={user.firstName} program={program} />,
+         }));
+
+      const response = await emailService.sendBatchEmails(emailData);
+
+      return { success: true, message: `Reminder sent out to ${users.length} members successfully!`, data: response };
    },
 
    async sendOutWeeklyReview(weeklyReview: IWeeklyReview, departmentName: string, serviceDate: string) {

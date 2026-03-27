@@ -10,15 +10,16 @@ import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
 
 import Conditional from '@/components/common/conditional';
+import SearchableSelect from '@/components/common/searchable-select';
+
 import useDepartments from '@/hooks/useDepartments';
+import useQueryStore from '@/store/query';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import { InventoryCreateSchema, type IInventoryCreate } from './inventory-item';
-
 import { getErrorMessage } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -27,13 +28,14 @@ type Props = { onAddInventoryItem: () => void };
 
 const AddInventoryItemForm: React.FC<Props> = ({ onAddInventoryItem }) => {
    const department = useDepartments();
+   const query = useQueryStore();
 
    const form = useForm<IInventoryCreate>({
       resolver: zodResolver(InventoryCreateSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (inventoryItem: IInventoryCreate) => http.post('/api/inventory', inventoryItem),
+      mutationFn: (inventoryItem: IInventoryCreate) => http.post('/api/inventory', { ...inventoryItem, department: inventoryItem.department.value }),
       onSuccess: () => {
          toast('Success!', { description: 'Added the inventory item successfully' });
 
@@ -54,21 +56,16 @@ const AddInventoryItemForm: React.FC<Props> = ({ onAddInventoryItem }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Department</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Department" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {department.data.data.data.map((dept) => (
-                                 <SelectItem key={dept._id} value={dept._id}>
-                                    {dept.name}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={department.isFetching}
+                              onTriggerSearch={(name: string) => query.onSetDepartment({ name })}
+                              data={department.data.data.data.map((department) => ({ label: department.name, value: department._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Department"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>

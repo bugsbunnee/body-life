@@ -1,6 +1,10 @@
 import z from 'zod';
-import { PhoneNumberSchema } from './base.validator';
+import { lib } from '../../../utils/lib';
 
-export const SMSSchema = PhoneNumberSchema.extend({
+export const SMSSchema = z.object({
+   userId: z
+      .string()
+      .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid User ID' })
+      .transform((value) => lib.parseObjectId(value)),
    body: z.string().min(1, 'Text body is required').max(200, 'Text body is too long'),
 });

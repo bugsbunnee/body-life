@@ -10,6 +10,7 @@ export const ProgramCreateSchema = z.object({
    description: z.string().trim().min(1, 'Description is required'),
    address: z.string().trim().min(1, 'Address is required'),
    scheduledFor: z.date(),
+   sendReminder: z.enum(['1', '0']),
 });
 
 export type IProgramCreate = z.infer<typeof ProgramCreateSchema>;

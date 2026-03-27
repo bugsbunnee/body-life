@@ -5,11 +5,16 @@ export const LoginSchema = z.object({
    password: z.string().min(1, { error: 'Password is required' }),
 });
 
-export const PasswordSchema = z.object({
+export const ForgotPasswordSchema = z.object({
+   email: z.email(),
+});
+
+export const ResetPasswordSchema = z.object({
    token: z.string(),
    password: z.string().min(1, { error: 'Password is required' }),
    confirmPassword: z.string().min(1, { error: 'Confirm password is required' }),
 });
 
 export type ILogin = z.infer<typeof LoginSchema>;
-export type IPassword = z.infer<typeof PasswordSchema>;
+export type IPassword = z.infer<typeof ResetPasswordSchema>;
+export type IForgotPasswowrd = z.infer<typeof ForgotPasswordSchema>;

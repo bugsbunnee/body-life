@@ -51,6 +51,18 @@ export const authController = {
       res.json(response);
    },
 
+   async forgotPassword(req: Request, res: Response): Promise<any> {
+      const admin = await adminRepository.getActiveAdminByEmail(req.body.email);
+
+      if (!admin) {
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user with the given email cannot access this resource.' });
+      }
+
+      await admin.sendPasswordSetupEmail();
+
+      res.json({ message: 'An email has been sent with password reset instructions.' });
+   },
+
    async resetPassword(req: Request, res: Response): Promise<any> {
       let token = crypto.createHash('sha256').update(req.body.token).digest('hex');
       let admin = await adminRepository.getAdminForPasswordReset(token);

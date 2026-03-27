@@ -11,7 +11,7 @@ import { whatsappService } from '../services/whatsapp.service';
 
 export const birthdayController = {
    async sendDailyBirthdayReminders(req: Request, res: Response) {
-      const date: IDateRange = { startDate: moment().toDate(), endDate: moment().toDate() };
+      const date: IDateRange = { startDate: moment().startOf('day').toDate(), endDate: moment().endOf('day').toDate() };
       const pagination: Pagination = { offset: 0, pageNumber: 1, pageSize: 1_000_000 };
       const users = await userRepository.getUsersWithBirthdayInRange(pagination, date);
 

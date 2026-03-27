@@ -8,6 +8,10 @@ export const authenticate = (email: string, password: string) => {
    });
 };
 
+export const forgotPassword = <T>(credentials: T) => {
+   return http.post<{ message: string }>('/api/auth/admin/forgot-password', credentials);
+};
+
 export const updatePassword = <T>(credentials: T) => {
-   return http.post<{ message: string }>('/api/auth/admin/password', credentials);
+   return http.post<{ message: string }>('/api/auth/admin/reset-password', credentials);
 };

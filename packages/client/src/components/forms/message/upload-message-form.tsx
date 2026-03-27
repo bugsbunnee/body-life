@@ -19,12 +19,17 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../ui/calendar';
 import { getErrorMessage } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FaSpinner } from 'react-icons/fa';
+
+import SearchableSelect from '@/components/common/searchable-select';
+import useQueryStore from '@/store/query';
 
 const messageSchema = z.object({
    title: z.string().min(1, 'Title is required').max(55, 'Title is too long (max 100 characters'),
-   preacher: z.string().min(1, 'Preacher name is required').max(255, 'Preacher name is too long (max 30 characters'),
+   preacher: z.object({
+      label: z.string(),
+      value: z.string(),
+   }),
    date: z.date().max(new Date()),
    videoUrl: z.url().min(1, 'Video URL is required'),
 });
@@ -35,13 +40,14 @@ type Props = { onAddMessage: () => void };
 
 const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
    const users = useUsers();
+   const query = useQueryStore();
 
    const form = useForm<IMessage>({
       resolver: zodResolver(messageSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (message: IMessage) => http.post('/api/message', message),
+      mutationFn: (message: IMessage) => http.post('/api/message', { ...message, preacher: message.preacher.value }),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
 
@@ -83,21 +89,16 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Preacher</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Preacher" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {users.data.data.data.map((user) => (
-                                 <SelectItem key={user._id} value={user._id}>
-                                    {user.firstName} {user.lastName}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={users.isFetching}
+                              onTriggerSearch={(search: string) => query.onSetUser({ search })}
+                              data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Preacher"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>

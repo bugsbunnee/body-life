@@ -11,6 +11,7 @@ export const ProgramCreateSchema = z.object({
    description: z.string().trim().min(1, 'Description is required'),
    address: z.string().trim().min(1, 'Address is required'),
    scheduledFor: z.coerce.date(),
+   sendReminder: z.enum(['0', '1']),
 });
 
 export type IProgramQuery = z.infer<typeof ProgramQuerySchema>;

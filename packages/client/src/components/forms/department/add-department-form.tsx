@@ -6,30 +6,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
 
-import http from '../../../services/http.service';
 import Conditional from '@/components/common/conditional';
+import SearchableSelect from '@/components/common/searchable-select';
+
 import useUsers from '@/hooks/useUsers';
+import useQueryStore from '@/store/query';
+import http from '../../../services/http.service';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import { DepartmentCreateSchema, type IDepartmentCreate } from './department-schema';
-
 import { getErrorMessage } from '@/lib/utils';
 
 type Props = { onAddDepartment: () => void };
 
 const AddDepartmentForm: React.FC<Props> = ({ onAddDepartment }) => {
    const users = useUsers();
+   const query = useQueryStore();
 
    const form = useForm<IDepartmentCreate>({
       resolver: zodResolver(DepartmentCreateSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (department: IDepartmentCreate) => http.post('/api/department', department),
+      mutationFn: (department: IDepartmentCreate) => http.post('/api/department', { ...department, hod: department.hod.value }),
       onSuccess: () => {
          toast('Success!', { description: 'Added the department successfully' });
 
@@ -50,21 +52,16 @@ const AddDepartmentForm: React.FC<Props> = ({ onAddDepartment }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Department Head</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Leader" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {users.data.data.data.map((user) => (
-                                 <SelectItem key={user._id} value={user._id}>
-                                    {user.firstName} {user.lastName}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={users.isFetching}
+                              onTriggerSearch={(search: string) => query.onSetUser({ search })}
+                              data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Leader"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>

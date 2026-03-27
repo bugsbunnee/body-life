@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Props {
    onCreateProgram: () => void;
@@ -49,6 +50,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
       formData.append('description', program.description);
       formData.append('address', program.address);
       formData.append('scheduledFor', format(program.scheduledFor, 'yyyy-MM-dd'));
+      formData.append('sendReminder', program.sendReminder);
 
       mutation.mutate(formData);
    };
@@ -141,6 +143,24 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                />
             </div>
 
+            <div className="mt-6">
+               <FormField
+                  control={form.control}
+                  defaultValue="1"
+                  name="sendReminder"
+                  render={({ field }) => (
+                     <div className="bg-slate-50 h-[3.5rem] flex items-center px-4 rounded-md border border-border">
+                        <FormItem className="col-span-2 flex items-center gap-x-4">
+                           <FormLabel htmlFor={field.name}>Send Reminder?</FormLabel>
+
+                           <FormControl>
+                              <Checkbox id={field.name} name={field.name} checked={field.value === '1'} onCheckedChange={() => field.onChange(field.value === '0' ? '1' : '0')} />
+                           </FormControl>
+                        </FormItem>
+                     </div>
+                  )}
+               />
+            </div>
             <Button type="submit" disabled={form.formState.isSubmitting} className="mt-6 text-sm text-white bg-main font-semibold rounded-sm w-full h-12">
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">

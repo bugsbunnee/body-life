@@ -13,13 +13,33 @@ export const userSchema = z
       email: z.email().min(1, 'Email Address is required').max(200, 'Email Address is too long (max 50 characters'),
       dateOfBirth: z.date().max(new Date()),
       phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
-      department: z.string().optional(),
-      prayerCell: z.string().optional(),
+      department: z
+         .object({
+            label: z.string(),
+            value: z.string(),
+         })
+         .optional(),
+      prayerCell: z
+         .object({
+            label: z.string(),
+            value: z.string(),
+         })
+         .optional(),
       isFirstTimer: z.boolean(),
-      assignTo: z.string().optional(),
+      assignTo: z
+         .object({
+            label: z.string(),
+            value: z.string(),
+         })
+         .optional(),
       notes: z.string().optional(),
       preferredContactMethod: z.string().optional(),
-      serviceAttended: z.string().optional(),
+      serviceAttended: z
+         .object({
+            label: z.string(),
+            value: z.string(),
+         })
+         .optional(),
    })
    .superRefine((data, ctx) => {
       if (data.isFirstTimer) {
@@ -39,9 +59,34 @@ export const userSchema = z
       }
    });
 
+export const userUpdateSchema = z.object({
+   firstName: z.string().min(1, 'First Name is required').max(30, 'First Name is too long (max 30 characters'),
+   lastName: z.string().min(1, 'Last Name is required').max(30, 'Last Name is too long (max 30 characters'),
+   address: z.string().min(1, 'Address is required').max(200, 'Address is too long (max 200 characters'),
+   gender: z.string().min(1, 'Gender is required').max(200, 'Gender is too long (max 200 characters'),
+   maritalStatus: z.string().min(1, 'Marital Status is required').max(20, 'Marital Status is too long (max 20 characters'),
+   email: z.email().min(1, 'Email Address is required').max(200, 'Email Address is too long (max 50 characters'),
+   dateOfBirth: z.date().max(new Date()),
+   phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
+   department: z
+      .object({
+         label: z.string(),
+         value: z.string(),
+      })
+      .optional(),
+   prayerCell: z
+      .object({
+         label: z.string(),
+         value: z.string(),
+      })
+      .optional(),
+   notes: z.string().optional(),
+});
+
 export const userRoleSchema = z.object({
    userRole: z.enum(Object.values(UserRole)),
 });
 
 export type IUser = z.infer<typeof userSchema>;
+export type IUserUpdate = z.infer<typeof userUpdateSchema>;
 export type IUserRole = z.infer<typeof userRoleSchema>;

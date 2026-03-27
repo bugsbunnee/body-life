@@ -1,4 +1,5 @@
-import type React from 'react';
+import React, { useEffect } from 'react';
+import dayjs from 'dayjs';
 
 import { format } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
@@ -13,56 +14,68 @@ import SearchableSelect from '@/components/common/searchable-select';
 import http from '@/services/http.service';
 
 import useDepartments from '@/hooks/useDepartments';
-import useUsers from '@/hooks/useUsers';
 import usePrayerCells from '@/hooks/usePrayerCells';
-import useServiceReports from '@/hooks/useServiceReports';
 import useQueryStore from '@/store/query';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 import { Calendar } from '../../ui/calendar';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '../../ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 
-import { userSchema, type IUser } from './user-schema';
+import type { User } from '@/utils/entities';
+
+import { userUpdateSchema, type IUserUpdate } from './user-schema';
 import { getErrorMessage } from '@/lib/utils';
-import { CONTACT_METHODS, GENDERS, MARITAL_STATUS } from '@/utils/constants';
+import { GENDERS, MARITAL_STATUS } from '@/utils/constants';
 
-type Props = { onAddUser: () => void };
+type Props = { user: User; onUpdateUser: () => void };
 
-const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
+const UpdateUserForm: React.FC<Props> = ({ user, onUpdateUser }) => {
    const prayerCells = usePrayerCells();
    const departments = useDepartments();
-   const users = useUsers();
-   const services = useServiceReports();
 
    const { onSetDepartment } = useQueryStore();
 
-   const form = useForm<IUser>({
-      resolver: zodResolver(userSchema),
+   const form = useForm<IUserUpdate>({
+      resolver: zodResolver(userUpdateSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (user: IUser) =>
-         http.post('/api/user', {
-            ...user,
-            assignTo: user.assignTo ? user.assignTo.value : undefined,
-            serviceAttended: user.serviceAttended ? user.serviceAttended.value : undefined,
-            department: user.department ? user.department.value : undefined,
-            prayerCell: user.prayerCell ? user.prayerCell.value : undefined,
+      mutationFn: (updatedUser: IUserUpdate) =>
+         http.put('/api/user/' + user._id, {
+            ...updatedUser,
+            department: updatedUser.department ? updatedUser.department.value : undefined,
+            prayerCell: updatedUser.prayerCell ? updatedUser.prayerCell.value : undefined,
          }),
       onSuccess: (response) => {
-         toast('Success!', { description: response.data.message });
+         toast('Success! You have updated the member details successfully!', { description: response.data.message });
 
          form.reset();
-         onAddUser();
+         onUpdateUser();
       },
-      onError: (error) => toast('Could not add the user', { description: getErrorMessage(error) }),
+      onError: (error) => toast('Could not update the member details', { description: getErrorMessage(error) }),
    });
+
+   useEffect(() => {
+      if (user) {
+         form.reset({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            address: user.address,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            dateOfBirth: dayjs(user.dateOfBirth).toDate(),
+            maritalStatus: user.maritalStatus,
+            gender: user.gender,
+            prayerCell: user.prayerCell ? { label: user.prayerCell.name, value: user.prayerCell._id } : undefined,
+            department: user.department ? { label: user.department.name, value: user.department._id } : undefined,
+         });
+      }
+   }, [form, user]);
 
    return (
       <Form {...form}>
@@ -179,7 +192,8 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                   render={({ field }) => (
                      <FormItem>
                         <FormLabel>Gender</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+
+                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                            <FormControl>
                               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select a Gender" />
@@ -206,7 +220,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FormItem>
                         <FormLabel>Marital Status</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                            <FormControl>
                               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
                                  <SelectValue placeholder="Select a Marital Status" />
@@ -273,120 +287,6 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                />
             </div>
 
-            <FormField
-               control={form.control}
-               defaultValue={false}
-               name="isFirstTimer"
-               render={({ field }) => (
-                  <div className="bg-slate-50 h-[3.5rem] flex items-center px-4 rounded-md border border-border">
-                     <FormItem className="col-span-2 flex items-center gap-x-4">
-                        <FormLabel htmlFor={field.name}>Is First Timer?</FormLabel>
-
-                        <FormControl>
-                           <Checkbox id={field.name} name={field.name} checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                     </FormItem>
-                  </div>
-               )}
-            />
-
-            <Conditional visible={form.watch('isFirstTimer')}>
-               <div className="grid grid-cols-3 gap-6">
-                  <FormField
-                     control={form.control}
-                     name="assignTo"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel className="text-sm text-dark font-medium">Assign For Follow Up</FormLabel>
-
-                           <FormControl>
-                              <SearchableSelect
-                                 isTriggered={users.isFetching}
-                                 onTriggerSearch={(name: string) => onSetDepartment({ name })}
-                                 data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
-                                 value={field.value}
-                                 onValueChange={field.onChange}
-                                 placeholder="Select Member"
-                              />
-                           </FormControl>
-
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-
-                  <FormField
-                     control={form.control}
-                     name="serviceAttended"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel className="text-sm text-dark font-medium">Service Attended</FormLabel>
-
-                           <FormControl>
-                              <SearchableSelect
-                                 isTriggered={services.isFetching}
-                                 onTriggerSearch={(name: string) => onSetDepartment({ name })}
-                                 data={services.data.data.map((service) => ({ label: service.message.title, value: service._id }))}
-                                 value={field.value}
-                                 onValueChange={field.onChange}
-                                 placeholder="Select Member"
-                              />
-                           </FormControl>
-
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-
-                  <FormField
-                     control={form.control}
-                     name="preferredContactMethod"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel className="text-sm text-dark font-medium">Preferred Contact Method</FormLabel>
-
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                 <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                    <SelectValue placeholder="Select Preferred Contact Method" />
-                                 </SelectTrigger>
-                              </FormControl>
-
-                              <SelectContent>
-                                 {CONTACT_METHODS.map((method) => (
-                                    <SelectItem key={method.id} value={method.id}>
-                                       {method.name}
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-               </div>
-
-               <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Notes</FormLabel>
-                        <FormControl>
-                           <Textarea
-                              rows={6}
-                              placeholder="Any thing to note like a prayer request?"
-                              className="resize-none rounded-lg border border-border p-4 shadow-none w-full"
-                              {...field}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-            </Conditional>
-
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
@@ -397,14 +297,14 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                      <FaSpinner />
                   </div>
 
-                  <span>Adding Member...</span>
+                  <span>Updating Member Details...</span>
                </Conditional>
 
-               <Conditional visible={!mutation.isPending}>Add Member</Conditional>
+               <Conditional visible={!mutation.isPending}>Update Member Details</Conditional>
             </Button>
          </form>
       </Form>
    );
 };
 
-export default AddUserForm;
+export default UpdateUserForm;

@@ -8,7 +8,10 @@ import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
 
 import Conditional from '@/components/common/conditional';
+import SearchableSelect from '@/components/common/searchable-select';
+
 import useUsers from '@/hooks/useUsers';
+import useQueryStore from '@/store/query';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -25,13 +28,14 @@ type Props = { onAddPrayerCell: () => void };
 
 const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
    const users = useUsers();
+   const query = useQueryStore();
 
    const form = useForm<IPrayerCellCreate>({
       resolver: zodResolver(PrayerCellCreateSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (prayerCell: IPrayerCellCreate) => http.post('/api/prayer-cell', prayerCell),
+      mutationFn: (prayerCell: IPrayerCellCreate) => http.post('/api/prayer-cell', { ...prayerCell, leader: prayerCell.leader.value }),
       onSuccess: () => {
          toast('Success!', { description: 'Added the prayer cell successfully' });
 
@@ -52,21 +56,16 @@ const AddPrayerCellForm: React.FC<Props> = ({ onAddPrayerCell }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Prayer Cell Leader</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Leader" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {users.data.data.data.map((user) => (
-                                 <SelectItem key={user._id} value={user._id}>
-                                    {user.firstName} {user.lastName}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={users.isFetching}
+                              onTriggerSearch={(search: string) => query.onSetUser({ search })}
+                              data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Prayer Cell Leader"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>

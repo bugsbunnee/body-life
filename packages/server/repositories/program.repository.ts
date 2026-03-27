@@ -33,6 +33,10 @@ export const programRepository = {
       return filter;
    },
 
+   async getProgramById(id: string) {
+      return Program.findById(id).exec();
+   },
+
    async createProgram(program: IProgramCreate & { imageUrl: string }) {
       return Program.create({
          title: program.title,

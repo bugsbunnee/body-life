@@ -80,5 +80,28 @@ export const UserCreationSchema = PhoneNumberSchema.extend({
    }
 });
 
+export const UserUpdateSchema = PhoneNumberSchema.extend({
+   firstName: z.string().min(1, 'First Name is required').max(30, 'First Name is too long (max 30 characters'),
+   lastName: z.string().min(1, 'Last Name is required').max(30, 'Last Name is too long (max 30 characters'),
+   address: z.string().min(1, 'Address is required').max(200, 'Address is too long (max 200 characters'),
+   email: z.email(),
+   maritalStatus: z.string().min(1, 'Marital Status is required').max(20, 'Marital Status is too long (max 20 characters'),
+   gender: z.string().min(1, 'Gender is required').max(200, 'Gender is too long (max 200 characters'),
+   dateOfBirth: z.coerce.date().refine((value) => moment(value).isBefore(moment()), { error: 'Date of birth must be in the past!' }),
+   userRole: z.enum(USER_ROLES).optional(),
+   department: z
+      .string()
+      .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid Department' })
+      .transform((value) => lib.parseObjectId(value))
+      .optional(),
+   prayerCell: z
+      .string()
+      .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid Prayer Cell' })
+      .transform((value) => lib.parseObjectId(value))
+      .optional(),
+   notes: z.string().optional(),
+});
+
 export type IUserCreate = z.infer<typeof UserCreationSchema>;
+export type IUserUpdate = z.infer<typeof UserUpdateSchema>;
 export type IUserQuery = z.infer<typeof UserQuerySchema>;

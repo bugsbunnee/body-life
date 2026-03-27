@@ -3,7 +3,10 @@ import z from 'zod';
 
 export const FirstTimerUpdateSchema = z.object({
    contactedAt: z.date().max(dayjs().toDate()),
-   contactedBy: z.string().min(1, { error: 'Contacted By is required' }),
+   contactedBy: z.object({
+      label: z.string(),
+      value: z.string(),
+   }),
    channel: z.string().min(1, { error: 'Contact Method is required' }),
    status: z.string().min(1, { error: 'Status is required' }),
    response: z.string().min(1, { error: 'Response is required' }),

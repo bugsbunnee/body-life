@@ -132,6 +132,7 @@
 body {
    font-family: var(--font-dm-sans);
    box-sizing: border-box;
+   overflow: hidden;
 }
 
 @layer base {

@@ -8,9 +8,18 @@ const countSchema = z.object({
 });
 
 export const serviceReportSchema = z.object({
-   prepPrayers: z.string().min(1, 'Prep Prayers By is required'),
-   worship: z.string().min(1, 'Worship By is required'),
-   message: z.string().min(1, 'Sermon is required'),
+   prepPrayers: z.object({
+      label: z.string(),
+      value: z.string(),
+   }),
+   worship: z.object({
+      label: z.string(),
+      value: z.string(),
+   }),
+   message: z.object({
+      label: z.string(),
+      value: z.string(),
+   }),
    seatArrangementCount: z.number().positive(),
    firstTimerCount: z.number().min(0),
    offering: z.number().positive(),

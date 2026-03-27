@@ -22,15 +22,15 @@ const textSchema = z.object({
 
 type ISMS = z.infer<typeof textSchema>;
 
-type Props = { phoneNumber: string };
+type Props = { userId: string };
 
-const SendMessageForm: React.FC<Props> = ({ phoneNumber }) => {
+const SendMessageForm: React.FC<Props> = ({ userId }) => {
    const form = useForm<ISMS>({
       resolver: zodResolver(textSchema),
    });
 
    const mutation = useMutation({
-      mutationFn: (body: ISMS) => http.post('/api/sms', { phoneNumber, body: body.body }),
+      mutationFn: (body: ISMS) => http.post('/api/sms', { userId, body: body.body }),
       onSuccess: (response) => {
          toast('Success!', { description: response.data.message });
          form.reset();

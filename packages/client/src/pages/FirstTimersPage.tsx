@@ -25,6 +25,7 @@ import Conditional from '@/components/common/conditional';
 import Header from '@/components/common/header';
 import FirstTimerMetrics from '@/components/layout/first-timers/first-timer-metrics';
 import Modal from '@/components/common/modal';
+import SearchableSelect from '@/components/common/searchable-select';
 import Summary from '@/components/common/summary';
 import UpdateFollowUpForm from '@/components/forms/first-timer/update-follow-up';
 
@@ -35,9 +36,9 @@ import useUsers from '@/hooks/useUsers';
 import http from '@/services/http.service';
 
 const FirstTimersPage: React.FC = () => {
-   const { data: users } = useUsers();
+   const { data: users, isFetching: isFetchingUsers } = useUsers();
    const { data, isFetching, refetch } = useFirstTimers();
-   const { firstTimerQuery, resetQuery, onSetFirstTimer, onSetSearch } = useQueryStore();
+   const { firstTimerQuery, resetQuery, onSetFirstTimer, onSetSearch, onSetUser } = useQueryStore();
 
    const [selectedDataToView, setSelectedDataToView] = useState<FirstTimer | null>(null);
    const [selectedDataToUpdate, setSelectedDataToUpdate] = useState<FirstTimer | null>(null);
@@ -154,6 +155,11 @@ const FirstTimersPage: React.FC = () => {
 
       exportToExcel(extractedData, `FirstTimers_${formatDate(new Date(), 'PPP')}.xlsx`);
    };
+
+   const assignedTo = useMemo(() => {
+      const match = users.data.data.find((user) => user._id === firstTimerQuery.assignedTo);
+      return match ? { label: match.firstName + ' ' + match.lastName, value: match._id } : undefined;
+   }, [users, firstTimerQuery.assignedTo]);
 
    useEffect(() => {
       resetQuery();
@@ -323,19 +329,14 @@ const FirstTimersPage: React.FC = () => {
                </SelectContent>
             </Select>
 
-            <Select onValueChange={(assignedTo) => onSetFirstTimer({ assignedTo })} defaultValue={firstTimerQuery.assignedTo}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg border border-border px-4 shadow-none w-full">
-                  <SelectValue placeholder="Filter by Assigned Contact" />
-               </SelectTrigger>
-
-               <SelectContent>
-                  {users.data.data.map((user) => (
-                     <SelectItem key={user._id} value={user._id}>
-                        {user.firstName} {user.lastName}
-                     </SelectItem>
-                  ))}
-               </SelectContent>
-            </Select>
+            <SearchableSelect
+               isTriggered={isFetchingUsers}
+               onTriggerSearch={(search: string) => onSetUser({ search })}
+               data={users.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+               value={assignedTo}
+               onValueChange={(value) => onSetFirstTimer({ assignedTo: value ? value.value : '' })}
+               placeholder="Filter by Assigned To"
+            />
          </div>
 
          <div className="grid grid-cols-4 gap-x-6 p-6 border-b-border border-b">

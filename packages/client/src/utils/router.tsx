@@ -6,9 +6,9 @@ import ErrorPage from '@/pages/ErrorPage';
 import Dashboard from '@/pages/Dashboard';
 import DepartmentPage from '@/pages/DepartmentPage';
 import FirstTimersPage from '@/pages/FirstTimersPage';
+import ForgotPassword from '@/pages/ForgotPasswordPage';
 import HomePage from '@/pages/HomePage';
 import InventoryPage from '@/pages/InventoryPage';
-import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import MessagesPage from '@/pages/MessagesPage';
 import PrayerCellsPage from '@/pages/PrayerCellsPage';
@@ -23,23 +23,13 @@ import WeeklyReviewPage from '@/pages/WeeklyReviewPage';
 const routes: RouteObject[] = [
    {
       path: '/',
+      element: <PublicRoute />,
       errorElement: <ErrorPage />,
       children: [
-         {
-            index: true,
-            element: <LandingPage />,
-         },
          {
             path: APP_ROUTES.UNSUBSCRIBE,
             element: <UnsubscribePage />,
          },
-      ],
-   },
-   {
-      path: '/admin',
-      element: <PublicRoute />,
-      errorElement: <ErrorPage />,
-      children: [
          {
             path: APP_ROUTES.CHAT,
             element: <ChatBot />,
@@ -49,61 +39,65 @@ const routes: RouteObject[] = [
             element: <LoginPage />,
          },
          {
+            path: APP_ROUTES.FORGOT_PASSWORD,
+            element: <ForgotPassword />,
+         },
+         {
             path: APP_ROUTES.SETUP_PASSWORD,
             element: <ResetPassword />,
          },
+      ],
+   },
+   {
+      path: 'dashboard',
+      element: <Dashboard />,
+      errorElement: <ErrorPage />,
+      children: [
          {
-            path: 'dashboard',
-            element: <Dashboard />,
-            errorElement: <ErrorPage />,
-            children: [
-               {
-                  index: true,
-                  element: <HomePage />,
-               },
-               {
-                  path: 'departments',
-                  element: <DepartmentPage />,
-               },
-               {
-                  path: APP_ROUTES.INVENTORY,
-                  element: <InventoryPage />,
-               },
-               {
-                  path: APP_ROUTES.PRAYER_CELLS,
-                  element: <PrayerCellsPage />,
-               },
-               {
-                  path: APP_ROUTES.MEMBERS,
-                  element: <UsersPage />,
-               },
-               {
-                  path: APP_ROUTES.FIRST_TIMERS,
-                  element: <FirstTimersPage />,
-               },
-               {
-                  path: APP_ROUTES.PROGRAMS,
-                  element: <ProgramsPage />,
-               },
-               {
-                  path: APP_ROUTES.SERVICE_REPORT,
-                  element: <ServiceReportPage />,
-               },
-               {
-                  path: APP_ROUTES.WEEKLY_REPORTS,
-                  element: <WeeklyReviewPage />,
-               },
-               {
-                  path: APP_ROUTES.MESSAGES,
-                  element: <MessagesPage />,
-               },
-            ],
+            index: true,
+            element: <HomePage />,
          },
          {
-            path: '*',
-            element: <Navigate to={APP_ROUTES.AUTH} replace />,
+            path: 'departments',
+            element: <DepartmentPage />,
+         },
+         {
+            path: APP_ROUTES.INVENTORY,
+            element: <InventoryPage />,
+         },
+         {
+            path: APP_ROUTES.PRAYER_CELLS,
+            element: <PrayerCellsPage />,
+         },
+         {
+            path: APP_ROUTES.MEMBERS,
+            element: <UsersPage />,
+         },
+         {
+            path: APP_ROUTES.FIRST_TIMERS,
+            element: <FirstTimersPage />,
+         },
+         {
+            path: APP_ROUTES.PROGRAMS,
+            element: <ProgramsPage />,
+         },
+         {
+            path: APP_ROUTES.SERVICE_REPORT,
+            element: <ServiceReportPage />,
+         },
+         {
+            path: APP_ROUTES.WEEKLY_REPORTS,
+            element: <WeeklyReviewPage />,
+         },
+         {
+            path: APP_ROUTES.MESSAGES,
+            element: <MessagesPage />,
          },
       ],
+   },
+   {
+      path: '*',
+      element: <Navigate to={APP_ROUTES.AUTH} replace />,
    },
 ];
 

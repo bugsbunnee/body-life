@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 import Conditional from '@/components/common/conditional';
 
-import { PasswordSchema, type IPassword } from './login-schema';
+import { ResetPasswordSchema, type IPassword } from './login-schema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,7 @@ const PasswordForm: React.FC = () => {
    const navigate = useNavigate();
 
    const form = useForm<IPassword>({
-      resolver: zodResolver(PasswordSchema),
+      resolver: zodResolver(ResetPasswordSchema),
       defaultValues: {
          token: params[0].get('token') ?? undefined,
       },

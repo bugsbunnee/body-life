@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.get('/', [auth, paginate, validate(ProgramQuerySchema, 'query')], programController.getPrograms);
 router.post('/', [auth, upload.single('file'), validate(ProgramCreateSchema, 'body')], programController.createProgram);
+router.post('/:id/reminder', [auth], programController.sendReminderForProgram);
 router.delete('/:id', [auth, validateObjectId], programController.deactivateProgram);
 
 export default router;

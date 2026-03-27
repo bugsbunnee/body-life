@@ -5,7 +5,8 @@ import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
 import { FaSpinner } from 'react-icons/fa';
-import { cn, exportToExcel, summarize } from '@/lib/utils';
+import { cn, exportToExcel, getErrorMessage, summarize } from '@/lib/utils';
+import { toast } from 'sonner';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Program } from '@/utils/entities';
@@ -38,6 +39,12 @@ const ProgramsPage: React.FC = () => {
 
    const mutation = useMutation({
       mutationFn: (id: string) => http.delete('/api/program/' + id),
+   });
+
+   const reminder = useMutation({
+      mutationFn: (id: string) => http.post('/api/program/' + id + '/reminder'),
+      onSuccess: () => toast.success('Reminders have been sent for the program.'),
+      onError: (error) => toast.error('Failed to send reminder.', { description: getErrorMessage(error) }),
    });
 
    const handleProgramAddition = () => {
@@ -128,6 +135,18 @@ const ProgramsPage: React.FC = () => {
                         View Member Details
                      </DropdownMenuItem>
 
+                     <Conditional visible={row.original.isActive}>
+                        <DropdownMenuItem onClick={() => reminder.mutate(row.original._id)} className="capitalize p-3">
+                           <Conditional visible={mutation.isPending}>
+                              <div className="animate-spin">
+                                 <FaSpinner />
+                              </div>
+                           </Conditional>
+
+                           <Conditional visible={!mutation.isPending}>Send Reminder</Conditional>
+                        </DropdownMenuItem>
+                     </Conditional>
+
                      <DropdownMenuItem onClick={() => mutation.mutate(row.original._id)} className="capitalize p-3">
                         <Conditional visible={mutation.isPending}>
                            <div className="animate-spin">
@@ -144,7 +163,7 @@ const ProgramsPage: React.FC = () => {
       ];
 
       return columns;
-   }, [mutation]);
+   }, [mutation, reminder]);
 
    useEffect(() => {
       resetQuery();

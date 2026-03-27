@@ -115,111 +115,109 @@ export function DataTable<TData, TValue>({ columns, data, loading, pagination, f
             </div>
          </Conditional>
 
-         <div className="overflow-hidden">
-            <Table>
-               <TableHeader>
-                  {getHeaderGroups().map((headerGroup) => (
-                     <TableRow key={headerGroup.id} className="border-b-0 px-6">
-                        {headerGroup.headers.map((header) => {
-                           return (
-                              <TableHead key={header.id} className="text-base text-main border-b-0 px-6">
-                                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                              </TableHead>
-                           );
-                        })}
+         <Table>
+            <TableHeader>
+               {getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="border-b-0 px-6">
+                     {headerGroup.headers.map((header) => {
+                        return (
+                           <TableHead key={header.id} className="text-base text-main border-b-0 px-6">
+                              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                           </TableHead>
+                        );
+                     })}
+                  </TableRow>
+               ))}
+            </TableHeader>
+
+            <TableBody>
+               <Conditional visible={isFetching}>
+                  {_.range(1, 5).map((fill) => (
+                     <TableRow key={fill} className="border-b-0">
+                        {columns.map((_, index) => (
+                           <TableCell key={index} className="p-6">
+                              <Skeleton className="h-[1rem] w-full rounded-sm" />
+                           </TableCell>
+                        ))}
                      </TableRow>
                   ))}
-               </TableHeader>
+               </Conditional>
 
-               <TableBody>
-                  <Conditional visible={isFetching}>
-                     {_.range(1, 5).map((fill) => (
-                        <TableRow key={fill} className="border-b-0">
-                           {columns.map((_, index) => (
-                              <TableCell key={index} className="p-6">
-                                 <Skeleton className="h-[1rem] w-full rounded-sm" />
+               <Conditional visible={!isFetching}>
+                  <Conditional visible={rows.length > 0}>
+                     {rows.map((row) => (
+                        <TableRow key={row.id} className="border-b-0" data-state={row.getIsSelected() && 'selected'}>
+                           {row.getVisibleCells().map((cell) => (
+                              <TableCell key={cell.id} className="py-8 px-6 text-gray-neutral">
+                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               </TableCell>
                            ))}
                         </TableRow>
                      ))}
                   </Conditional>
 
-                  <Conditional visible={!isFetching}>
-                     <Conditional visible={rows.length > 0}>
-                        {rows.map((row) => (
-                           <TableRow key={row.id} className="border-b-0" data-state={row.getIsSelected() && 'selected'}>
-                              {row.getVisibleCells().map((cell) => (
-                                 <TableCell key={cell.id} className="py-8 px-6 text-gray-neutral">
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                 </TableCell>
-                              ))}
-                           </TableRow>
-                        ))}
-                     </Conditional>
-
-                     <Conditional visible={rows.length === 0}>
-                        <TableRow className="border-none border-b-0">
-                           <TableCell colSpan={columns.length} className="h-24 text-center border-b-0">
-                              No results.
-                           </TableCell>
-                        </TableRow>
-                     </Conditional>
+                  <Conditional visible={rows.length === 0}>
+                     <TableRow className="border-none border-b-0">
+                        <TableCell colSpan={columns.length} className="h-24 text-center border-b-0">
+                           No results.
+                        </TableCell>
+                     </TableRow>
                   </Conditional>
-               </TableBody>
-            </Table>
+               </Conditional>
+            </TableBody>
+         </Table>
 
-            <div className="items-center justify-between flex p-4 border-y border-y-border">
-               <Select onValueChange={(pageSize) => onSizeChange(parseInt(pageSize))} defaultValue={pagination.pageSize.toString()}>
-                  <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg max-w-52 border border-border px-4 shadow-none w-full">
-                     <SelectValue placeholder="Select Rows to View" />
-                  </SelectTrigger>
+         <div className="items-center justify-between flex p-4 border-y border-y-border">
+            <Select onValueChange={(pageSize) => onSizeChange(parseInt(pageSize))} defaultValue={pagination.pageSize.toString()}>
+               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-lg max-w-52 border border-border px-4 shadow-none w-full">
+                  <SelectValue placeholder="Select Rows to View" />
+               </SelectTrigger>
 
-                  <SelectContent>
-                     {_.range(1, 200, 9).map((size) => (
-                        <SelectItem key={size} value={size.toString()}>
-                           {size}
-                        </SelectItem>
+               <SelectContent>
+                  {_.range(1, 200, 9).map((size) => (
+                     <SelectItem key={size} value={size.toString()}>
+                        {size}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
+
+            <div>
+               <Pagination className="pb-6 mt-4">
+                  <PaginationContent>
+                     <PaginationItem>
+                        <PaginationPrevious
+                           href="#"
+                           data-disabled={pagination.pageNumber === 1}
+                           className="data-[disabled=true]:opacity-25"
+                           onClick={() => onPageChange(pagination.pageNumber - 1)}
+                        />
+                     </PaginationItem>
+
+                     {_.range(1, pagination.totalPages + 1).map((page) => (
+                        <PaginationItem key={page}>
+                           <PaginationLink href="#" onClick={() => onPageChange(page)} isActive={page === pagination.pageNumber}>
+                              {page}
+                           </PaginationLink>
+                        </PaginationItem>
                      ))}
-                  </SelectContent>
-               </Select>
 
-               <div>
-                  <Pagination className="pb-6 mt-4">
-                     <PaginationContent>
+                     {pagination.totalPages > 2 && (
                         <PaginationItem>
-                           <PaginationPrevious
-                              href="#"
-                              data-disabled={pagination.pageNumber === 1}
-                              className="data-[disabled=true]:opacity-25"
-                              onClick={() => onPageChange(pagination.pageNumber - 1)}
-                           />
+                           <PaginationEllipsis />
                         </PaginationItem>
+                     )}
 
-                        {_.range(1, pagination.totalPages + 1).map((page) => (
-                           <PaginationItem key={page}>
-                              <PaginationLink href="#" onClick={() => onPageChange(page)} isActive={page === pagination.pageNumber}>
-                                 {page}
-                              </PaginationLink>
-                           </PaginationItem>
-                        ))}
-
-                        {pagination.totalPages > 2 && (
-                           <PaginationItem>
-                              <PaginationEllipsis />
-                           </PaginationItem>
-                        )}
-
-                        <PaginationItem>
-                           <PaginationNext
-                              href="#"
-                              data-disabled={pagination.pageNumber === pagination.totalPages}
-                              className="data-[disabled=true]:opacity-25"
-                              onClick={() => onPageChange(pagination.pageNumber + 1)}
-                           />
-                        </PaginationItem>
-                     </PaginationContent>
-                  </Pagination>
-               </div>
+                     <PaginationItem>
+                        <PaginationNext
+                           href="#"
+                           data-disabled={pagination.pageNumber === pagination.totalPages}
+                           className="data-[disabled=true]:opacity-25"
+                           onClick={() => onPageChange(pagination.pageNumber + 1)}
+                        />
+                     </PaginationItem>
+                  </PaginationContent>
+               </Pagination>
             </div>
          </div>
       </>

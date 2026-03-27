@@ -108,7 +108,7 @@ const defaultStore = {
    },
    dateRangeQuery: {
       startDate: dayjs().startOf('year').toDate(),
-      endDate: dayjs().toDate(),
+      endDate: dayjs().add(7, 'days').toDate(),
    },
    firstTimerQuery: {
       dateJoinedStart: dayjs().startOf('month').toDate(),

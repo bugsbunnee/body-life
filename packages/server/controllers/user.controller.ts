@@ -16,8 +16,10 @@ import { departmentRepository } from '../repositories/department.repository';
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 import { followupRepository } from '../repositories/followup.repository';
 import { serviceReportRepository } from '../repositories/service-report.repository';
+
 import { lib } from '../utils/lib';
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
+import { whatsappService } from '../services/whatsapp.service';
 
 export const userController = {
    async bulkCreateUsers(req: Request, res: Response) {
@@ -89,9 +91,21 @@ export const userController = {
             await Promise.all([
                communicationService.sendOutFollowUpAssignmentEmail(assignedTo, user, <IFollowUp>followUpPayload),
 
+               whatsappService.sendFollowUpMessage({
+                  userFirstName: assignedTo.firstName,
+                  userPhoneNumber: assignedTo.phoneNumber,
+                  firstTimerPreferredContactMethod: followUpPayload.preferredContactMethod,
+                  firstTimerAssignedAt: new Date(),
+                  firstTimerFirstName: user.firstName,
+                  firstTimerLastName: user.lastName,
+                  firstTimerPhoneNumber: user.phoneNumber,
+               }),
+
                followupRepository.createFollowUpEntry(followUpPayload),
 
                communicationService.sendOutWelcomeEmail(user),
+
+               whatsappService.sendWelcomeMessage(user),
             ]);
          }
 
@@ -99,6 +113,46 @@ export const userController = {
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             message: 'Failed to create user',
+         });
+      }
+   },
+
+   async updateUser(req: Request, res: Response) {
+      try {
+         let userId = lib.parseObjectId(req.params.id!);
+         let user = await userRepository.getOneUserById(userId);
+
+         if (!user) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user with the given id does not exist!' });
+         }
+
+         if (req.body.department) {
+            const department = await departmentRepository.getOneDepartment(req.body.department);
+
+            if (!department) {
+               return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department provided.' });
+            }
+
+            req.body.userRole = UserRole.Worker;
+            req.body.department = department._id;
+         }
+
+         if (req.body.prayerCell) {
+            const prayerCell = await prayerCellRepository.getOnePrayerCell(req.body.prayerCell);
+
+            if (!prayerCell) {
+               return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid prayer cell provided.' });
+            }
+
+            req.body.prayerCell = prayerCell._id;
+         }
+
+         user = await userRepository.updateUser(user._id, req.body);
+
+         res.json({ data: user, message: 'User updated successfully!' });
+      } catch (ex) {
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: 'Failed to update the user',
          });
       }
    },

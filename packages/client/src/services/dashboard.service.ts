@@ -59,5 +59,12 @@ export const getServiceReports = (startDate: Date, endDate: Date) => {
 };
 
 export const createServiceReport = (serviceReport: IServiceReport) => {
-   return http.post<ServiceReport>('/api/service-report', serviceReport).then((response) => response.data);
+   const payload = {
+      ...serviceReport,
+      message: serviceReport.message.value,
+      prepPrayers: serviceReport.prepPrayers.value,
+      worship: serviceReport.worship.value,
+   };
+
+   return http.post<ServiceReport>('/api/service-report', payload).then((response) => response.data);
 };

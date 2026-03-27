@@ -13,7 +13,11 @@ export const AdminAssignSchema = z.object({
       .transform((value) => lib.parseObjectId(value)),
 });
 
-export const AdminPasswordSchema = z
+export const AdminForgotPasswordSchema = z.object({
+   email: z.email(),
+});
+
+export const AdminResetPasswordSchema = z
    .object({
       token: z.string().min(1, { error: 'Token is required' }),
       password: z

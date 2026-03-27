@@ -18,5 +18,5 @@ export const FEATURES = {
 
 export const PASSWORD_RESET_TIME_IN_MINUTES = 60;
 export const MB_IN_BYTES = 1_048_576;
-export const FRONTEND_BASE_URL = ['https://body-life-client.vercel.app', 'http://localhost:5173'];
+export const FRONTEND_BASE_URL = 'https://body-life-client.vercel.app';
 export const CHURCH_DISPLAY_NAME = 'RCNLagos Island Church';
