@@ -1,7 +1,7 @@
-import type React from 'react';
+import React from 'react';
+import LoginForm from '@/components/forms/auth/login-form';
 
 import logo from '../assets/images/logo.png';
-import LoginForm from '@/components/forms/auth/login-form';
 
 const LoginPage: React.FC = () => {
    return (
