@@ -50,7 +50,7 @@ export const smsController = {
          return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid mode provided.' });
       }
 
-      if (process.env.VERIFY_TOKEN_SECRET !== req.query['verify_token']) {
+      if (process.env.VERIFY_TOKEN_SECRET !== req.query['hub.verify_token']) {
          return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid token provided.' });
       }
 
