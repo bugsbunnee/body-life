@@ -1,4 +1,4 @@
-name: Deploy Admin App (Bun)
+name: Deploy Client to Live Server (Bun)
 
 on:
    push:
@@ -22,7 +22,8 @@ jobs:
            run: bun install
 
          - name: Build Admin App
-           run: bun run --filter client build
+           working-directory: packages/client
+           run: bun run build
 
          - name: Setup SSH
            run: |
