@@ -27,6 +27,10 @@ const routes: RouteObject[] = [
       errorElement: <ErrorPage />,
       children: [
          {
+            index: true, // 👈 Add this
+            element: <Navigate to={APP_ROUTES.AUTH} replace />,
+         },
+         {
             path: APP_ROUTES.UNSUBSCRIBE,
             element: <UnsubscribePage />,
          },
