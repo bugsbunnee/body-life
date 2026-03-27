@@ -1,0 +1,49 @@
+name: Deploy Admin App (Bun)
+
+on:
+   push:
+      branches:
+         - main
+      paths:
+         - 'packages/client/**'
+
+jobs:
+   deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: Checkout Code
+           uses: actions/checkout@v3
+
+         - name: Setup Bun
+           uses: oven-sh/setup-bun@v1
+
+         - name: Install Dependencies
+           run: bun install
+
+         - name: Build Admin App
+           run: bun run --filter client build
+
+         - name: Setup SSH
+           run: |
+              mkdir -p ~/.ssh
+              echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+              chmod 600 ~/.ssh/id_ed25519
+              ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+         - name: Clean Remote Directory
+           run: |
+              ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+              rm -rf /home/${{ secrets.SSH_USER }}/admin.rcnlagosisland.com/*
+              EOF
+
+         - name: Upload Build Files
+           run: |
+              scp -P ${{ secrets.SSH_PORT }} -r ./packages/client/dist/* \
+              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/admin.rcnlagosisland.com/
+
+         - name: Verify Deployment
+           run: |
+              ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+              ls -la /home/${{ secrets.SSH_USER }}/admin.rcnlagosisland.com/
+              EOF
