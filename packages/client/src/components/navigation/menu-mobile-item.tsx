@@ -13,6 +13,7 @@ interface Props {
 
 const MenuMobileItem: React.FC<Props> = ({ route }) => {
    const [isOpen, setOpen] = useState(false);
+
    const navigate = useNavigate();
 
    const handleToggleOpen = useCallback(
