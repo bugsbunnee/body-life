@@ -9,6 +9,9 @@ import { Toaster } from './components/ui/sonner';
 import routes from './utils/router';
 
 import 'react-loading-skeleton/dist/skeleton.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 import './index.css';
 
 const queryClient = new QueryClient();

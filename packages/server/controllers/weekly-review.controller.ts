@@ -28,6 +28,8 @@ export const weeklyReviewController = {
          req.body.department = department._id;
          req.body.serviceReport = serviceReport._id;
 
+         console.log(req.body);
+
          const weeklyReview = await weeklyReviewRepository.createWeeklyReview(req.body, req.admin._id);
          const formattedDate = moment(serviceReport.serviceDate).format('YYYY MM, DD');
 
@@ -36,7 +38,7 @@ export const weeklyReviewController = {
          res.status(StatusCodes.CREATED).json({ data: weeklyReview, message: 'Report added successfully!' });
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: 'Failed to create report',
+            message: 'Failed to save the report',
          });
       }
    },

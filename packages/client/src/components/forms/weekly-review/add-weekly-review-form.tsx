@@ -1,5 +1,7 @@
 import React from 'react';
+
 import Conditional from '@/components/common/conditional';
+import SearchableSelect from '@/components/common/searchable-select';
 
 import { formatDate } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
@@ -11,13 +13,14 @@ import { FaSpinner } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { getErrorMessage } from '@/lib/utils';
 import { WeeklyReviewCreateSchema, type IWeeklyReviewCreate } from './weekly-review-schema';
 
 import useDepartments from '@/hooks/useDepartments';
 import useServiceReports from '@/hooks/useServiceReports';
+import useQueryStore from '@/store/query';
+
 import http from '@/services/http.service';
 
 interface Props {
@@ -27,6 +30,7 @@ interface Props {
 const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
    const serviceReports = useServiceReports();
    const departments = useDepartments();
+   const query = useQueryStore();
 
    const form = useForm<IWeeklyReviewCreate>({
       resolver: zodResolver(WeeklyReviewCreateSchema),
@@ -65,8 +69,6 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                value: '',
             },
          ],
-         serviceReport: '',
-         department: '',
       },
    });
 
@@ -76,7 +78,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
    });
 
    const mutation = useMutation({
-      mutationFn: (data: IWeeklyReviewCreate) => http.post('/api/weekly-review', data),
+      mutationFn: (data: IWeeklyReviewCreate) => http.post('/api/weekly-review', { ...data, serviceReport: data.serviceReport.value, department: data.department.value }),
       onSuccess: () => {
          toast('Saved the report successfully!');
 
@@ -100,21 +102,16 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Service Date</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Service Report" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {serviceReports.data.data.map((serviceReport) => (
-                                 <SelectItem key={serviceReport._id} value={serviceReport._id}>
-                                    {formatDate(serviceReport.serviceDate, 'PPP')}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={serviceReports.isFetching}
+                              onTriggerSearch={(name: string) => query.onSetDepartment({ name })}
+                              data={serviceReports.data.data.map((report) => ({ label: `${formatDate(report.serviceDate, 'PPP')} (${report.message.title})`, value: report._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Service"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>
@@ -128,21 +125,16 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Department</FormLabel>
 
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                           <FormControl>
-                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
-                                 <SelectValue placeholder="Select Department" />
-                              </SelectTrigger>
-                           </FormControl>
-
-                           <SelectContent>
-                              {departments.data.data.data.map((department) => (
-                                 <SelectItem key={department._id} value={department._id}>
-                                    {department.name}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+                        <FormControl>
+                           <SearchableSelect
+                              isTriggered={departments.isFetching}
+                              onTriggerSearch={(name: string) => query.onSetDepartment({ name })}
+                              data={departments.data.data.data.map((department) => ({ label: department.name, value: department._id }))}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Select Department"
+                           />
+                        </FormControl>
 
                         <FormMessage />
                      </FormItem>

@@ -185,7 +185,7 @@ export interface User {
 
 export interface WeeklyReview {
    department: Pick<Department, '_id' | 'name'>;
-   serviceDate: Date;
+   serviceReport: Pick<ServiceReport, '_id' | 'serviceDate'>;
    submittedBy: Pick<User, '_id' | 'firstName' | 'lastName'>;
    submittedAt: Date;
    feedback?: string | null;

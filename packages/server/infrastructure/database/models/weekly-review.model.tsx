@@ -32,14 +32,14 @@ const weeklyReviewSchema = new mongoose.Schema(
 
       feedbackDueForActionAt: { type: Date },
 
-      submittedBy: { type: mongoose.Schema.ObjectId, ref: 'Admin', required: true },
+      submittedBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
 
       submittedAt: { type: Date, default: Date.now },
    },
    { timestamps: true }
 );
 
-weeklyReviewSchema.index({ service: 1, department: 1 }, { unique: true });
+weeklyReviewSchema.index({ serviceReport: 1, department: 1 }, { unique: true });
 
 weeklyReviewSchema.methods.sendWeeklyReviewEmail = async function (departmentName: string, serviceDate: string) {
    try {

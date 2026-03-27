@@ -19,14 +19,14 @@ export const weeklyReviewRepository = {
       }
 
       if (query.startDate || query.endDate) {
-         filter['serviceReport.serviceDate'] = {};
+         filter.createdAt = {};
 
          if (query.startDate) {
-            filter['serviceReport.serviceDate'].$gte = moment(query.startDate).startOf('day').toDate();
+            filter.createdAt.$gte = moment(query.startDate).startOf('day').toDate();
          }
 
          if (query.endDate) {
-            filter['serviceReport.serviceDate'].$lte = moment(query.endDate).endOf('day').toDate();
+            filter.createdAt.$lte = moment(query.endDate).endOf('day').toDate();
          }
       }
 
@@ -108,7 +108,26 @@ export const weeklyReviewRepository = {
    async getWeeklyReview(pagination: Pagination, query: IWeeklyReviewQuery) {
       const filter = this.buildWeeklyFilterQuery(query);
 
-      const [weeklyReviews, total] = await Promise.all([this.aggregateWeeklyReviewByServiceDate(pagination, filter), this.aggregateWeeklyReviewCount(filter)]);
+      const [weeklyReviews, total] = await Promise.all([
+         WeeklyReview.find(filter)
+            .skip(pagination.offset)
+            .limit(pagination.pageSize)
+            .populate({ path: 'department', select: '_id name' })
+            .populate({
+               path: 'serviceReport',
+               select: '_id serviceDate',
+               populate: {
+                  path: 'message',
+                  select: '_id title',
+               },
+            })
+            .populate({ path: 'submittedBy', select: '_id firstName lastName' })
+            .sort({ createdAt: -1 })
+            .lean()
+            .exec(),
+
+         WeeklyReview.countDocuments(filter),
+      ]);
 
       return {
          data: weeklyReviews,

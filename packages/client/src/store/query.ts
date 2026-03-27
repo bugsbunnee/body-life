@@ -62,7 +62,7 @@ interface ProgramQuery extends PaginationQuery, DateRangeQuery {
 
 interface WeeklyReviewQuery extends PaginationQuery, DateRangeQuery {
    search?: string;
-   service?: string;
+   serviceReport?: string;
    department?: string;
 }
 

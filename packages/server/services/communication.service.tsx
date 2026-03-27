@@ -28,6 +28,7 @@ import FollowUpReportEmail from '../infrastructure/emails/follow-up-report';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
 import type { IProgram } from '../infrastructure/database/models/program.model';
 import ProgramReminderEmail from '../infrastructure/emails/program-reminder';
+import { adminRepository } from '../repositories/admin.repository';
 
 interface MessageTranscriptResponse {
    search_parameters: {
@@ -169,13 +170,11 @@ export const communicationService = {
          return { success: false, message: 'No users subscribed to newsletter...' };
       }
 
-      const emailData = users
-         .filter((user) => user.email)
-         .map((user) => ({
-            to: user.email,
-            subject: `Join us at ${program.title}`,
-            react: <ProgramReminderEmail userId={user._id.toString()} userFirstName={user.firstName} program={program} />,
-         }));
+      const emailData = users.map((user) => ({
+         to: user.email,
+         subject: `Join us at ${program.title}`,
+         react: <ProgramReminderEmail userId={user._id.toString()} userFirstName={user.firstName} program={program} />,
+      }));
 
       const response = await emailService.sendBatchEmails(emailData);
 
@@ -183,11 +182,19 @@ export const communicationService = {
    },
 
    async sendOutWeeklyReview(weeklyReview: IWeeklyReview, departmentName: string, serviceDate: string) {
-      const response = await emailService.sendSingleEmail({
-         to: ['chukwuma.marcel00@gmail.com'],
+      const admins = await adminRepository.getFirstTimerReportAdmins();
+
+      if (admins.length === 0) {
+         return { success: true, message: `No email recipients available!` };
+      }
+
+      const emails = admins.map((admin) => ({
+         to: admin.email,
          subject: 'Weely Report Submission by ',
          react: <WeeklyReviewEmail weeklyReview={weeklyReview} departmentName={departmentName} formattedServiceDate={serviceDate} />,
-      });
+      }));
+
+      const response = await emailService.sendBatchEmails(emails);
 
       return { success: true, message: `Email sent out to recipients successfully!`, data: response };
    },

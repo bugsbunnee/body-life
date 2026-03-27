@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AddWeeklyReviewForm from '@/components/forms/weekly-review/add-weekly-review-form';
 import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
+import SearchableSelect from '@/components/common/searchable-select';
 import Summary from '@/components/common/summary';
 
 import useDepartments from '@/hooks/useDepartments';
@@ -26,10 +27,10 @@ import useWeeklyReview from '@/hooks/useWeeklyReview';
 import useServiceReports from '@/hooks/useServiceReports';
 
 const WeeklyReviewPage: React.FC = () => {
-   const { data: departments } = useDepartments();
+   const { data: departments, isFetching: isFetchingDepartments } = useDepartments();
    const { data: serviceReports } = useServiceReports();
    const { data, isFetching, refetch } = useWeeklyReview();
-   const { weeklyReviewQuery, resetQuery, onSetWeeklyReview } = useQueryStore();
+   const { weeklyReviewQuery, resetQuery, onSetDepartment, onSetWeeklyReview } = useQueryStore();
 
    const [isAddReview, setIsAddReview] = useState<boolean>(false);
    const [selectedReview, setSelectedReview] = useState<WeeklyReview | null>(null);
@@ -52,7 +53,7 @@ const WeeklyReviewPage: React.FC = () => {
          {
             accessorKey: 'serviceDate',
             header: 'Service Date',
-            cell: ({ row }) => formatDate(new Date(row.original.serviceDate), 'PPP'),
+            cell: ({ row }) => formatDate(new Date(row.original.serviceReport.serviceDate), 'PPP'),
          },
          {
             accessorKey: 'department.name',
@@ -108,7 +109,7 @@ const WeeklyReviewPage: React.FC = () => {
    const handleExtractedDataExport = () => {
       const extractedData = data.data.data.map((datum) => ({
          department: datum.department.name,
-         serviceDate: formatDate(datum.serviceDate, 'PPP'),
+         serviceDate: formatDate(datum.serviceReport.serviceDate, 'PPP'),
          submittedAt: formatDate(datum.submittedAt, 'PPP'),
          submittedBy: datum.submittedBy.firstName + ' ' + datum.submittedBy.lastName,
          feedback: datum.feedback ?? 'N/A',
@@ -118,27 +119,32 @@ const WeeklyReviewPage: React.FC = () => {
       exportToExcel(extractedData, `WeeklyReviews_${formatDate(new Date(), 'PPP')}.xlsx`);
    };
 
+   const department = useMemo(() => {
+      const match = departments.data.data.find((cell) => cell._id === weeklyReviewQuery.department);
+      return match ? { label: match.name, value: match._id } : undefined;
+   }, [departments, weeklyReviewQuery.department]);
+
    useEffect(() => {
       resetQuery();
    }, [resetQuery]);
 
    return (
       <React.Fragment>
-         <Header title="Inventory" onSearch={(search) => onSetWeeklyReview({ search })} />
+         <Header title="Weekly Reports" onSearch={(search) => onSetWeeklyReview({ search })} />
 
          <Modal onClose={() => setIsAddReview(false)} title="Add Weekly Report" visible={isAddReview}>
             <AddWeeklyReviewForm onAddWeeklyReport={handleAddWeeklyReview} />
          </Modal>
 
          {selectedReview && (
-            <Modal onClose={() => setSelectedReview(null)} title="Inventory Item Details" visible>
-               <div className="grid grid-cols-2 gap-4">
+            <Modal onClose={() => setSelectedReview(null)} title={'Weekly Report Details for ' + selectedReview.department.name} visible>
+               <div className="grid grid-cols-2 gap-4 mb-4">
                   <Summary
                      title="General Information"
                      labels={[
                         {
                            key: 'Service Date',
-                           value: formatDate(selectedReview.serviceDate, 'PPP'),
+                           value: formatDate(selectedReview.serviceReport.serviceDate, 'PPP'),
                         },
                         {
                            key: 'Department',
@@ -156,14 +162,6 @@ const WeeklyReviewPage: React.FC = () => {
                   />
 
                   <Summary
-                     title="Report"
-                     labels={selectedReview.fields.map((field) => ({
-                        key: field.label,
-                        value: field.value,
-                     }))}
-                  />
-
-                  <Summary
                      title="Feedback"
                      labels={[
                         {
@@ -177,6 +175,14 @@ const WeeklyReviewPage: React.FC = () => {
                      ]}
                   />
                </div>
+
+               <Summary
+                  title="Report"
+                  labels={selectedReview.fields.map((field) => ({
+                     key: field.label,
+                     value: field.value,
+                  }))}
+               />
             </Modal>
          )}
 
@@ -214,21 +220,16 @@ const WeeklyReviewPage: React.FC = () => {
          </div>
 
          <div className="p-6 border-b-border border-b gap-x-8 grid grid-cols-2">
-            <Select onValueChange={(department) => onSetWeeklyReview({ department })} defaultValue={weeklyReviewQuery.department}>
-               <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
-                  <SelectValue placeholder="Filter by Department" />
-               </SelectTrigger>
+            <SearchableSelect
+               isTriggered={isFetchingDepartments}
+               onTriggerSearch={(name: string) => onSetDepartment({ name })}
+               data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
+               value={department}
+               onValueChange={(value) => onSetWeeklyReview({ department: value ? value.value : '' })}
+               placeholder="Filter by Department"
+            />
 
-               <SelectContent>
-                  {departments.data.data.map((day) => (
-                     <SelectItem key={day._id} value={day._id}>
-                        {day.name}
-                     </SelectItem>
-                  ))}
-               </SelectContent>
-            </Select>
-
-            <Select onValueChange={(service) => onSetWeeklyReview({ service })} defaultValue={weeklyReviewQuery.service}>
+            <Select onValueChange={(service) => onSetWeeklyReview({ serviceReport: service })} defaultValue={weeklyReviewQuery.serviceReport}>
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Service" />
                </SelectTrigger>
