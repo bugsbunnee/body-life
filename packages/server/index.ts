@@ -1,12 +1,10 @@
 import express from 'express';
-import startup from './startup';
+import configureApp from './startup';
 import logger from './services/logger.service';
 
-const app = express();
+const app = configureApp();
+const port = process.env.PORT || 19200;
 
-startup
-   .configureApp(app)
-   .then(() => startup.configureServer(app))
-   .catch((error) => logger.error('Error during server startup:', error));
+app.listen(port, () => logger.info(`Server is running on port ${port}...`));
 
 export default app;
