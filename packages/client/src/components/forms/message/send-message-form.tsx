@@ -68,7 +68,7 @@ const SendMessageForm: React.FC<Props> = ({ onSuccess }) => {
                   <Button
                      type="submit"
                      disabled={!form.formState.isValid || form.formState.isSubmitting}
-                     className="text-sm text-white bg-main font-semibold rounded-sm w-full h-12"
+                     className="text-sm text-white bg-main font-semibold rounded-xl w-full h-12"
                   >
                      <Conditional visible={mutation.isPending}>
                         <div className="animate-spin">

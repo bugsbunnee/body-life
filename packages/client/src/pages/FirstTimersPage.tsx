@@ -112,13 +112,13 @@ const FirstTimersPage: React.FC = () => {
                   <DropdownMenuTrigger asChild>
                      <Button
                         variant="outline"
-                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                        className="ml-auto border-0 rounded-full h-8 w-8 p-0 md:border md:border-gray-200 md:rounded-2xl md:h-14 md:w-auto md:px-4 focus:outline-hidden font-medium"
                      >
-                        <EllipsisVertical />
+                        <EllipsisVertical className="size-5" />
                      </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-xl w-full">
                      <DropdownMenuItem onClick={() => setSelectedDataToView(row.original)} className="capitalize p-3">
                         View First Timer Details
                      </DropdownMenuItem>
@@ -177,7 +177,7 @@ const FirstTimersPage: React.FC = () => {
 
          {selectedDataToView && (
             <Modal onClose={() => setSelectedDataToView(null)} title="First Timer Details" visible>
-               <div className="grid grid-cols-2 gap-4">
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Summary
                      title="General Information"
                      labels={[
@@ -256,13 +256,13 @@ const FirstTimersPage: React.FC = () => {
             </Modal>
          )}
 
-         <div className="p-6 border-b-border border-b flex items-center justify-between">
-            <div className="">
+         <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
                <div className="text-base text-black font-semibold">Here are the first timers</div>
                <div className="text-base text-gray-neutral mt-[0.25rem]">View key insights about first timers here</div>
             </div>
 
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-3">
                <RangeDatePicker
                   dateRange={{ from: firstTimerQuery.dateJoinedStart, to: firstTimerQuery.dateJoinedEnd }}
                   onSelectRange={(range) => onSetFirstTimer({ dateJoinedStart: range.from!, dateJoinedEnd: range.to! })}
@@ -271,41 +271,32 @@ const FirstTimersPage: React.FC = () => {
                <Button
                   onClick={handleExtractedDataExport}
                   variant="ghost"
-                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <DownloadCloudIcon />
-
                   <span className="flex-1">Export to spreadsheet</span>
                </Button>
 
-               <Button
-                  onClick={() => mutation.mutate()}
-                  variant="ghost"
-                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
-               >
+               <Button onClick={() => mutation.mutate()} variant="ghost" className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white">
                   <Conditional visible={!mutation.isPending}>
                      <BsEnvelope />
-
                      <span className="flex-1">Generate Report</span>
                   </Conditional>
-
                   <Conditional visible={mutation.isPending}>
                      <div className="animate-spin">
                         <FaSpinner />
                      </div>
-
                      <span>Generating Report...</span>
                   </Conditional>
                </Button>
             </div>
          </div>
 
-         <div className="p-6 border-b-border border-b gap-x-8 flex items-center justify-between">
+         <div className="p-4 md:p-6 border-b-border border-b grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Select onValueChange={(status) => onSetFirstTimer({ status })} defaultValue={firstTimerQuery.status}>
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Status" />
                </SelectTrigger>
-
                <SelectContent>
                   {FOLLOW_UP_STATUS.map((status) => (
                      <SelectItem key={status.id} value={status.id}>
@@ -319,7 +310,6 @@ const FirstTimersPage: React.FC = () => {
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Preferred Contact Method" />
                </SelectTrigger>
-
                <SelectContent>
                   {CONTACT_METHODS.map((method) => (
                      <SelectItem key={method.id} value={method.id}>
@@ -339,7 +329,7 @@ const FirstTimersPage: React.FC = () => {
             />
          </div>
 
-         <div className="grid grid-cols-4 gap-x-6 p-6 border-b-border border-b">
+         <div className="grid grid-cols-2 gap-4 p-4 md:p-6 border-b-border border-b lg:grid-cols-4">
             <FirstTimerMetrics />
          </div>
 

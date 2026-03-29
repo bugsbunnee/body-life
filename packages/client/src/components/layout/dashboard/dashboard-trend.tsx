@@ -12,7 +12,7 @@ const DashboardTrend: React.FC<Props> = ({ percentage, update }) => {
    return (
       <div
          className={cn({
-            'flex items-center gap-x-1 text-xs font-bold rounded-xs': true,
+            'w-fit flex items-center gap-x-1 text-xs font-bold rounded-xs': true,
             'bg-green-100 p-1 text-green-600': update === 'increment',
             'bg-red-100 p-1 text-red-600': update === 'decrement',
             'bg-orange-100 p-1 text-orange-500': update === 'same',

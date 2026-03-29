@@ -87,13 +87,13 @@ const PrayerCellsPage: React.FC = () => {
                   <DropdownMenuTrigger asChild>
                      <Button
                         variant="outline"
-                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                        className="ml-auto border-0 rounded-full h-8 w-8 p-0 md:border md:border-gray-200 md:rounded-2xl md:h-14 md:w-auto md:px-4 focus:outline-hidden font-medium"
                      >
-                        <EllipsisVertical />
+                        <EllipsisVertical className="size-5" />
                      </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-xl w-full">
                      <DropdownMenuItem onClick={() => setSelectedPrayerCell(row.original)} className="capitalize p-3">
                         View Prayer Cell Details
                      </DropdownMenuItem>
@@ -143,7 +143,7 @@ const PrayerCellsPage: React.FC = () => {
 
          {selectedPrayerCell && (
             <Modal onClose={() => setSelectedPrayerCell(null)} title="Prayer Cell Details" visible>
-               <div className="grid grid-cols-2 gap-4">
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Summary
                      title="General Information"
                      labels={[
@@ -179,13 +179,13 @@ const PrayerCellsPage: React.FC = () => {
             </Modal>
          )}
 
-         <div className="p-6 border-b-border border-b flex items-center justify-between">
+         <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="">
                <div className="text-base text-black font-semibold">Here are the prayer cells</div>
                <div className="text-base text-gray-neutral mt-[0.25rem]">View key insights about prayer cells here</div>
             </div>
 
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-3">
                <Button
                   onClick={() => setIsAddPrayerCell(true)}
                   variant="ghost"
@@ -207,12 +207,11 @@ const PrayerCellsPage: React.FC = () => {
             </div>
          </div>
 
-         <div className="p-6 border-b-border border-b gap-x-8 flex items-center justify-between">
+         <div className="p-4 md:p-6 border-b-border border-b grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Select onValueChange={(meetingDay) => onSetPrayerCell({ meetingDay })} defaultValue={prayerCellQuery.meetingDay}>
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Meeting Day" />
                </SelectTrigger>
-
                <SelectContent>
                   {MEETING_DAYS.map((day) => (
                      <SelectItem key={day.id} value={day.id}>
@@ -226,7 +225,6 @@ const PrayerCellsPage: React.FC = () => {
                <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
                   <SelectValue placeholder="Filter by Meeting Time" />
                </SelectTrigger>
-
                <SelectContent>
                   {MEETING_TIMES.map((time) => (
                      <SelectItem key={time.id} value={time.id}>

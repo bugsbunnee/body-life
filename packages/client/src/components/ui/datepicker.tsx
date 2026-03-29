@@ -28,7 +28,7 @@ export const RangeDatePicker: React.FC<Props> = ({ dateRange, onSelectRange }) =
             <Button
                variant="ghost"
                data-empty={!dateRange.from && !dateRange.to}
-               className="bg-blue-light h-12 min-w-2xs p-4 rounded-md justify-start flex gap-x-2 text-left font-medium text-base text-main"
+               className="bg-blue-light h-12 lg:min-w-2xs p-4 rounded-md justify-start flex gap-x-2 text-left font-medium text-base text-main"
             >
                <Calendar1Icon />
 

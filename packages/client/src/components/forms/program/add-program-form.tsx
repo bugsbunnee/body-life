@@ -72,7 +72,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                )}
             />
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                <FormField
                   control={form.control}
                   name="title"
@@ -161,7 +161,7 @@ const AddProgramForm: React.FC<Props> = ({ onCreateProgram }) => {
                   )}
                />
             </div>
-            <Button type="submit" disabled={form.formState.isSubmitting} className="mt-6 text-sm text-white bg-main font-semibold rounded-sm w-full h-12">
+            <Button type="submit" disabled={form.formState.isSubmitting} className="mt-6 text-sm text-white bg-main font-semibold rounded-xl w-full h-12">
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">
                      <FaSpinner />

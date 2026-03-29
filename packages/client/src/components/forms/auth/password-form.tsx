@@ -8,14 +8,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import Conditional from '@/components/common/conditional';
+import PasswordInput from '@/components/common/password-input';
 
 import { ResetPasswordSchema, type IPassword } from './login-schema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { updatePassword } from '@/services/auth.service';
 import { getErrorMessage } from '@/lib/utils';
-
 import { APP_ROUTES } from '../../../utils/constants';
 
 const PasswordForm: React.FC = () => {
@@ -44,11 +43,11 @@ const PasswordForm: React.FC = () => {
             <FormField
                control={form.control}
                name="password"
-               render={({ field }) => (
+               render={({ field, fieldState }) => (
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Password</FormLabel>
                      <FormControl>
-                        <Input type="password" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="Enter your password" {...field} />
+                        <PasswordInput {...field} aria-invalid={fieldState.invalid} placeholder="Enter your password" />
                      </FormControl>
                      <FormMessage />
                   </FormItem>
@@ -58,12 +57,14 @@ const PasswordForm: React.FC = () => {
             <FormField
                control={form.control}
                name="confirmPassword"
-               render={({ field }) => (
+               render={({ field, fieldState }) => (
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Confirm Password</FormLabel>
+
                      <FormControl>
-                        <Input type="password" className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" placeholder="Confirm your password" {...field} />
+                        <PasswordInput {...field} aria-invalid={fieldState.invalid} placeholder="Confirm your password" />
                      </FormControl>
+
                      <FormMessage />
                   </FormItem>
                )}
@@ -72,7 +73,7 @@ const PasswordForm: React.FC = () => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || auth.isPending}
-               className="text-sm text-white bg-main font-semibold rounded-sm w-full h-12"
+               className="text-sm text-white bg-main font-semibold rounded-xl w-full h-12"
             >
                <Conditional visible={auth.isPending}>
                   <div className="animate-spin">
@@ -82,7 +83,7 @@ const PasswordForm: React.FC = () => {
                   <span>Updating Password...</span>
                </Conditional>
 
-               <Conditional visible={!auth.isPending}>Update</Conditional>
+               <Conditional visible={!auth.isPending}>Save Password</Conditional>
             </Button>
          </form>
       </Form>

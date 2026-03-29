@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn, getErrorMessage, getIsBirthdayExpired } from '@/lib/utils';
 
-import type { User } from '@/utils/entities';
+import { type User } from '@/utils/entities';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -33,7 +33,7 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
    return (
       <div className={cn({ 'p-6 rounded-xl border': true, 'bg-slate-50': loading, 'bg-blue-light': !loading })}>
          <Conditional visible={loading}>
-            <Skeleton className="h-6 w-64 rounded-sm mb-8" />
+            <Skeleton className="h-6 w-64 rounded-xl mb-8" />
          </Conditional>
 
          <Conditional visible={!loading}>
@@ -65,15 +65,15 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
                   {_.range(1, 11).map((fill) => (
                      <tr key={fill} className="font-medium text-base">
                         <td className="pb-4">
-                           <Skeleton className="h-6 w-44 rounded-sm" />
+                           <Skeleton className="h-6 w-44 rounded-xl" />
                         </td>
 
                         <td className="pb-4">
-                           <Skeleton className="h-6 w-44 rounded-sm" />
+                           <Skeleton className="h-6 w-44 rounded-xl" />
                         </td>
 
                         <td className="pb-4 inline-block">
-                           <Skeleton className="h-6 w-16 rounded-sm" />
+                           <Skeleton className="h-6 w-16 rounded-xl" />
                         </td>
                      </tr>
                   ))}

@@ -70,13 +70,13 @@ const DepartmentPage: React.FC = () => {
                   <DropdownMenuTrigger asChild>
                      <Button
                         variant="outline"
-                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                        className="ml-auto border-0 rounded-full h-8 w-8 p-0 md:border md:border-gray-200 md:rounded-2xl md:h-14 md:w-auto md:px-4 focus:outline-hidden font-medium"
                      >
-                        <EllipsisVertical />
+                        <EllipsisVertical className="size-5" />
                      </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-xl w-full">
                      <DropdownMenuItem onClick={() => setSelectedDepartment(row.original)} className="capitalize p-3">
                         View Department Details
                      </DropdownMenuItem>
@@ -118,7 +118,7 @@ const DepartmentPage: React.FC = () => {
 
          {selectedDepartment && (
             <Modal onClose={() => setSelectedDepartment(null)} title="Department Details" visible>
-               <div className="grid grid-cols-2 gap-4">
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Summary
                      title="General Information"
                      labels={[
@@ -140,13 +140,13 @@ const DepartmentPage: React.FC = () => {
             </Modal>
          )}
 
-         <div className="p-6 border-b-border border-b flex items-center justify-between">
+         <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="">
                <div className="text-base text-black font-semibold">Here are the departments</div>
                <div className="text-base text-gray-neutral mt-[0.25rem]">View key insights about departments here</div>
             </div>
 
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-3">
                <Button
                   onClick={() => setIsAddDepartment(true)}
                   variant="ghost"

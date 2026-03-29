@@ -133,7 +133,7 @@ const ServiceReportPage: React.FC = () => {
 
          {selectedReport && (
             <Modal onClose={() => setSelectedReport(null)} title="Service Details" visible>
-               <div className="grid grid-cols-2 gap-4">
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Summary
                      title="General Information"
                      labels={[
@@ -190,13 +190,13 @@ const ServiceReportPage: React.FC = () => {
             </Modal>
          )}
 
-         <div className="p-6 border-b-border border-b flex items-center justify-between">
-            <div className="">
+         <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
                <div className="text-base text-black font-semibold">Measure attendance trends</div>
                <div className="text-base text-gray-neutral mt-[0.25rem]">View metrics and benchmarks for service.</div>
             </div>
 
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-3">
                <RangeDatePicker
                   dateRange={{ from: serviceReportQuery.startDate, to: serviceReportQuery.endDate }}
                   onSelectRange={(range) => onSetServiceReport({ startDate: range.from!, endDate: range.to! })}
@@ -205,7 +205,7 @@ const ServiceReportPage: React.FC = () => {
                <Button
                   onClick={() => setAddReportVisible(true)}
                   variant="ghost"
-                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <PlusIcon />
                   <span className="flex-1">Add New</span>
@@ -214,10 +214,9 @@ const ServiceReportPage: React.FC = () => {
                <Button
                   onClick={handleExtractedDataExport}
                   variant="ghost"
-                  className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-green-800 px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <DownloadCloudIcon />
-
                   <span className="flex-1">Export to spreadsheet</span>
                </Button>
             </div>

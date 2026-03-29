@@ -11,6 +11,7 @@ import { FaSpinner } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { serviceReportSchema, type IServiceReport } from './service-report-schema';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
@@ -24,7 +25,6 @@ import SearchableSelect from '@/components/common/searchable-select';
 import useUsers from '@/hooks/useUsers';
 import useMessages from '@/hooks/useMessages';
 import useQueryStore from '@/store/query';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Props {
    onAddServiceReport: () => void;
@@ -69,7 +69,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
    return (
       <Form {...form}>
          <form onSubmit={form.handleSubmit((report) => mutation.mutate(report))} className="space-y-8">
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                <FormField
                   control={form.control}
                   name="serviceDate"
@@ -180,6 +180,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
 
                         <FormControl>
                            <Input
+                              type="number"
                               className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full"
                               placeholder="Enter the number of seats arranged"
                               disabled={field.disabled}
@@ -244,7 +245,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                   <React.Fragment key={initialField.id}>
                      <div className="border-b-1 my-6"></div>
 
-                     <div className="grid grid-cols-3 gap-5">
+                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         <FormField
                            control={form.control}
                            name={`counts.${index}.time`}
@@ -316,7 +317,7 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                            )}
                         />
 
-                        <Button className="text-sm text-white bg-red-500 font-semibold rounded-sm w-full h-12" onClick={() => fields.remove(index)}>
+                        <Button className="text-sm text-white bg-red-500 font-semibold rounded-xl w-full h-12" onClick={() => fields.remove(index)}>
                            Remove
                         </Button>
                      </div>
@@ -330,11 +331,11 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
 
             <div className="border-b-1 my-4"></div>
 
-            <div className="items-center flex gap-x-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                <Button
                   type="button"
                   onClick={() => fields.append({ round: fields.fields.length + 1, time: '', adults: 0, children: 0 })}
-                  className="text-sm text-white bg-main font-semibold rounded-sm flex-1 h-12"
+                  className="text-sm text-white bg-main font-semibold rounded-xl w-full lg:w-1/2 h-12"
                >
                   Add Count Record
                </Button>
@@ -342,16 +343,14 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
                <Button
                   type="submit"
                   disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
-                  className="text-sm text-white bg-green-600 font-semibold rounded-sm flex-1 h-12"
+                  className="text-sm text-white bg-green-600 font-semibold rounded-xl w-full lg:w-1/2 h-12"
                >
                   <Conditional visible={mutation.isPending}>
                      <div className="animate-spin">
                         <FaSpinner />
                      </div>
-
-                     <span>Upload Service Report...</span>
+                     <span>Uploading Service Report...</span>
                   </Conditional>
-
                   <Conditional visible={!mutation.isPending}>Upload Service Report</Conditional>
                </Button>
             </div>

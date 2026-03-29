@@ -52,7 +52,7 @@ const ForgotPasswordForm: React.FC = () => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || auth.isPending}
-               className="text-sm text-white bg-main font-semibold rounded-sm w-full h-12"
+               className="text-sm text-white bg-main font-semibold rounded-xl w-full h-12"
             >
                <Conditional visible={auth.isPending}>
                   <div className="animate-spin">

@@ -12,6 +12,6 @@ const router = express.Router();
 
 router.get('/overview', [auth, validate(dateRangeSchema, 'query')], serviceReportController.getServiceReportOverview);
 router.get('/', [auth, paginate, validate(dateRangeSchema, 'query')], serviceReportController.getServiceReportByDateRange);
-router.post('/', [auth, paginate, validate(ServiceReportSchema, 'body')], serviceReportController.createServiceReport);
+router.post('/', [auth, validate(ServiceReportSchema, 'body')], serviceReportController.createServiceReport);
 
 export default router;

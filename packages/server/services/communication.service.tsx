@@ -12,6 +12,7 @@ import WelcomeEmail from '../infrastructure/emails/welcome';
 import WeeklyReviewEmail from '../infrastructure/emails/weekly-review';
 import FollowUpReportEmail from '../infrastructure/emails/follow-up-report';
 import ProgramReminderEmail from '../infrastructure/emails/program-reminder';
+import RequisitionRequestEmail from '../infrastructure/emails/requisition-request';
 
 import type { IMessage, IMessageWithId } from '../infrastructure/database/models/message.model';
 import type { IUser } from '../infrastructure/database/models/user.model';
@@ -20,6 +21,7 @@ import type { INewsletter } from '../infrastructure/database/validators/communic
 import type { IWeeklyReview } from '../infrastructure/database/models/weekly-review.model';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
 import type { IProgram } from '../infrastructure/database/models/program.model';
+import type { RequisitionRequestProps } from '../infrastructure/emails/requisition-request';
 
 import { messageRepository } from '../repositories/message.repository';
 import { programRepository } from '../repositories/program.repository';
@@ -29,6 +31,8 @@ import { adminRepository } from '../repositories/admin.repository';
 import { emailService } from './email.service';
 import { llmClient } from '../llm/client';
 import { lib } from '../utils/lib';
+import type { RequisitionUpdateProps } from '../infrastructure/emails/requisition-update';
+import RequisitionUpdateEmail from '../infrastructure/emails/requisition-update';
 
 interface MessageTranscriptResponse {
    search_parameters: {
@@ -86,6 +90,45 @@ export const communicationService = {
          }
       } catch (error) {
          logger.error('Failed to send birthday email...', error);
+      }
+   },
+
+   async sendOutRequisitionApprovalRequest(request: Omit<RequisitionRequestProps, 'userFirstName'>) {
+      try {
+         const users = await adminRepository.getFirstTimerReportAdmins();
+
+         if (users.length === 0) {
+            return;
+         }
+
+         const emails = users.map((user) => ({
+            to: user.email,
+            subject: `New Requisition Request!`,
+            react: <RequisitionRequestEmail userFirstName={user.firstName} {...request} />,
+         }));
+
+         const chunks = _.chunk(emails, 100);
+
+         for (let i = 0; i < chunks.length; i++) {
+            logger.info(`Sending batch ${i + 1} / ${chunks.length} of ${emails.length}`);
+            await emailService.sendBatchEmails(chunks[i]!);
+         }
+      } catch (error) {
+         logger.error('Failed to send requisition request email...', error);
+      }
+   },
+
+   async sendOutRequisitionUpdateRequest(update: RequisitionUpdateProps) {
+      try {
+         emailService.sendSingleEmail({
+            to: update.userEmail,
+            subject: `Requisition Request Update!`,
+            react: <RequisitionUpdateEmail {...update} />,
+         });
+
+         logger.info('Sent out requisition update email...');
+      } catch (error) {
+         logger.error('Failed to send requisition update email...', error);
       }
    },
 

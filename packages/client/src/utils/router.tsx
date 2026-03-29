@@ -15,6 +15,7 @@ import PrayerCellsPage from '@/pages/PrayerCellsPage';
 import ProgramsPage from '@/pages/ProgramsPage';
 import PublicRoute from '@/pages/PublicRoute';
 import ResetPassword from '@/pages/ResetPasswordPage';
+import RequisitionsPage from '@/pages/RequisitionsPage';
 import ServiceReportPage from '@/pages/ServiceReportPage';
 import UsersPage from '@/pages/UsersPage';
 import UnsubscribePage from '@/pages/UnsubscribePage';
@@ -72,6 +73,10 @@ const routes: RouteObject[] = [
          {
             path: APP_ROUTES.PRAYER_CELLS,
             element: <PrayerCellsPage />,
+         },
+         {
+            path: APP_ROUTES.REQUISITIONS,
+            element: <RequisitionsPage />,
          },
          {
             path: APP_ROUTES.MEMBERS,

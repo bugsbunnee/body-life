@@ -44,7 +44,7 @@ const AddDepartmentForm: React.FC<Props> = ({ onAddDepartment }) => {
    return (
       <Form {...form}>
          <form onSubmit={form.handleSubmit((department) => mutation.mutate(department))} className="space-y-8">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                <FormField
                   control={form.control}
                   name="hod"
@@ -86,7 +86,7 @@ const AddDepartmentForm: React.FC<Props> = ({ onAddDepartment }) => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
-               className="text-sm text-white bg-main  w-full font-semibold rounded-sm h-12"
+               className="text-sm text-white bg-main  w-full font-semibold rounded-xl h-12"
             >
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">

@@ -98,13 +98,13 @@ const MessagesPage: React.FC = () => {
                   <DropdownMenuTrigger asChild>
                      <Button
                         variant="outline"
-                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                        className="ml-auto border-0 rounded-full h-8 w-8 p-0 md:border md:border-gray-200 md:rounded-2xl md:h-14 md:w-auto md:px-4 focus:outline-hidden font-medium"
                      >
-                        <EllipsisVertical />
+                        <EllipsisVertical className="size-5" />
                      </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                  <DropdownMenuContent className="shadow text-left bg-white border-border mt-3 rounded-xl w-full">
                      <DropdownMenuItem className="capitalize p-3">
                         <a href={row.original.videoUrl} rel="noopener noreferrer" target="_blank">
                            View Video
@@ -171,13 +171,13 @@ const MessagesPage: React.FC = () => {
             </Modal>
          )}
 
-         <div className="p-6 border-b-border border-b flex items-center justify-between">
-            <div className="">
+         <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
                <div className="text-base text-black font-semibold">View All Messages</div>
                <div className="text-base text-gray-neutral mt-[0.25rem]">Track the messages preached at RCNLagos Island Church</div>
             </div>
 
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-3">
                <RangeDatePicker
                   dateRange={{ from: messageQuery.startDate, to: messageQuery.endDate }}
                   onSelectRange={(range) => onSetMessage({ startDate: range.from!, endDate: range.to! })}
@@ -186,7 +186,7 @@ const MessagesPage: React.FC = () => {
                <Button
                   onClick={() => setAddMessagesVisible(true)}
                   variant="ghost"
-                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <PlusIcon />
                   <span className="flex-1">Upload Message</span>
@@ -195,10 +195,9 @@ const MessagesPage: React.FC = () => {
                <Button
                   onClick={handleExtractedDataExport}
                   variant="ghost"
-                  className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-green-800 px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <DownloadCloudIcon />
-
                   <span className="flex-1">Export to spreadsheet</span>
                </Button>
             </div>

@@ -94,7 +94,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
    return (
       <Form {...form}>
          <form onSubmit={form.handleSubmit((report) => mutation.mutate(report))} className="space-y-8">
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                <FormField
                   control={form.control}
                   name="serviceReport"
@@ -142,7 +142,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                />
             </div>
 
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                {fields.fields.map((initialField, index) => (
                   <FormField
                      key={initialField.id}
@@ -167,7 +167,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                <Button
                   type="submit"
                   disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
-                  className="text-sm text-white bg-green-600 font-semibold rounded-sm flex-1 h-12"
+                  className="text-sm text-white bg-green-600 font-semibold rounded-xl flex-1 h-12"
                >
                   <Conditional visible={mutation.isPending}>
                      <div className="animate-spin">

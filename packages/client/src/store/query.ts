@@ -17,6 +17,14 @@ interface Query extends PaginationQuery {
    field?: string;
 }
 
+interface RequisitionQuery extends PaginationQuery, DateRangeQuery {
+   amountStart?: number;
+   amountEnd?: number;
+   department?: string;
+   search?: string;
+   status?: string;
+}
+
 interface DepartmentQuery extends PaginationQuery {
    name?: string;
 }
@@ -77,6 +85,7 @@ interface QueryStore {
    dateRangeQuery: DateRangeQuery;
    firstTimerQuery: FirstTimerQuery;
    prayerCellQuery: PrayerCellQuery;
+   requisitionQuery: RequisitionQuery;
    departmentQuery: DepartmentQuery;
    inventoryQuery: InventoryQuery;
    userQuery: UserQuery;
@@ -88,6 +97,7 @@ interface QueryStore {
    onSetProgram: (program: ProgramQuery) => void;
    onSetSearch: (search: string) => void;
    onSetServiceReport: (serviceReport: ServiceReportQuery) => void;
+   onSetRequisition: (requisition: RequisitionQuery) => void;
    onSetFirstTimer: (firstTimer: FirstTimerQuery) => void;
    onSetDepartment: (department: DepartmentQuery) => void;
    onSetInventory: (inventory: InventoryQuery) => void;
@@ -132,6 +142,10 @@ const defaultStore = {
       startDate: dayjs().startOf('month').toDate(),
       endDate: dayjs().endOf('month').toDate(),
    },
+   requisitionQuery: {
+      startDate: dayjs().startOf('month').toDate(),
+      endDate: dayjs().toDate(),
+   },
    weeklyReviewQuery: {
       startDate: dayjs().startOf('month').toDate(),
       endDate: dayjs().endOf('month').toDate(),
@@ -144,6 +158,7 @@ const defaultStore = {
 const useQueryStore = create<QueryStore>((set) => ({
    ...defaultStore,
    resetQuery: () => set(() => ({ ...defaultStore })),
+   onSetRequisition: (requisition) => set((store) => ({ requisitionQuery: { ...store.requisitionQuery, ...requisition } })),
    onSetProgram: (program) => set((store) => ({ programQuery: { ...store.programQuery, ...program } })),
    onSetPrayerCell: (prayerCell) => set((store) => ({ prayerCellQuery: { ...store.prayerCellQuery, ...prayerCell } })),
    onSetWeeklyReview: (weeklyReview) => set((store) => ({ weeklyReviewQuery: { ...store.weeklyReviewQuery, ...weeklyReview } })),

@@ -7,20 +7,19 @@ import logo from '../assets/images/logo.png';
 
 const ForgotPassword: React.FC = () => {
    return (
-      <div className="grid grid-cols-2 bg-secondary">
-         <div className="hidden bg-slate-50 lg:block h-screen">
+      <div className="lg:grid lg:grid-cols-2 bg-secondary">
+         <div className="hidden lg:block h-screen relative overflow-hidden">
             <AuthSlides />
          </div>
 
-         <div className="bg-secondary h-screen">
-            <div className="flex items-center justify-center mt-[8.06rem]">
-               <img src={logo} className="w-[6.06rem] h-[3.56rem] object-contain" />
-            </div>
+         <div className="bg-secondary h-dvh p-6 sm:p-8 lg:h-screen overflow-y-auto flex items-center justify-center">
+            <div className="w-full max-w-lg">
+               <div className="flex items-center justify-center">
+                  <img src={logo} className="w-[6.06rem] h-[3.56rem] object-contain" alt="Logo" />
+               </div>
 
-            <div className="flex justify-center">
-               <div className="w-full max-w-[32.5rem] bg-white mt-[9.5rem] rounded-xl p-[1.875rem]">
-                  <h2 className="text-center text-dark font-bold text-2xl">Forgot Password</h2>
-
+               <div className="bg-white mt-8 sm:mt-16 lg:mt-20 rounded-xl p-6 sm:p-[1.875rem]">
+                  <h2 className="text-center text-dark font-bold text-2xl">Admin Sign in</h2>
                   <ForgotPasswordForm />
                </div>
             </div>

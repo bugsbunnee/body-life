@@ -35,7 +35,7 @@ const ChatTrigger = () => {
          </AnimatePresence>
 
          <motion.button
-            className="right-16 bottom-16 fixed bg-main w-12 h-12 text-2xl text-white flex items-center justify-center rounded-full "
+            className="right-8 bottom-8 lg:right-16 lg:bottom-16 fixed bg-main w-12 h-12 text-2xl text-white flex items-center justify-center rounded-full "
             initial={{ scale: 0 }}
             whileHover={{ rotate: 360 }}
             whileTap={{ scale: 1.1 }}

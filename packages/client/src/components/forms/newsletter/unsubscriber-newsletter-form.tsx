@@ -71,7 +71,7 @@ const UnsubscribeNewsletterForm: React.FC<Props> = ({ userId, onUnsubscribe }) =
                />
             </div>
 
-            <Button type="submit" disabled={form.formState.isSubmitting || mutation.isPending} className="mt-6 text-sm text-white bg-main font-semibold rounded-sm w-full h-12">
+            <Button type="submit" disabled={form.formState.isSubmitting || mutation.isPending} className="mt-6 text-sm text-white bg-main font-semibold rounded-xl w-full h-12">
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">
                      <FaSpinner />

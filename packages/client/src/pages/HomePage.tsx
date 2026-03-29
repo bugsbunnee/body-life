@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { RangeDatePicker } from '@/components/ui/datepicker';
 import { APP_ROUTES } from '@/utils/constants';
 import { formatDateRange } from '@/lib/utils';
+import { UserRole } from '@/utils/entities';
 
 import Conditional from '@/components/common/conditional';
 import DashboardLineChart from '@/components/layout/dashboard/line-chart';
@@ -21,12 +22,14 @@ import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
 import SendNewsletterForm from '@/components/forms/newsletter/send-newsletter-form';
 
+import useAuthStore from '@/store/auth';
 import useDashboard from '@/hooks/useDashboard';
 import useQueryStore from '@/store/query';
 
 const HomePage: React.FC = () => {
    const [isNewsletterVisible, setNewsletterVisible] = useState(false);
 
+   const { auth } = useAuthStore();
    const { dateRangeQuery, onSetSearch, onSetDateRange } = useQueryStore();
    const { data, isFetching } = useDashboard();
 
@@ -47,21 +50,23 @@ const HomePage: React.FC = () => {
          </Conditional>
 
          <div className="p-6 border-b-border border-b ">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col gap-4 mb-8 lg:flex-row lg:items-center lg:justify-between">
                <div className="">
                   <div className="text-base text-black font-semibold">Analytics</div>
                   <div className="text-base text-gray-neutral mt-[0.25rem]">See key insights</div>
                </div>
 
                <div className="flex gap-x-4">
-                  <Button
-                     onClick={() => setNewsletterVisible(true)}
-                     variant="ghost"
-                     className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left text-base text-white"
-                  >
-                     <MessageCircleCodeIcon className="ml-auto h-4 w-4 opacity-50" />
-                     <span>Send Newsletter</span>
-                  </Button>
+                  <Conditional visible={auth ? [UserRole.Hod, UserRole.Pastor].includes(auth.admin.userRole) : false}>
+                     <Button
+                        onClick={() => setNewsletterVisible(true)}
+                        variant="ghost"
+                        className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left text-base text-white"
+                     >
+                        <MessageCircleCodeIcon className="ml-auto h-4 w-4 opacity-50" />
+                        <span>Send Newsletter</span>
+                     </Button>
+                  </Conditional>
 
                   <RangeDatePicker
                      dateRange={{ from: dateRangeQuery.startDate, to: dateRangeQuery.endDate }}
@@ -70,7 +75,7 @@ const HomePage: React.FC = () => {
                </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-x-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                <Conditional visible={isFetching}>
                   {_.range(1, 5).map((fill) => (
                      <DashboardGridSkeleton key={fill} />
@@ -113,8 +118,8 @@ const HomePage: React.FC = () => {
             </div>
          </div>
 
-         <div className="border-b-border border-b grid grid-cols-2">
-            <div className="p-6 border-r-border border-r">
+         <div className="border-b-border border-b grid grid-cols-1 lg:grid-cols-2">
+            <div className="p-4 md:p-6 border-r-border border-r">
                <div className="flex items-center justify-between mb-8">
                   <div className="">
                      <div className="text-base text-black font-semibold">First Timers</div>
@@ -122,12 +127,12 @@ const HomePage: React.FC = () => {
                   </div>
                </div>
 
-               <div className="grid grid-cols-2 gap-6">
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FirstTimerMetrics />
                </div>
             </div>
 
-            <div className="p-6 bg-gray-light">
+            <div className="p-4 md:p-6 bg-gray-light lg:border-l lg:border-l-border">
                <div className="font-medium text-main text-center mb-5">
                   <h2>Attendance Trend for Services</h2>
                </div>
@@ -138,7 +143,7 @@ const HomePage: React.FC = () => {
             </div>
          </div>
 
-         <div className="border-b-border border-b grid grid-cols-2">
+         <div className="border-b-border border-b grid grid-cols-1 lg:grid-cols-2">
             <div className="p-6 border-r border-r-border">
                <DashboardTable label="Upcoming Celebrations" loading={isFetching} data={data.userBirthdays.data.slice(0, 5)} />
             </div>

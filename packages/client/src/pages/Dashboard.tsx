@@ -16,10 +16,10 @@ const Dashboard: React.FC = () => {
    }
 
    return (
-      <div className="grid grid-cols-[20rem_1fr] w-screen h-screen overflow-hidden">
+      <div className="lg:grid lg:grid-cols-[20rem_1fr] w-screen h-screen overflow-hidden">
          <NavBar />
 
-         <div className="overflow-y-scroll max-h-screen">
+         <div className="overflow-y-scroll max-h-screen max-md:pb-16">
             <Outlet />
 
             <ChatTrigger />

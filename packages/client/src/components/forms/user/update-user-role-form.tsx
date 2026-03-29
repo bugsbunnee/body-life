@@ -68,7 +68,7 @@ const UpdateUserRoleForm: React.FC<Props> = ({ userId, onUpdateRole }) => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
-               className="text-sm text-white bg-main font-semibold rounded-sm h-12"
+               className="text-sm text-white bg-main font-semibold rounded-xl h-12"
             >
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">

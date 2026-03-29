@@ -67,7 +67,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
    return (
       <Form {...form}>
          <form onSubmit={form.handleSubmit(handleCreateMessage)} className="space-y-8">
-            <div className="grid grid-cols-2 gap-x-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                <FormField
                   control={form.control}
                   name="title"
@@ -106,7 +106,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
                />
             </div>
 
-            <div className="grid grid-cols-2 gap-x-5">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                <FormField
                   control={form.control}
                   name="videoUrl"
@@ -158,7 +158,7 @@ const UploadMessageForm: React.FC<Props> = ({ onAddMessage }) => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
-               className="text-sm text-white bg-main font-semibold rounded-sm w-full h-12"
+               className="text-sm text-white bg-main font-semibold rounded-xl w-full h-12"
             >
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">

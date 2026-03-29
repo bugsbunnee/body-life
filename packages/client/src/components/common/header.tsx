@@ -18,17 +18,20 @@ const Header: React.FC<Props> = ({ title, onSearch }) => {
    };
 
    return (
-      <header className="px-[1.5rem] pt-[3.375rem] pb-[1.875rem] flex items-center justify-between border-b border-b-border">
+      <header className="px-4 md:px-6 pt-8 md:pt-[3.375rem] pb-5 md:pb-[1.875rem] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-b-border">
          <h1 className="text-2xl text-main font-medium">{title}</h1>
 
-         <div>
+         <div className="w-full sm:w-auto">
             <form onSubmit={handleSubmitForm}>
-               <div className="border border-gray-200 rounded-2xl h-14 px-4 min-w-[16rem] flex justify-start items-center gap-x-[0.75rem]">
-                  <div className="">
-                     <SearchIcon className="size-5 text-[#BEBEBE]" />
-                  </div>
+               <div className="border border-gray-200 rounded-2xl h-14 px-4 w-full sm:min-w-[16rem] flex justify-start items-center gap-x-3">
+                  <SearchIcon className="size-5 text-[#BEBEBE] shrink-0" />
 
-                  <input ref={ref} type="text" placeholder="Search anything..." className="focus:outline-hidden placeholder:text-[#D9D9D9] placeholder:text-[1rem] font-medium" />
+                  <input
+                     ref={ref}
+                     type="text"
+                     placeholder="Search anything..."
+                     className="focus:outline-hidden placeholder:text-[#D9D9D9] placeholder:text-[1rem] font-medium w-full"
+                  />
                </div>
             </form>
          </div>

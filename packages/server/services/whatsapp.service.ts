@@ -2,19 +2,10 @@ import axios from 'axios';
 import logger from './logger.service';
 
 import type { IUser } from '../infrastructure/database/models/user.model';
+import type { FollowUpParams } from '../utils/models';
 
 import { CHURCH_DISPLAY_NAME } from '../utils/constants';
 import { lib } from '../utils/lib';
-
-interface FollowUpParams {
-   userFirstName: string;
-   userPhoneNumber: string;
-   firstTimerPreferredContactMethod: string;
-   firstTimerAssignedAt: Date;
-   firstTimerFirstName: string;
-   firstTimerLastName: string;
-   firstTimerPhoneNumber: string;
-}
 
 const http = axios.create({
    baseURL: process.env.WHATSAPP_API_URL,

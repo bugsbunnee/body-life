@@ -56,7 +56,7 @@ const UpdateMessageSummaryForm: React.FC<Props> = ({ content, messageId }) => {
                )}
             />
 
-            <Button type="submit" disabled={form.formState.isSubmitting} className="text-sm text-white bg-main font-semibold rounded-sm w-full max-w-36 h-12">
+            <Button type="submit" disabled={form.formState.isSubmitting} className="text-sm text-white bg-main font-semibold rounded-xl w-full max-w-36 h-12">
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">
                      <FaSpinner />

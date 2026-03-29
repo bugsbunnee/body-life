@@ -5,15 +5,14 @@ import { FaSpinner } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EyeOffIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Conditional from '@/components/common/conditional';
+import PasswordInput from '@/components/common/password-input';
 import useAuthStore from '@/store/auth';
 
 import { LoginSchema, type ILogin } from './login-schema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -62,13 +61,7 @@ const LoginForm: React.FC = () => {
                   <FormItem>
                      <FormLabel className="text-sm text-dark font-medium">Password</FormLabel>
                      <FormControl>
-                        <InputGroup className="h-[3.5rem] rounded-xl border border-border px-2 shadow-none w-full">
-                           <InputGroupInput {...field} id={field.name} type="password" aria-invalid={fieldState.invalid} placeholder="Enter your password" autoComplete="off" />
-
-                           <InputGroupAddon align="inline-end">
-                              <EyeOffIcon className="text-base" />
-                           </InputGroupAddon>
-                        </InputGroup>
+                        <PasswordInput {...field} aria-invalid={fieldState.invalid} placeholder="Enter your password" />
                      </FormControl>
                      <FormMessage />
                   </FormItem>
@@ -78,7 +71,7 @@ const LoginForm: React.FC = () => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || auth.isPending}
-               className="text-sm text-white bg-main font-semibold rounded-sm w-full h-12"
+               className="text-sm text-white bg-main font-semibold rounded-xl w-full h-12"
             >
                <Conditional visible={auth.isPending}>
                   <div className="animate-spin">

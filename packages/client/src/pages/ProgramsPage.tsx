@@ -1,4 +1,5 @@
 import type React from 'react';
+import dayjs from 'dayjs';
 
 import { useEffect, useMemo, useState } from 'react';
 import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
@@ -29,7 +30,6 @@ import { DataTable } from '@/components/ui/datatable';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RangeDatePicker } from '@/components/ui/datepicker';
-import dayjs from 'dayjs';
 
 const ProgramsPage: React.FC = () => {
    const [isAddProgramVisible, setAddProgramVisible] = useState(false);
@@ -125,13 +125,13 @@ const ProgramsPage: React.FC = () => {
                   <DropdownMenuTrigger asChild>
                      <Button
                         variant="outline"
-                        className="capitalize ml-auto border border-gray-200 rounded-2xl h-14 px-4 max-w-sm focus:outline-hidden placeholder:text-[1rem] font-medium"
+                        className="ml-auto border-0 rounded-full h-8 w-8 p-0 md:border md:border-gray-200 md:rounded-2xl md:h-14 md:w-auto md:px-4 focus:outline-hidden font-medium"
                      >
-                        <EllipsisVertical />
+                        <EllipsisVertical className="size-5" />
                      </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-sm w-full">
+                  <DropdownMenuContent align="end" className="shadow bg-white border-border mt-3 rounded-xl w-full">
                      <DropdownMenuItem onClick={() => setSelectedProgram(row.original)} className="capitalize p-3">
                         View Member Details
                      </DropdownMenuItem>
@@ -180,7 +180,7 @@ const ProgramsPage: React.FC = () => {
 
          {selectedProgram && (
             <Modal onClose={() => setSelectedProgram(null)} title="Program Details" visible>
-               <div className="grid grid-cols-2 gap-4">
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Summary
                      title="General Information"
                      labels={[
@@ -216,13 +216,13 @@ const ProgramsPage: React.FC = () => {
             </Modal>
          )}
 
-         <div className="p-6 border-b-border border-b flex items-center justify-between">
-            <div className="">
+         <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
                <div className="text-base text-black font-semibold">Programs</div>
                <div className="text-base text-gray-neutral mt-[0.25rem]">Track the programs scheduled for the time period</div>
             </div>
 
-            <div className="flex gap-x-4">
+            <div className="flex flex-wrap gap-3">
                <RangeDatePicker
                   dateRange={{ from: programQuery.startDate, to: programQuery.endDate }}
                   onSelectRange={(range) => onSetProgram({ startDate: range.from!, endDate: range.to! })}
@@ -231,7 +231,7 @@ const ProgramsPage: React.FC = () => {
                <Button
                   onClick={() => setAddProgramVisible(true)}
                   variant="ghost"
-                  className="bg-main data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <PlusIcon />
                   <span className="flex-1">Add New</span>
@@ -240,17 +240,16 @@ const ProgramsPage: React.FC = () => {
                <Button
                   onClick={handleExtractedDataExport}
                   variant="ghost"
-                  className="bg-green-800 data-[empty=true]:bg-blue-light px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  className="bg-green-800 px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
                >
                   <DownloadCloudIcon />
-
                   <span className="flex-1">Export to spreadsheet</span>
                </Button>
             </div>
          </div>
 
          <Tabs defaultValue="upcoming" className="w-full">
-            <div className="p-6 border-b-border border-b w-full flex items-center justify-between">
+            <div className="p-4 md:p-6 border-b-border border-b">
                <TabsList>
                   <TabsTrigger value="upcoming" onClick={() => onSetProgram({ startDate: dayjs().toDate(), endDate: dayjs().add(90, 'days').toDate() })}>
                      Upcoming

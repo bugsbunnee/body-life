@@ -33,6 +33,10 @@ export const smsController = {
             body: req.body.body,
          });
 
+         if (!response) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to send the message.' });
+         }
+
          await redisService.storeItem(cacheKey, 'yes', 86_400);
 
          res.json(response.data);

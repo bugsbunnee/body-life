@@ -23,7 +23,7 @@ const SendNewsLetter: React.FC<Props> = ({ message }) => {
       <Button
          disabled={mutation.isPending}
          onClick={() => mutation.mutate()}
-         className="hover:text-white px-8 text-sm text-main border border-border shadow-none bg-blue-light font-semibold rounded-sm h-12"
+         className="hover:text-white px-8 text-sm text-main border border-border shadow-none bg-blue-light font-semibold rounded-xl h-12"
       >
          <MdEmail /> {mutation.isPending ? 'Sending out newsletter...' : 'Send Newsletter'}
       </Button>

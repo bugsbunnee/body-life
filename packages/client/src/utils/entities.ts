@@ -8,6 +8,13 @@ export enum UserRole {
    PrayerCellLeader = 'prayer-cell-leader',
 }
 
+export enum RequisitionStatus {
+   Pending = 'pending',
+   Approved = 'approved',
+   Rejected = 'rejected',
+   Disbursed = 'disbursed',
+}
+
 export interface ApiResponse<T> {
    data: T[];
    pagination: {
@@ -118,6 +125,20 @@ export interface Program {
    scheduledFor: Date;
    isActive: boolean;
    isUpcoming: boolean;
+}
+
+export interface Requisition {
+   _id: string;
+   description: string;
+   amount: number;
+   createdAt: Date;
+   department: Pick<Department, '_id' | 'name'>;
+   requester: Pick<User, '_id' | 'firstName' | 'lastName'>;
+   actioner?: Pick<User, '_id' | 'firstName' | 'lastName'>;
+   status: string;
+   approvedAt?: Date;
+   rejectedAt?: Date;
+   disbursedAt?: Date;
 }
 
 export interface RouteItem {

@@ -17,18 +17,18 @@ const DashboardFollowUp: React.FC<Props> = ({ followUp }) => {
    }, [followUp.user]);
 
    return (
-      <div className="flex items-start gap-x-6 py-4">
-         <Avatar className="w-12 h-12">
+      <div className="flex items-start gap-x-4 py-4">
+         <Avatar className="w-10 h-10 md:w-12 md:h-12 shrink-0">
             <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
          </Avatar>
 
-         <div className="flex-1 border-b border-b-border pb-4">
-            <div className="text-base font-semibold text-main capitalize">{fullName}</div>
+         <div className="flex-1 border-b border-b-border pb-4 min-w-0">
+            <div className="text-base font-semibold text-main capitalize truncate">{fullName}</div>
             <div className="text-base font-semibold text-main">{followUp.user.phoneNumber}</div>
             <div className="text-sm font-medium text-gray-600">Visited on: {formatDate(followUp.service.serviceDate, 'dd MMM, yyyy')}</div>
          </div>
 
-         <div>
+         <div className="shrink-0">
             <Badge>{followUp.status}</Badge>
          </div>
       </div>

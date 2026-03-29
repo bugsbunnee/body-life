@@ -6,9 +6,9 @@ import type { IUser } from '../infrastructure/database/models/user.model';
 import type { IFollowUp } from '../infrastructure/database/models/followup.model';
 
 import { StatusCodes } from 'http-status-codes';
-import { userRepository } from '../repositories/user.repository';
 import { parseUsersFromFile } from '../infrastructure/lib/utils';
 
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 import { UserQuerySchema } from '../infrastructure/database/validators/user.validator';
 import { communicationService } from '../services/communication.service';
 
@@ -16,10 +16,10 @@ import { departmentRepository } from '../repositories/department.repository';
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 import { followupRepository } from '../repositories/followup.repository';
 import { serviceReportRepository } from '../repositories/service-report.repository';
+import { userRepository } from '../repositories/user.repository';
 
 import { lib } from '../utils/lib';
-import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
-import { whatsappService } from '../services/whatsapp.service';
+import { smsService } from '../services/sms.service';
 
 export const userController = {
    async bulkCreateUsers(req: Request, res: Response) {
@@ -89,9 +89,14 @@ export const userController = {
             };
 
             await Promise.all([
-               communicationService.sendOutFollowUpAssignmentEmail(assignedTo, user, <IFollowUp>followUpPayload),
+               followupRepository.createFollowUpEntry(followUpPayload),
 
-               whatsappService.sendFollowUpMessage({
+               communicationService.sendOutFollowUpAssignmentEmail(assignedTo, user, <IFollowUp>followUpPayload),
+               communicationService.sendOutWelcomeEmail(user),
+
+               smsService.sendWelcomeSMS(user),
+
+               smsService.sendFollowUpSMS({
                   userFirstName: assignedTo.firstName,
                   userPhoneNumber: assignedTo.phoneNumber,
                   firstTimerPreferredContactMethod: followUpPayload.preferredContactMethod,
@@ -100,12 +105,6 @@ export const userController = {
                   firstTimerLastName: user.lastName,
                   firstTimerPhoneNumber: user.phoneNumber,
                }),
-
-               followupRepository.createFollowUpEntry(followUpPayload),
-
-               communicationService.sendOutWelcomeEmail(user),
-
-               whatsappService.sendWelcomeMessage(user),
             ]);
          }
 

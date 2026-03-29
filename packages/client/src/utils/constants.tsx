@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Calendar, ChurchIcon, Clock, Cross, FileImageIcon, GroupIcon, NewspaperIcon, PaperclipIcon, ToolCaseIcon, UsersIcon } from 'lucide-react';
+import { Calendar, ChurchIcon, Clock, Cross, DollarSignIcon, FileImageIcon, GroupIcon, NewspaperIcon, PaperclipIcon, ToolCaseIcon, UsersIcon } from 'lucide-react';
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { MdReport } from 'react-icons/md';
@@ -13,6 +13,7 @@ export const APP_ROUTES = {
    AUTH: '/auth',
    CHAT: '/chat',
    DASHBOARD: '/dashboard',
+   REQUISITIONS: '/dashboard/requisitions',
    DEPARTMENT: '/dashboard/departments',
    FIRST_TIMERS: '/dashboard/first-timers',
    INVENTORY: '/dashboard/inventory',
@@ -70,6 +71,12 @@ export const sections: Route[] = [
             path: APP_ROUTES.INVENTORY,
             label: 'Inventory',
             Icon: ToolCaseIcon,
+            subroutes: [],
+         },
+         {
+            path: APP_ROUTES.REQUISITIONS,
+            label: 'Requisitions',
+            Icon: DollarSignIcon,
             subroutes: [],
          },
          {
@@ -152,6 +159,25 @@ export const OPTIONS = [
    {
       id: 'No',
       name: 'No',
+   },
+];
+
+export const REQUISITION_STATUS = [
+   {
+      id: 'pending',
+      name: 'Pending',
+   },
+   {
+      id: 'approved',
+      name: 'Approved',
+   },
+   {
+      id: 'rejected',
+      name: 'Rejected',
+   },
+   {
+      id: 'disbursed',
+      name: 'Disbursed',
    },
 ];
 

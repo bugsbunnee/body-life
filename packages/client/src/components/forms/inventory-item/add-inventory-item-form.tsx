@@ -48,7 +48,7 @@ const AddInventoryItemForm: React.FC<Props> = ({ onAddInventoryItem }) => {
    return (
       <Form {...form}>
          <form onSubmit={form.handleSubmit((inventoryItem) => mutation.mutate(inventoryItem))} className="space-y-8">
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                <FormField
                   control={form.control}
                   name="department"
@@ -181,7 +181,7 @@ const AddInventoryItemForm: React.FC<Props> = ({ onAddInventoryItem }) => {
             <Button
                type="submit"
                disabled={!form.formState.isValid || form.formState.isSubmitting || mutation.isPending}
-               className="text-sm text-white bg-main  w-full font-semibold rounded-sm h-12"
+               className="text-sm text-white bg-main  w-full font-semibold rounded-xl h-12"
             >
                <Conditional visible={mutation.isPending}>
                   <div className="animate-spin">
