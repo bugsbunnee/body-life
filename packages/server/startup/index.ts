@@ -9,9 +9,9 @@ import 'dotenv/config';
 function configureApp() {
    const app = express();
 
+   configureDB();
    configureCors(app);
    configureRoutes(app);
-   configureDB();
 
    return app;
 }
