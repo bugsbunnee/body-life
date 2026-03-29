@@ -8,9 +8,10 @@ import logger from '../services/logger.service';
 import 'dotenv/config';
 
 async function configureApp(app: Express) {
+   configureCors(app);
+
    await configureDB();
 
-   configureCors(app);
    configureRoutes(app);
 }
 
