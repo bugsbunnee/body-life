@@ -1,19 +1,22 @@
-import express from 'express';
+import type { Express } from 'express';
 
 import configureCors from './cors';
-import configureDB from './db';
 import configureRoutes from './routes';
+import configureDB from './db';
+import logger from '../services/logger.service';
 
 import 'dotenv/config';
 
-function configureApp() {
-   const app = express();
+async function configureApp(app: Express) {
+   await configureDB();
 
-   configureDB();
    configureCors(app);
    configureRoutes(app);
-
-   return app;
 }
 
-export default configureApp;
+async function configureServer(app: Express) {
+   const port = process.env.PORT || 19200;
+   app.listen(port, () => logger.info(`Server is running on port ${port}...`));
+}
+
+export default { configureApp, configureServer };

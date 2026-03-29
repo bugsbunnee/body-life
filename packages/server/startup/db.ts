@@ -7,6 +7,8 @@ async function configureDB() {
       logger.info(`Connected to DB: ${process.env.DB_URL}...`);
    } catch (error) {
       logger.error(error);
+
+      throw error;
    }
 }
 
