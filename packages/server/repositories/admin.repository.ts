@@ -21,7 +21,7 @@ export const adminRepository = {
    },
 
    async getFirstTimerReportAdmins() {
-      return User.find({ userRole: { $in: [UserRole.Pastor] } }).exec();
+      return User.find({ userRole: { $in: [UserRole.Pastor, UserRole.Admin] } }).exec();
    },
 
    async getAdminForPasswordReset(token: string) {

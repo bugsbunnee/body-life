@@ -7,6 +7,7 @@ export enum UserRole {
    Member = 'member',
    PrayerCellLeader = 'prayer-cell-leader',
    External = 'external',
+   Admin = 'admin',
 }
 
 export enum RequisitionStatus {

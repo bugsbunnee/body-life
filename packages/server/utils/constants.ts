@@ -19,9 +19,9 @@ export const FEATURES = {
    ENABLE_CACHE: false,
 };
 
-export const HIGH_RANKING_ROLES = [UserRole.Pastor, UserRole.Hod, UserRole.PrayerCellLeader];
+export const HIGH_RANKING_ROLES = [UserRole.Pastor, UserRole.Admin, UserRole.Hod, UserRole.PrayerCellLeader];
 export const DEFAULT_ROLES = [UserRole.Pastor, UserRole.Hod, UserRole.PrayerCellLeader, UserRole.Worker];
-export const CORE_ROLES = [UserRole.Pastor, UserRole.Hod];
+export const CORE_ROLES = [UserRole.Pastor, UserRole.Admin];
 
 export const PASSWORD_RESET_TIME_IN_MINUTES = 60;
 export const MB_IN_BYTES = 1_048_576;
