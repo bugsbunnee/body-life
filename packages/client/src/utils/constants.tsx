@@ -4,8 +4,7 @@ import { Calendar, ChurchIcon, Clock, Cross, DollarSignIcon, FileImageIcon, Grou
 import { CiHome } from 'react-icons/ci';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import { MdReport } from 'react-icons/md';
-
-import type { Route } from './entities';
+import { UserRole, type Route } from './entities';
 
 export const APP_ROUTES = {
    HOME: '/',
@@ -27,6 +26,13 @@ export const APP_ROUTES = {
    WEEKLY_REPORTS: '/dashboard/weekly-reports',
 };
 
+export const ROLES = {
+   HIGH_RANKING: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader],
+   DEFAULT: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Worker],
+   CORE: [UserRole.Hod, UserRole.Pastor],
+   PASTOR_ONLY: [UserRole.Pastor],
+};
+
 export const sections: Route[] = [
    {
       path: 'none',
@@ -37,6 +43,7 @@ export const sections: Route[] = [
             label: 'Home',
             Icon: CiHome,
             subroutes: [],
+            permittedRoles: ROLES.DEFAULT,
          },
          {
             path: APP_ROUTES.MEMBERS,
@@ -47,11 +54,13 @@ export const sections: Route[] = [
                   path: APP_ROUTES.MEMBERS,
                   label: 'Members',
                   Icon: BsFillPeopleFill,
+                  permittedRoles: ROLES.HIGH_RANKING,
                },
                {
                   path: APP_ROUTES.FIRST_TIMERS,
                   label: 'First Timers',
                   Icon: NewspaperIcon,
+                  permittedRoles: ROLES.DEFAULT,
                },
             ],
          },
@@ -60,24 +69,28 @@ export const sections: Route[] = [
             label: 'Departments',
             Icon: GroupIcon,
             subroutes: [],
+            permittedRoles: [UserRole.Pastor],
          },
          {
             path: APP_ROUTES.PRAYER_CELLS,
-            label: 'Prayer Cells',
+            label: 'Church in the House',
             Icon: ChurchIcon,
             subroutes: [],
+            permittedRoles: [UserRole.Pastor],
          },
          {
             path: APP_ROUTES.INVENTORY,
             label: 'Inventory',
             Icon: ToolCaseIcon,
             subroutes: [],
+            permittedRoles: ROLES.CORE,
          },
          {
             path: APP_ROUTES.REQUISITIONS,
             label: 'Requisitions',
             Icon: DollarSignIcon,
             subroutes: [],
+            permittedRoles: ROLES.CORE,
          },
          {
             path: APP_ROUTES.PROGRAMS,
@@ -88,11 +101,13 @@ export const sections: Route[] = [
                   path: APP_ROUTES.PROGRAMS,
                   label: 'Programs',
                   Icon: Calendar,
+                  permittedRoles: ROLES.DEFAULT,
                },
                {
                   path: APP_ROUTES.MESSAGES,
                   label: 'Messages',
                   Icon: Cross,
+                  permittedRoles: ROLES.DEFAULT,
                },
             ],
          },
@@ -105,11 +120,13 @@ export const sections: Route[] = [
                   path: APP_ROUTES.SERVICE_REPORT,
                   label: 'Service Reports',
                   Icon: MdReport,
+                  permittedRoles: ROLES.HIGH_RANKING,
                },
                {
                   path: APP_ROUTES.WEEKLY_REPORTS,
                   label: 'Weekly Reports',
                   Icon: PaperclipIcon,
+                  permittedRoles: ROLES.HIGH_RANKING,
                },
             ],
          },

@@ -3,7 +3,7 @@ import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { DownloadCloudIcon, EllipsisVertical, PlusIcon, SendIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
-import { cn, exportToExcel, getErrorMessage, getInitials } from '@/lib/utils';
+import { cn, exportToExcel, getErrorMessage, getInitials, getIsRolePermitted } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -37,7 +37,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/datatable';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { GENDERS, MARITAL_STATUS, OPTIONS } from '@/utils/constants';
+import { GENDERS, MARITAL_STATUS, OPTIONS, ROLES } from '@/utils/constants';
 
 const UsersPage: React.FC = () => {
    const [isAddUserVisible, setAddUserVisible] = useState(false);
@@ -322,23 +322,27 @@ const UsersPage: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-               <Button
-                  onClick={() => setSendMessageVisible(true)}
-                  variant="ghost"
-                  className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
-               >
-                  <SendIcon />
-                  <span className="flex-1">Send General Message</span>
-               </Button>
+               <Conditional visible={auth ? getIsRolePermitted(ROLES.CORE, auth.admin.userRole) : false}>
+                  <Button
+                     onClick={() => setSendMessageVisible(true)}
+                     variant="ghost"
+                     className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  >
+                     <SendIcon />
+                     <span className="flex-1">Send General Message</span>
+                  </Button>
+               </Conditional>
 
-               <Button
-                  onClick={() => setAddUserVisible(true)}
-                  variant="ghost"
-                  className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
-               >
-                  <PlusIcon />
-                  <span className="flex-1">Add New</span>
-               </Button>
+               <Conditional visible={auth ? getIsRolePermitted(ROLES.HIGH_RANKING, auth.admin.userRole) : false}>
+                  <Button
+                     onClick={() => setAddUserVisible(true)}
+                     variant="ghost"
+                     className="bg-main px-5 md:px-9 h-12 rounded-md justify-start text-left font-medium text-base text-white"
+                  >
+                     <PlusIcon />
+                     <span className="flex-1">Add New</span>
+                  </Button>
+               </Conditional>
 
                <Button
                   onClick={handleExtractedDataExport}
@@ -408,23 +412,27 @@ const UsersPage: React.FC = () => {
                </SelectContent>
             </Select>
 
-            <SearchableSelect
-               isTriggered={isFetchingPrayerCells}
-               onTriggerSearch={(name: string) => onSetPrayerCell({ name })}
-               data={prayerCells.data.data.map((cell) => ({ label: cell.name, value: cell._id }))}
-               value={prayerCell}
-               onValueChange={(value) => onSetUser({ prayerCell: value ? value.value : '' })}
-               placeholder="Filter by Prayer Cell"
-            />
+            <Conditional visible={auth ? auth.admin.userRole !== UserRole.PrayerCellLeader : false}>
+               <SearchableSelect
+                  isTriggered={isFetchingPrayerCells}
+                  onTriggerSearch={(name: string) => onSetPrayerCell({ name })}
+                  data={prayerCells.data.data.map((cell) => ({ label: cell.name, value: cell._id }))}
+                  value={prayerCell}
+                  onValueChange={(value) => onSetUser({ prayerCell: value ? value.value : '' })}
+                  placeholder="Filter by Prayer Cell"
+               />
+            </Conditional>
 
-            <SearchableSelect
-               isTriggered={isFetchingDepartments}
-               onTriggerSearch={(name: string) => onSetDepartment({ name })}
-               data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
-               value={department}
-               onValueChange={(value) => onSetUser({ department: value ? value.value : '' })}
-               placeholder="Filter by Department"
-            />
+            <Conditional visible={auth ? auth.admin.userRole !== UserRole.Hod : false}>
+               <SearchableSelect
+                  isTriggered={isFetchingDepartments}
+                  onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                  data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
+                  value={department}
+                  onValueChange={(value) => onSetUser({ department: value ? value.value : '' })}
+                  placeholder="Filter by Department"
+               />
+            </Conditional>
          </div>
 
          <DataTable

@@ -15,8 +15,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CONTACT_METHODS, FOLLOW_UP_STATUS } from '@/utils/constants';
-import { exportToExcel, getErrorMessage } from '@/lib/utils';
+import { CONTACT_METHODS, FOLLOW_UP_STATUS, ROLES } from '@/utils/constants';
+import { exportToExcel, getErrorMessage, getIsRolePermitted } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { FirstTimer } from '@/utils/entities';
@@ -29,6 +29,7 @@ import SearchableSelect from '@/components/common/searchable-select';
 import Summary from '@/components/common/summary';
 import UpdateFollowUpForm from '@/components/forms/first-timer/update-follow-up';
 
+import useAuthStore from '@/store/auth';
 import useFirstTimers from '@/hooks/useFirstTimers';
 import useQueryStore from '@/store/query';
 import useUsers from '@/hooks/useUsers';
@@ -36,6 +37,7 @@ import useUsers from '@/hooks/useUsers';
 import http from '@/services/http.service';
 
 const FirstTimersPage: React.FC = () => {
+   const { auth } = useAuthStore();
    const { data: users, isFetching: isFetchingUsers } = useUsers();
    const { data, isFetching, refetch } = useFirstTimers();
    const { firstTimerQuery, resetQuery, onSetFirstTimer, onSetSearch, onSetUser } = useQueryStore();
@@ -319,19 +321,23 @@ const FirstTimersPage: React.FC = () => {
                </SelectContent>
             </Select>
 
-            <SearchableSelect
-               isTriggered={isFetchingUsers}
-               onTriggerSearch={(search: string) => onSetUser({ search })}
-               data={users.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
-               value={assignedTo}
-               onValueChange={(value) => onSetFirstTimer({ assignedTo: value ? value.value : '' })}
-               placeholder="Filter by Assigned To"
-            />
+            <Conditional visible={auth ? getIsRolePermitted(ROLES.HIGH_RANKING, auth.admin.userRole) : false}>
+               <SearchableSelect
+                  isTriggered={isFetchingUsers}
+                  onTriggerSearch={(search: string) => onSetUser({ search })}
+                  data={users.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
+                  value={assignedTo}
+                  onValueChange={(value) => onSetFirstTimer({ assignedTo: value ? value.value : '' })}
+                  placeholder="Filter by Assigned To"
+               />
+            </Conditional>
          </div>
 
-         <div className="grid grid-cols-2 gap-4 p-4 md:p-6 border-b-border border-b lg:grid-cols-4">
-            <FirstTimerMetrics />
-         </div>
+         <Conditional visible={auth ? getIsRolePermitted(ROLES.PASTOR_ONLY, auth.admin.userRole) : false}>
+            <div className="grid grid-cols-2 gap-4 p-4 md:p-6 border-b-border border-b lg:grid-cols-4">
+               <FirstTimerMetrics />
+            </div>
+         </Conditional>
 
          <div className="border-r border-r-border">
             <DataTable

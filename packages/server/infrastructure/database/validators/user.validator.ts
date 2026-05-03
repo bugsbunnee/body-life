@@ -59,9 +59,17 @@ export const UserCreationSchema = PhoneNumberSchema.extend({
 
    notes: z.string().optional(),
    isFirstTimer: z.boolean().default(false),
-   assignTo: z.string().optional(),
    preferredContactMethod: z.string().optional(),
-   serviceAttended: z.string().optional(),
+   assignTo: z
+      .string()
+      .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid Assign To ID' })
+      .transform((value) => lib.parseObjectId(value))
+      .optional(),
+   serviceAttended: z
+      .string()
+      .refine((value) => lib.getObjectIdIsValid(value), { error: 'Invalid Assign To ID' })
+      .transform((value) => lib.parseObjectId(value))
+      .optional(),
 }).superRefine((data, ctx) => {
    if (data.isFirstTimer) {
       const requiredFields: Array<keyof typeof data> = ['assignTo', 'notes', 'preferredContactMethod', 'serviceAttended'];

@@ -39,7 +39,7 @@ const programSchema = new mongoose.Schema(
 programSchema.virtual('isUpcoming').get(function () {
    if (!this.scheduledFor) return false;
 
-   return moment(this.scheduledFor).isAfter(moment());
+   return moment(this.scheduledFor).isSameOrAfter(moment(), 'day');
 });
 
 programSchema.plugin(mongooseLeanVirtuals);

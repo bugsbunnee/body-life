@@ -121,7 +121,7 @@ const defaultStore = {
       endDate: dayjs().add(7, 'days').toDate(),
    },
    firstTimerQuery: {
-      dateJoinedStart: dayjs().startOf('month').toDate(),
+      dateJoinedStart: dayjs().startOf('year').toDate(),
       dateJoinedEnd: dayjs().endOf('month').toDate(),
    },
    inventoryQuery: {
@@ -143,7 +143,7 @@ const defaultStore = {
       endDate: dayjs().endOf('month').toDate(),
    },
    requisitionQuery: {
-      startDate: dayjs().startOf('month').toDate(),
+      startDate: dayjs().startOf('year').toDate(),
       endDate: dayjs().toDate(),
    },
    weeklyReviewQuery: {

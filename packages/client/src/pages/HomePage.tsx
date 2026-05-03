@@ -5,9 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MessageCircleCodeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RangeDatePicker } from '@/components/ui/datepicker';
-import { APP_ROUTES } from '@/utils/constants';
-import { formatDateRange } from '@/lib/utils';
-import { UserRole } from '@/utils/entities';
+import { APP_ROUTES, ROLES } from '@/utils/constants';
+import { formatDateRange, getIsRolePermitted } from '@/lib/utils';
 
 import Conditional from '@/components/common/conditional';
 import DashboardLineChart from '@/components/layout/dashboard/line-chart';
@@ -57,7 +56,7 @@ const HomePage: React.FC = () => {
                </div>
 
                <div className="flex gap-x-4">
-                  <Conditional visible={auth ? [UserRole.Hod, UserRole.Pastor].includes(auth.admin.userRole) : false}>
+                  <Conditional visible={auth ? getIsRolePermitted(ROLES.CORE, auth.admin.userRole) : false}>
                      <Button
                         onClick={() => setNewsletterVisible(true)}
                         variant="ghost"

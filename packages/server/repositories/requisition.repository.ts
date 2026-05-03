@@ -3,12 +3,14 @@ import _ from 'lodash';
 
 import type mongoose from 'mongoose';
 
+import type { Request } from 'express';
 import type { QueryFilter } from 'mongoose';
 import type { Pagination } from '../infrastructure/lib/entities';
-import type { IRequisitionCreate, IRequisitionQuery } from '../infrastructure/database/validators/requisition.validator';
 
+import { RequisitionQuerySchema, type IRequisitionCreate, type IRequisitionQuery } from '../infrastructure/database/validators/requisition.validator';
 import { Requisition, type IRequisition } from '../infrastructure/database/models/requisition.model';
 import { RequisitionStatus } from '../infrastructure/database/entities/enums/requisition-status.enum';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const requisitionRepository = {
    buildFilterQuery(query: IRequisitionQuery) {
@@ -55,6 +57,20 @@ export const requisitionRepository = {
 
    checkRequisitionIsActioned(requisition: IRequisition) {
       return [RequisitionStatus.Approved, RequisitionStatus.Disbursed, RequisitionStatus.Rejected].includes(requisition.status);
+   },
+
+   parseRequisitionQueryFromRequest(req: Request) {
+      const query = RequisitionQuerySchema.parse(req.query);
+
+      if (req.admin.userRole !== UserRole.Pastor) {
+         if (!req.admin.department) {
+            throw new Error('Admin department is required to filter requisitions.');
+         }
+
+         query.department = req.admin.department;
+      }
+
+      return query;
    },
 
    async createRequisition(requisition: IRequisitionCreate) {

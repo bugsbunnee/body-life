@@ -4,23 +4,27 @@ import type { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import { departmentRepository } from '../repositories/department.repository';
-import { InventoryQuerySchema } from '../infrastructure/database/validators/inventory.validator';
 import { inventoryRepository } from '../repositories/inventory.repository';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const inventoryController = {
    async getInventory(req: Request, res: Response) {
       try {
-         const query = InventoryQuerySchema.parse(req.query);
+         const query = inventoryRepository.parseInventoryQueryFromRequest(req);
          const inventory = await inventoryRepository.getInventory(req.pagination, query);
 
          res.json({ data: inventory });
       } catch (ex) {
-         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to get inventory' });
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: (<Error>ex).message });
       }
    },
 
    async createInventory(req: Request, res: Response) {
       try {
+         if (req.admin.userRole === UserRole.Hod && req.body.department !== req.admin.department) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'You can only create inventory for your department.' });
+         }
+
          const department = await departmentRepository.getOneDepartment(req.body.department);
 
          if (!department) {
@@ -31,7 +35,7 @@ export const inventoryController = {
 
          res.status(StatusCodes.CREATED).json({ data: inventory });
       } catch (ex) {
-         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create inventory' });
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: (<Error>ex).message });
       }
    },
 };

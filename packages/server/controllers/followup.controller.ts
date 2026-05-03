@@ -14,7 +14,7 @@ import { dateRangeSchema } from '../infrastructure/database/validators/base.vali
 export const followupController = {
    async getFirstTimers(req: Request, res: Response) {
       try {
-         const query = FollowUpQuerySchema.parse(req.query);
+         const query = followupRepository.parseFollowUpQueryFromRequest(req);
          const response = await followupRepository.getFirstTimers(req.pagination, query);
 
          res.json(response);

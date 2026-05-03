@@ -18,6 +18,7 @@ const Role: React.FC<Props> = ({ role }) => {
             'bg-amber-600': role === UserRole.Hod,
             'bg-green-600': role === UserRole.Member,
             'bg-red-500': role === UserRole.Worker,
+            'bg-gray-500': role === UserRole.External,
          })}
       >
          {role}

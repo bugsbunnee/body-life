@@ -2,10 +2,11 @@ import moment from 'moment';
 import mongoose from 'mongoose';
 
 import type { QueryFilter } from 'mongoose';
-import type { IUserQuery, IUserUpdate } from '../infrastructure/database/validators/user.validator';
 import type { Pagination } from '../infrastructure/lib/entities';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
+import type { Request } from 'express';
 
+import { UserQuerySchema, type IUserQuery, type IUserUpdate } from '../infrastructure/database/validators/user.validator';
 import { User, type IUser } from '../infrastructure/database/models/user.model';
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
@@ -79,6 +80,22 @@ export const userRepository = {
       }
 
       return monthDayList;
+   },
+
+   parseUserQueryFromRequest(req: Request) {
+      const query = UserQuerySchema.parse(req.query);
+
+      if (req.admin.userRole !== UserRole.Pastor) {
+         if (req.admin.userRole === UserRole.Hod && req.admin.department) {
+            query.department = req.admin.department!;
+         }
+
+         if (req.admin.userRole === UserRole.PrayerCellLeader && req.admin.prayerCell) {
+            query.prayerCell = req.admin.prayerCell!;
+         }
+      }
+
+      return query;
    },
 
    async bulkCreateUsers(users: IUser[]) {

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import moment from 'moment';
@@ -8,7 +9,6 @@ import { COUNTRY_CODE } from './constants';
 import type { IUser } from '../infrastructure/database/models/user.model';
 import type { ReportAnalysis } from '../infrastructure/database/entities/interfaces/report-analysis';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
-import axios from 'axios';
 
 export const lib = {
    cleanPhoneNumber(phoneNumber: string) {

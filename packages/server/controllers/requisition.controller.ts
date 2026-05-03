@@ -4,23 +4,30 @@ import _ from 'lodash';
 import type { Request, Response } from 'express';
 
 import { StatusCodes } from 'http-status-codes';
-import { RequisitionQuerySchema } from '../infrastructure/database/validators/requisition.validator';
-
 import { departmentRepository } from '../repositories/department.repository';
 import { requisitionRepository } from '../repositories/requisition.repository';
 import { communicationService } from '../services/communication.service';
 import { RequisitionStatus } from '../infrastructure/database/entities/enums/requisition-status.enum';
 import { lib } from '../utils/lib';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const requisitionsController = {
    async getRequisitions(req: Request, res: Response) {
-      const query = RequisitionQuerySchema.parse(req.query);
-      const result = await requisitionRepository.getRequisitions(req.pagination, query);
+      try {
+         const query = requisitionRepository.parseRequisitionQueryFromRequest(req);
+         const result = await requisitionRepository.getRequisitions(req.pagination, query);
 
-      return res.json(result);
+         return res.json(result);
+      } catch (ex) {
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: (<Error>ex).message });
+      }
    },
 
    async createRequisition(req: Request, res: Response) {
+      if (req.admin.userRole === UserRole.Hod && req.body.department !== req.admin.department) {
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'You can only create inventory for your department.' });
+      }
+
       const department = await departmentRepository.getOneDepartment(req.body.department);
 
       if (!department) {

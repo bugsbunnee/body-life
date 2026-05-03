@@ -9,12 +9,14 @@ import { FaBirthdayCake, FaSpinner } from 'react-icons/fa';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn, getErrorMessage, getIsBirthdayExpired } from '@/lib/utils';
+import { cn, getErrorMessage, getIsBirthdayExpired, getIsRolePermitted } from '@/lib/utils';
 
 import { type User } from '@/utils/entities';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { ROLES } from '@/utils/constants';
 
+import useAuthStore from '@/store/auth';
 import http from '@/services/http.service';
 
 interface Props {
@@ -24,6 +26,8 @@ interface Props {
 }
 
 const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
+   const auth = useAuthStore();
+
    const mutation = useMutation({
       mutationFn: () => http.get('/api/birthday'),
       onSuccess: () => toast.success('Birthday congratulatory messages sent successfully'),
@@ -50,9 +54,11 @@ const DashboardTable: React.FC<Props> = ({ label, loading, data }) => {
                         <span>Sending Birthday Wishes...</span>
                      </Conditional>
 
-                     <Conditional visible={!mutation.isPending}>
-                        <FaBirthdayCake className="size-3" />
-                        Send Birthday Wishes
+                     <Conditional visible={auth.auth ? getIsRolePermitted(ROLES.CORE, auth.auth.admin.userRole) : false}>
+                        <Conditional visible={!mutation.isPending}>
+                           <FaBirthdayCake className="size-3" />
+                           Send Birthday Wishes
+                        </Conditional>
                      </Conditional>
                   </Button>
                </div>

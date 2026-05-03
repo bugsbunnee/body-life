@@ -3,11 +3,13 @@ import mongoose from 'mongoose';
 
 import { FollowUpStatus } from '../infrastructure/database/entities/enums/follow-up-status.enum';
 import { FollowUp, type IFollowUp } from '../infrastructure/database/models/followup.model';
+import { FollowUpQuerySchema, type IFollowUpQuery, type IFollowUpUpdate } from '../infrastructure/database/validators/followup.validator';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 import type { QueryFilter } from 'mongoose';
+import type { Request } from 'express';
 import type { IDateRange } from '../infrastructure/database/validators/base.validator';
 import type { Pagination } from '../infrastructure/lib/entities';
-import type { IFollowUpQuery, IFollowUpUpdate } from '../infrastructure/database/validators/followup.validator';
 
 export const followupRepository = {
    buildMessageFilterQuery(query: IFollowUpQuery) {
@@ -50,6 +52,16 @@ export const followupRepository = {
       }
 
       return filter;
+   },
+
+   parseFollowUpQueryFromRequest(req: Request) {
+      const query = FollowUpQuerySchema.parse(req.query);
+
+      if (req.admin.userRole === UserRole.Worker) {
+         query.assignedTo = req.admin._id;
+      }
+
+      return query;
    },
 
    async createFollowUpEntry(followUp: Partial<IFollowUp>) {

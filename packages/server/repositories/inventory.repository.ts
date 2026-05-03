@@ -1,10 +1,12 @@
 import type mongoose from 'mongoose';
 import moment from 'moment';
 
-import { Inventory, type IInventory } from '../infrastructure/database/models/inventory.model';
-
-import type { IInventoryQuery } from '../infrastructure/database/validators/inventory.validator';
+import type { Request } from 'express';
 import type { Pagination } from '../infrastructure/lib/entities';
+
+import { Inventory, type IInventory } from '../infrastructure/database/models/inventory.model';
+import { InventoryQuerySchema, type IInventoryQuery } from '../infrastructure/database/validators/inventory.validator';
+import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
 
 export const inventoryRepository = {
    buildInventoryFilterQuery(query: IInventoryQuery) {
@@ -43,6 +45,20 @@ export const inventoryRepository = {
       }
 
       return filter;
+   },
+
+   parseInventoryQueryFromRequest(req: Request) {
+      const query = InventoryQuerySchema.parse(req.query);
+
+      if (req.admin.userRole !== UserRole.Pastor) {
+         if (!req.admin.department) {
+            throw new Error('Admin department is required to filter inventory.');
+         }
+
+         query.department = req.admin.department;
+      }
+
+      return query;
    },
 
    async aggregateInventoryByDepartment() {

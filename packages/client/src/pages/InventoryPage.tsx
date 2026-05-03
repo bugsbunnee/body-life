@@ -8,13 +8,14 @@ import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { exportToExcel, formatAmount } from '@/lib/utils';
+import { exportToExcel, formatAmount, getIsRolePermitted } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { InventoryItem } from '@/utils/entities';
 
 import { Slider } from '@/components/ui/slider';
 import { RangeDatePicker } from '@/components/ui/datepicker';
+import { ROLES } from '@/utils/constants';
 
 import AddInventoryItemForm from '@/components/forms/inventory-item/add-inventory-item-form';
 import Conditional from '@/components/common/conditional';
@@ -28,8 +29,10 @@ import Summary from '@/components/common/summary';
 import useDepartments from '@/hooks/useDepartments';
 import useQueryStore from '@/store/query';
 import useInventory from '@/hooks/useInventory';
+import useAuthStore from '@/store/auth';
 
 const InventoryPage: React.FC = () => {
+   const { auth } = useAuthStore();
    const { data: departments, isFetching: isFetchingDepartments } = useDepartments();
    const { data, isFetching, refetch } = useInventory();
    const { inventoryQuery, resetQuery, onSetDepartment, onSetInventory } = useQueryStore();
@@ -241,14 +244,16 @@ const InventoryPage: React.FC = () => {
          </div>
 
          <div className="p-4 md:p-6 border-b-border border-b grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <SearchableSelect
-               isTriggered={isFetchingDepartments}
-               onTriggerSearch={(name: string) => onSetDepartment({ name })}
-               data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
-               value={department}
-               onValueChange={(value) => onSetInventory({ department: value ? value.value : '' })}
-               placeholder="Filter by Department"
-            />
+            <Conditional visible={auth ? getIsRolePermitted(ROLES.PASTOR_ONLY, auth.admin.userRole) : false}>
+               <SearchableSelect
+                  isTriggered={isFetchingDepartments}
+                  onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                  data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
+                  value={department}
+                  onValueChange={(value) => onSetInventory({ department: value ? value.value : '' })}
+                  placeholder="Filter by Department"
+               />
+            </Conditional>
 
             <div className="border border-border rounded-xl p-4">
                <div className="border border-border bg-slate-50 p-4 rounded-md items-center flex-col overflow-hidden space-y-4">

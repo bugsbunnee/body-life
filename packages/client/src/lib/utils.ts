@@ -8,6 +8,7 @@ import type { DateRange } from 'react-day-picker';
 import { clsx, type ClassValue } from 'clsx';
 import { format, isSameMonth, isSameYear } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
+import { UserRole } from '@/utils/entities';
 
 export function cn(...inputs: ClassValue[]) {
    return twMerge(clsx(inputs));
@@ -42,6 +43,10 @@ export function getIsBirthdayExpired(dateOfBirth: Date) {
    const date = dayjs(dateOfBirth).set('year', dayjs().year());
 
    return dayjs().isAfter(date, 'day');
+}
+
+export function getIsRolePermitted(userRoles: UserRole[], userRole: UserRole) {
+   return userRoles.includes(userRole);
 }
 
 export function formatAmount(amount: number) {

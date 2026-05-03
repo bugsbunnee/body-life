@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import NavBarMobile from './navbar-mobile';
 import Role from '../common/role';
@@ -38,16 +38,27 @@ const NavBar: React.FC = () => {
       navigate(APP_ROUTES.AUTH);
    };
 
+   const routes = useMemo(() => {
+      if (authStore.auth) {
+         return sections
+            .flatMap((section) => section.subroutes)
+            .filter((route) => (route.permittedRoles ? route.permittedRoles.includes(authStore.auth!.admin.userRole) : true))
+            .map((route) => (route.permittedRoles ? { ...route, subroutes: route.subroutes.filter((s) => s.permittedRoles?.includes(authStore.auth!.admin.userRole)) } : route));
+      }
+
+      return sections[0].subroutes;
+   }, [authStore.auth]);
+
    return (
       <React.Fragment>
          <div className="hidden h-dvh bg-gray-light overflow-y-auto p-8 lg:flex flex-col border-r border-b-border">
             <img src={logo} alt="RCNLagos Island" className="w-[6.06rem] h-[3.56rem] object-contain" />
 
-            <div className="mt-3 flex-1">
-               {sections.map((section) => (
-                  <React.Fragment key={section.label + section.path}>
+            {authStore.auth && (
+               <React.Fragment>
+                  <div className="mt-3 flex-1">
                      <ul className="mt-[2rem]">
-                        {section.subroutes.map((route, index) => (
+                        {routes.map((route, index) => (
                            <React.Fragment key={route.label}>
                               <motion.li
                                  onClick={() => handleRouteClick(route, index)}
@@ -63,6 +74,7 @@ const NavBar: React.FC = () => {
                               >
                                  <route.Icon fontSize="1.25rem" />
                                  <div className="flex-1">{route.label}</div>
+
                                  {route.subroutes.length > 0 && (
                                     <motion.div animate={{ rotate: index === expandedPathIndex ? 180 : 0 }} transition={{ duration: 0.2 }}>
                                        <ChevronDownIcon className="size-4" />
@@ -102,32 +114,30 @@ const NavBar: React.FC = () => {
                            </React.Fragment>
                         ))}
                      </ul>
-                  </React.Fragment>
-               ))}
 
-               <button onClick={handleLogout} className="rounded-xl flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-sm uppercase font-medium text-red-500">
-                  <CiLogout fontSize="1.25rem" />
-                  <div>Logout</div>
-               </button>
-            </div>
+                     <button onClick={handleLogout} className="rounded-xl flex items-center gap-x-4 py-[0.75rem] px-[1.31rem] mb-8 text-sm uppercase font-medium text-red-500">
+                        <CiLogout fontSize="1.25rem" />
+                        <div>Logout</div>
+                     </button>
+                  </div>
 
-            {authStore.auth && (
-               <div className="flex items-center justify-start gap-x-4">
-                  <Avatar className="w-[3rem] h-[3rem]">
-                     <AvatarImage src={authStore.auth.admin.imageUrl} />
-                     <AvatarFallback>{getInitials(authStore.auth.admin.firstName + ' ' + authStore.auth.admin.lastName)}</AvatarFallback>
-                  </Avatar>
+                  <div className="flex items-center justify-start gap-x-4">
+                     <Avatar className="w-[3rem] h-[3rem]">
+                        <AvatarImage src={authStore.auth.admin.imageUrl} />
+                        <AvatarFallback>{getInitials(authStore.auth.admin.firstName + ' ' + authStore.auth.admin.lastName)}</AvatarFallback>
+                     </Avatar>
 
-                  <div>
-                     <div className="text-lg text-main font-medium">
-                        {authStore.auth.admin.firstName} {authStore.auth.admin.lastName}
-                     </div>
+                     <div>
+                        <div className="text-lg text-main font-medium">
+                           {authStore.auth.admin.firstName} {authStore.auth.admin.lastName}
+                        </div>
 
-                     <div className="text-sm text-gray-neutral capitalize font-medium">
-                        <Role role={authStore.auth.admin.userRole} />
+                        <div className="text-sm text-gray-neutral capitalize font-medium">
+                           <Role role={authStore.auth.admin.userRole} />
+                        </div>
                      </div>
                   </div>
-               </div>
+               </React.Fragment>
             )}
          </div>
 

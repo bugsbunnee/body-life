@@ -4,7 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
-import { cn, exportToExcel, formatAmount } from '@/lib/utils';
+import { cn, exportToExcel, formatAmount, getIsRolePermitted } from '@/lib/utils';
 
 import { RequisitionStatus, UserRole, type Requisition } from '@/utils/entities';
 
@@ -27,7 +27,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/datatable';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { REQUISITION_STATUS } from '@/utils/constants';
+import { RangeDatePicker } from '@/components/ui/datepicker';
+import { REQUISITION_STATUS, ROLES } from '@/utils/constants';
 
 const RequisitionsPage: React.FC = () => {
    const [isAddRequisitionVisible, setAddRequisitionVisible] = useState(false);
@@ -86,6 +87,10 @@ const RequisitionsPage: React.FC = () => {
          {
             accessorKey: 'description',
             header: 'Description',
+         },
+         {
+            accessorKey: 'department.name',
+            header: 'Department',
          },
          {
             accessorKey: 'status',
@@ -272,6 +277,11 @@ const RequisitionsPage: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap gap-3">
+               <RangeDatePicker
+                  dateRange={{ from: requisitionQuery.startDate, to: requisitionQuery.endDate }}
+                  onSelectRange={(range) => onSetRequisition({ startDate: range.from!, endDate: range.to! })}
+               />
+
                <Button
                   onClick={() => setAddRequisitionVisible(true)}
                   variant="ghost"
@@ -307,14 +317,16 @@ const RequisitionsPage: React.FC = () => {
                </SelectContent>
             </Select>
 
-            <SearchableSelect
-               isTriggered={isFetchingDepartments}
-               onTriggerSearch={(name: string) => onSetDepartment({ name })}
-               data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
-               value={department}
-               onValueChange={(value) => onSetRequisition({ department: value ? value.value : '' })}
-               placeholder="Filter by Department"
-            />
+            <Conditional visible={auth ? getIsRolePermitted(ROLES.PASTOR_ONLY, auth.admin.userRole) : false}>
+               <SearchableSelect
+                  isTriggered={isFetchingDepartments}
+                  onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                  data={departments.data.data.map((department) => ({ label: department.name, value: department._id }))}
+                  value={department}
+                  onValueChange={(value) => onSetRequisition({ department: value ? value.value : '' })}
+                  placeholder="Filter by Department"
+               />
+            </Conditional>
          </div>
 
          <DataTable

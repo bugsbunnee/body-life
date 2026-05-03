@@ -9,17 +9,16 @@ import { StatusCodes } from 'http-status-codes';
 import { parseUsersFromFile } from '../infrastructure/lib/utils';
 
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
-import { UserQuerySchema } from '../infrastructure/database/validators/user.validator';
 import { communicationService } from '../services/communication.service';
 
 import { departmentRepository } from '../repositories/department.repository';
 import { prayerCellRepository } from '../repositories/prayer-cell.repository';
 import { followupRepository } from '../repositories/followup.repository';
-import { serviceReportRepository } from '../repositories/service-report.repository';
 import { userRepository } from '../repositories/user.repository';
 
 import { lib } from '../utils/lib';
 import { smsService } from '../services/sms.service';
+import { userService } from '../services/user.service';
 
 export const userController = {
    async bulkCreateUsers(req: Request, res: Response) {
@@ -63,27 +62,20 @@ export const userController = {
             req.body.prayerCell = prayerCell._id;
          }
 
+         const result = await userService.validateFollowUpPayload(req.body);
+
+         if (!result.success) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: result.message });
+         }
+
          user = await userRepository.createUser(req.body);
 
-         if (user.isFirstTimer) {
-            const [assignedTo, serviceReport] = await Promise.all([
-               userRepository.getOneUserById(req.body.assignTo),
-               serviceReportRepository.getOneServiceReportById(req.body.serviceAttended),
-            ]);
-
-            if (!assignedTo) {
-               return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid follow up contact provided.' });
-            }
-
-            if (!serviceReport) {
-               return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid service report provided.' });
-            }
-
+         if (result.followUpPayload) {
             const followUpPayload = {
                user: user._id,
-               assignedTo: assignedTo._id,
-               serviceAttended: serviceReport._id,
                feedback: user.notes,
+               assignedTo: result.followUpPayload.assignedTo._id,
+               serviceAttended: result.followUpPayload.serviceAttended._id,
                preferredContactMethod: req.body.preferredContactMethod,
                nextActionAt: moment().add(48, 'hours').toDate(),
             };
@@ -91,14 +83,14 @@ export const userController = {
             await Promise.all([
                followupRepository.createFollowUpEntry(followUpPayload),
 
-               communicationService.sendOutFollowUpAssignmentEmail(assignedTo, user, <IFollowUp>followUpPayload),
+               communicationService.sendOutFollowUpAssignmentEmail(result.followUpPayload.assignedTo, user, <IFollowUp>followUpPayload),
                communicationService.sendOutWelcomeEmail(user),
 
                smsService.sendWelcomeSMS(user),
 
                smsService.sendFollowUpSMS({
-                  userFirstName: assignedTo.firstName,
-                  userPhoneNumber: assignedTo.phoneNumber,
+                  userFirstName: result.followUpPayload.assignedTo.firstName,
+                  userPhoneNumber: result.followUpPayload.assignedTo.phoneNumber,
                   firstTimerPreferredContactMethod: followUpPayload.preferredContactMethod,
                   firstTimerAssignedAt: new Date(),
                   firstTimerFirstName: user.firstName,
@@ -110,9 +102,7 @@ export const userController = {
 
          res.status(StatusCodes.CREATED).json({ data: user, message: 'User added successfully!' });
       } catch (ex) {
-         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: 'Failed to create user',
-         });
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create user' });
       }
    },
 
@@ -158,7 +148,7 @@ export const userController = {
 
    async getUsers(req: Request, res: Response) {
       try {
-         const query = UserQuerySchema.parse(req.query);
+         const query = userRepository.parseUserQueryFromRequest(req);
          const users = await userRepository.getUsers(req.pagination, query);
 
          res.json({ data: users });
@@ -187,12 +177,35 @@ export const userController = {
    },
 
    async updateUserRole(req: Request, res: Response) {
-      const userId = lib.parseObjectId(req.params.id!);
-      const user = await userRepository.updateUserRole(userId, req.body.userRole);
+      let userId = lib.parseObjectId(req.params.id!);
+      let user = await userRepository.getOneUserById(userId);
 
       if (!user) {
          return res.status(StatusCodes.NOT_FOUND).json({ message: 'The user with the given ID does not exist!' });
       }
+
+      if (user.userRole === req.body.userRole) {
+         return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user already has the specified role.' });
+      }
+
+      if (!user.department) {
+         if (req.body.userRole === UserRole.Hod) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user is a Head of Department but does not belong to a department.' });
+         }
+
+         if (req.body.userRole === UserRole.Worker) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user is a Worker but does not belong to a department.' });
+         }
+      }
+
+      if (!user.prayerCell) {
+         if (req.body.userRole === UserRole.PrayerCellLeader) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'The user is a Prayer Cell Leader but does not belong to a prayer cell.' });
+         }
+      }
+
+      user.userRole = req.body.userRole;
+      user = await user.save();
 
       res.json({ success: true, message: 'Role updated successfully!' });
    },

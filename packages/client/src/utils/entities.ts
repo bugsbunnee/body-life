@@ -6,6 +6,7 @@ export enum UserRole {
    Worker = 'worker',
    Member = 'member',
    PrayerCellLeader = 'prayer-cell-leader',
+   External = 'external',
 }
 
 export enum RequisitionStatus {
@@ -145,6 +146,7 @@ export interface RouteItem {
    Icon: IconType;
    path: string;
    label: string;
+   permittedRoles: UserRole[];
 }
 
 export interface SubRoute {
@@ -152,6 +154,7 @@ export interface SubRoute {
    path: string;
    label: string;
    subroutes: RouteItem[];
+   permittedRoles?: UserRole[];
 }
 
 export interface Route {
