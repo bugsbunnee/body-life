@@ -28,9 +28,13 @@ const weeklyReviewSchema = new mongoose.Schema(
          },
       ],
 
-      feedback: { type: String },
-
-      feedbackDueForActionAt: { type: Date },
+      feedback: [
+         {
+            raisedBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
+            text: { type: String, required: true },
+            dueForActionAt: { type: Date, required: true },
+         },
+      ],
 
       submittedBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
 

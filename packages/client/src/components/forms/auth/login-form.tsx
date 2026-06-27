@@ -86,7 +86,7 @@ const LoginForm: React.FC = () => {
 
             <div className="text-center">
                <Link className="text-main text-sm" to={APP_ROUTES.FORGOT_PASSWORD}>
-                  Forgot your password? Contact Admin
+                  Forgot your password? Click here
                </Link>
             </div>
          </form>
