@@ -259,7 +259,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                         <FormControl>
                            <SearchableSelect
                               isTriggered={prayerCells.isFetching}
-                              onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                              onTriggerSearch={(name: string) => onSetPrayerCell({ name })}
                               data={prayerCells.data.data.data.map((cell) => ({ label: cell.name, value: cell._id }))}
                               value={field.value}
                               onValueChange={field.onChange}
@@ -302,7 +302,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                            <FormControl>
                               <SearchableSelect
                                  isTriggered={users.isFetching}
-                                 onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                                 onTriggerSearch={(name: string) => onSetUser({ search: name })}
                                  data={users.data.data.data.map((user) => ({ label: user.firstName + ' ' + user.lastName, value: user._id }))}
                                  value={field.value}
                                  onValueChange={field.onChange}
