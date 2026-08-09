@@ -17,6 +17,11 @@ export enum RequisitionStatus {
    Disbursed = 'disbursed',
 }
 
+export enum ProgramTab {
+   Upcoming = 'upcoming',
+   Past = 'past',
+}
+
 export interface ApiResponse<T> {
    data: T[];
    pagination: {

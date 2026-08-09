@@ -1,16 +1,15 @@
 import type React from 'react';
-import dayjs from 'dayjs';
 
 import { useEffect, useMemo, useState } from 'react';
 import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { formatDate } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
 import { FaSpinner } from 'react-icons/fa';
-import { cn, exportToExcel, getErrorMessage, summarize } from '@/lib/utils';
+import { cn, exportToExcel, getErrorMessage, getProgramDateRangeForTab, summarize } from '@/lib/utils';
 import { toast } from 'sonner';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Program } from '@/utils/entities';
+import { ProgramTab, type Program } from '@/utils/entities';
 
 import AddProgramForm from '@/components/forms/program/add-program-form';
 import Conditional from '@/components/common/conditional';
@@ -168,7 +167,8 @@ const ProgramsPage: React.FC = () => {
 
    useEffect(() => {
       resetQuery();
-   }, [resetQuery]);
+      onSetProgram(getProgramDateRangeForTab(ProgramTab.Upcoming));
+   }, [resetQuery, onSetProgram]);
 
    return (
       <>
@@ -248,16 +248,11 @@ const ProgramsPage: React.FC = () => {
             </div>
          </div>
 
-         <Tabs defaultValue="upcoming" className="w-full">
+         <Tabs defaultValue={ProgramTab.Upcoming} className="w-full" onValueChange={(value) => onSetProgram(getProgramDateRangeForTab(value as ProgramTab))}>
             <div className="p-4 md:p-6 border-b-border border-b">
                <TabsList>
-                  <TabsTrigger value="upcoming" onClick={() => onSetProgram({ startDate: dayjs().toDate(), endDate: dayjs().add(90, 'days').toDate() })}>
-                     Upcoming
-                  </TabsTrigger>
-
-                  <TabsTrigger value="past" onClick={() => onSetProgram({ startDate: dayjs().startOf('year').toDate(), endDate: dayjs().toDate() })}>
-                     Past
-                  </TabsTrigger>
+                  <TabsTrigger value={ProgramTab.Upcoming}>Upcoming</TabsTrigger>
+                  <TabsTrigger value={ProgramTab.Past}>Past</TabsTrigger>
                </TabsList>
             </div>
 

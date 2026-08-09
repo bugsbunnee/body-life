@@ -8,7 +8,7 @@ import type { DateRange } from 'react-day-picker';
 import { clsx, type ClassValue } from 'clsx';
 import { format, isSameMonth, isSameYear } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
-import { UserRole } from '@/utils/entities';
+import { ProgramTab, UserRole } from '@/utils/entities';
 
 export function cn(...inputs: ClassValue[]) {
    return twMerge(clsx(inputs));
@@ -51,6 +51,12 @@ export function getIsRolePermitted(userRoles: UserRole[], userRole: UserRole) {
 
 export function formatAmount(amount: number) {
    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(amount);
+}
+
+export function getProgramDateRangeForTab(tab: ProgramTab) {
+   return tab === ProgramTab.Upcoming
+      ? { startDate: dayjs().toDate(), endDate: dayjs().add(90, 'days').toDate() }
+      : { startDate: dayjs().startOf('year').toDate(), endDate: dayjs().toDate() };
 }
 
 export function formatDateRange(dateRange: DateRange) {
