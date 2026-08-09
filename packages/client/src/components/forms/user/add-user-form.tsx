@@ -325,7 +325,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
                            <FormControl>
                               <SearchableSelect
                                  isTriggered={services.isFetching}
-                                 onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                                 onTriggerSearch={() => {}}
                                  data={services.data.data.map((service) => ({ label: service.message.title, value: service._id }))}
                                  value={field.value}
                                  onValueChange={field.onChange}
