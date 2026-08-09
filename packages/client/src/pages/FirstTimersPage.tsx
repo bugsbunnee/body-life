@@ -333,7 +333,7 @@ const FirstTimersPage: React.FC = () => {
             </Conditional>
          </div>
 
-         <Conditional visible={auth ? getIsRolePermitted(ROLES.PASTOR_ONLY, auth.admin.userRole) : false}>
+         <Conditional visible={auth ? getIsRolePermitted(ROLES.CORE, auth.admin.userRole) : false}>
             <div className="grid grid-cols-2 gap-4 p-4 md:p-6 border-b-border border-b lg:grid-cols-4">
                <FirstTimerMetrics />
             </div>
