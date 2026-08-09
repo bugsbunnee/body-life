@@ -43,7 +43,7 @@ export const sections: Route[] = [
             label: 'Home',
             Icon: CiHome,
             subroutes: [],
-            permittedRoles: ROLES.DEFAULT,
+            permittedRoles: [...ROLES.DEFAULT, UserRole.Admin],
          },
          {
             path: APP_ROUTES.MEMBERS,
