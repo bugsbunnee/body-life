@@ -28,7 +28,7 @@ export const APP_ROUTES = {
 
 export const ROLES = {
    HIGH_RANKING: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Admin],
-   DEFAULT: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Worker],
+   DEFAULT: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Worker, UserRole.Admin],
    CORE: [UserRole.Admin, UserRole.Pastor],
    PASTOR_ONLY: [UserRole.Pastor],
 };
@@ -43,7 +43,7 @@ export const sections: Route[] = [
             label: 'Home',
             Icon: CiHome,
             subroutes: [],
-            permittedRoles: [...ROLES.DEFAULT, UserRole.Admin],
+            permittedRoles: ROLES.DEFAULT,
          },
          {
             path: APP_ROUTES.MEMBERS,

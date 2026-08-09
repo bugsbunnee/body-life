@@ -20,7 +20,7 @@ export const FEATURES = {
 };
 
 export const HIGH_RANKING_ROLES = [UserRole.Pastor, UserRole.Admin, UserRole.Hod, UserRole.PrayerCellLeader];
-export const DEFAULT_ROLES = [UserRole.Pastor, UserRole.Hod, UserRole.PrayerCellLeader, UserRole.Worker];
+export const DEFAULT_ROLES = [UserRole.Pastor, UserRole.Hod, UserRole.PrayerCellLeader, UserRole.Worker, UserRole.Admin];
 export const CORE_ROLES = [UserRole.Pastor, UserRole.Admin];
 
 export const PASSWORD_RESET_TIME_IN_MINUTES = 60;
