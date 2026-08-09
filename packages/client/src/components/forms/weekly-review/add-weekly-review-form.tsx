@@ -21,7 +21,6 @@ import { WeeklyReviewCreateSchema, type IWeeklyReviewCreate } from './weekly-rev
 
 import useDepartments from '@/hooks/useDepartments';
 import useServiceReports from '@/hooks/useServiceReports';
-import useQueryStore from '@/store/query';
 
 import http from '@/services/http.service';
 import useAuthStore from '@/store/auth';
@@ -278,7 +277,6 @@ const fieldMappings = {
 const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
    const serviceReports = useServiceReports();
    const departments = useDepartments();
-   const query = useQueryStore();
 
    const auth = useAuthStore();
 
@@ -341,7 +339,7 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                         <FormControl>
                            <SearchableSelect
                               isTriggered={serviceReports.isFetching}
-                              onTriggerSearch={(name: string) => query.onSetDepartment({ name })}
+                              onTriggerSearch={() => {}}
                               data={serviceReports.data.data.map((report) => ({ label: `${formatDate(report.serviceDate, 'PPP')} (${report.message.title})`, value: report._id }))}
                               value={field.value}
                               onValueChange={field.onChange}
