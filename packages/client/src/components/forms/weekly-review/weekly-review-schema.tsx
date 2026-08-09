@@ -6,4 +6,10 @@ export const WeeklyReviewCreateSchema = z.object({
    fields: z.array(z.object({ label: z.string(), value: z.any() })).min(1, { error: 'At least one metric is required' }),
 });
 
+export const WeeklyReviewFeedbackSchema = z.object({
+   text: z.string().min(1, { error: 'Feedback is required' }),
+   dueForActionAt: z.date({ error: 'Feedback due date is required' }),
+});
+
 export type IWeeklyReviewCreate = z.infer<typeof WeeklyReviewCreateSchema>;
+export type IWeeklyReviewFeedback = z.infer<typeof WeeklyReviewFeedbackSchema>;

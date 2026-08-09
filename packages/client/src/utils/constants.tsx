@@ -27,7 +27,7 @@ export const APP_ROUTES = {
 };
 
 export const ROLES = {
-   HIGH_RANKING: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader],
+   HIGH_RANKING: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Admin],
    DEFAULT: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Worker],
    CORE: [UserRole.Admin, UserRole.Pastor],
    PASTOR_ONLY: [UserRole.Pastor],
@@ -60,7 +60,7 @@ export const sections: Route[] = [
                   path: APP_ROUTES.FIRST_TIMERS,
                   label: 'First Timers',
                   Icon: NewspaperIcon,
-                  permittedRoles: ROLES.DEFAULT,
+                  permittedRoles: ROLES.HIGH_RANKING,
                },
             ],
          },

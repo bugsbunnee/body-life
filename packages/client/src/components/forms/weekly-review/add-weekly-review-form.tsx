@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import _ from 'lodash';
 
 import Conditional from '@/components/common/conditional';
@@ -14,6 +14,7 @@ import { FaSpinner } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { getErrorMessage } from '@/lib/utils';
 import { WeeklyReviewCreateSchema, type IWeeklyReviewCreate } from './weekly-review-schema';
@@ -304,12 +305,27 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
          }),
    });
 
+   const { departmentId, departmentCount } = useMemo(() => {
+      return {
+         departmentId: auth.auth ? `${auth.auth.admin.department}` : undefined,
+         departmentCount: departments.data.data.data.length,
+      };
+   }, [auth.auth, departments.data.data.data.length]);
+
    useEffect(() => {
-      if (auth.auth) {
-         const fieldValue = _.get(fieldMappings, `${auth.auth.admin.department}`) ?? [];
-         form.reset({ fields: fieldValue });
+      if (!auth.auth) {
+         return;
       }
-   }, [auth.auth, form]);
+
+      const fieldValue = _.get(fieldMappings, `${auth.auth.admin.department}`) ?? [];
+      const match = departments.data.data.data.find((department) => department._id === departmentId);
+
+      form.reset({
+         fields: fieldValue,
+         department: match ? { label: match.name, value: match._id } : undefined,
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [departmentId, departmentCount, form]);
 
    return (
       <Form {...form}>
@@ -345,16 +361,19 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                      <FormItem>
                         <FormLabel className="text-sm text-dark font-medium">Department</FormLabel>
 
-                        <FormControl>
-                           <SearchableSelect
-                              isTriggered={departments.isFetching}
-                              onTriggerSearch={(name: string) => query.onSetDepartment({ name })}
-                              data={departments.data.data.data.map((department) => ({ label: department.name, value: department._id }))}
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              placeholder="Select Department"
-                           />
-                        </FormControl>
+                        <Select disabled value={field.value?.value}>
+                           <FormControl>
+                              <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
+                                 <SelectValue placeholder="No department assigned to your account" />
+                              </SelectTrigger>
+                           </FormControl>
+
+                           <SelectContent>
+                              <Conditional visible={!!field.value}>
+                                 <SelectItem value={field.value?.value ?? ''}>{field.value?.label}</SelectItem>
+                              </Conditional>
+                           </SelectContent>
+                        </Select>
 
                         <FormMessage />
                      </FormItem>

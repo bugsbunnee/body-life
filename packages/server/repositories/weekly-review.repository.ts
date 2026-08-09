@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import moment from 'moment';
 
 import type { Pagination } from '../infrastructure/lib/entities';
-import type { IWeeklyReviewCreate, IWeeklyReviewQuery } from '../infrastructure/database/validators/weekly-review.validator';
+import type { IWeeklyReviewCreate, IWeeklyReviewFeedback, IWeeklyReviewQuery } from '../infrastructure/database/validators/weekly-review.validator';
 
-import { WeeklyReview, type IWeeklyReview } from '../infrastructure/database/models/weekly-review.model';
+import { WeeklyReview, type IWeeklyReview, type IWeeklyReviewDocument } from '../infrastructure/database/models/weekly-review.model';
 
 export const weeklyReviewRepository = {
    buildWeeklyFilterQuery(query: IWeeklyReviewQuery): mongoose.QueryFilter<IWeeklyReview> {
@@ -86,7 +86,6 @@ export const weeklyReviewRepository = {
                },
                fields: 1,
                feedback: 1,
-               feedbackDueForActionAt: 1,
                submittedAt: 1,
                serviceDate: '$serviceReport.serviceDate',
             },
@@ -122,6 +121,7 @@ export const weeklyReviewRepository = {
                },
             })
             .populate({ path: 'submittedBy', select: '_id firstName lastName' })
+            .populate({ path: 'feedback.raisedBy', select: '_id firstName lastName' })
             .sort({ createdAt: -1 })
             .lean()
             .exec(),
@@ -130,7 +130,7 @@ export const weeklyReviewRepository = {
       ]);
 
       return {
-         data: weeklyReviews,
+         data: weeklyReviews.map((review) => ({ ...review, feedback: review.feedback ?? [] })),
          pagination: {
             pageSize: pagination.pageSize,
             pageNumber: pagination.pageNumber,
@@ -148,5 +148,25 @@ export const weeklyReviewRepository = {
          submittedAt: moment().toDate(),
          submittedBy: userId,
       });
+   },
+
+   async getOneWeeklyReview(weeklyReviewId: mongoose.Types.ObjectId) {
+      return WeeklyReview.findById(weeklyReviewId).exec();
+   },
+
+   async addFeedback(weeklyReview: IWeeklyReviewDocument, feedback: IWeeklyReviewFeedback, userId: mongoose.Types.ObjectId) {
+      weeklyReview.feedback.push({
+         raisedBy: userId,
+         text: feedback.text,
+         dueForActionAt: feedback.dueForActionAt,
+      });
+
+      await weeklyReview.save();
+
+      return weeklyReview.populate([
+         { path: 'department', select: '_id name' },
+         { path: 'submittedBy', select: '_id firstName lastName' },
+         { path: 'feedback.raisedBy', select: '_id firstName lastName' },
+      ]);
    },
 };

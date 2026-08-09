@@ -20,7 +20,7 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
    (response) => response,
    (error) => {
-      if (error.response && error.response.status === HttpStatusCode.Forbidden) {
+      if (error.response && error.response.status === HttpStatusCode.Unauthorized) {
          logout();
          window.location.href = APP_ROUTES.AUTH;
       }

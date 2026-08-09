@@ -5,7 +5,7 @@ import { UserRole } from '../infrastructure/database/entities/enums/user-role.en
 
 const pastor = (req: Request, res: Response, next: NextFunction) => {
    if (req.admin.userRole !== UserRole.Pastor) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'You do not have the permission to update this resource.' });
+      return res.status(StatusCodes.FORBIDDEN).json({ message: 'You do not have the permission to update this resource.' });
    }
 
    next();

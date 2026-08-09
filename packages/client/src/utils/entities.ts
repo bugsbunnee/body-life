@@ -208,13 +208,20 @@ export interface User {
    notes: string;
 }
 
+export interface WeeklyReviewFeedback {
+   _id: string;
+   raisedBy: Pick<User, '_id' | 'firstName' | 'lastName'>;
+   text: string;
+   dueForActionAt: Date;
+}
+
 export interface WeeklyReview {
+   _id: string;
    department: Pick<Department, '_id' | 'name'>;
    serviceReport: Pick<ServiceReport, '_id' | 'serviceDate'>;
    submittedBy: Pick<User, '_id' | 'firstName' | 'lastName'>;
    submittedAt: Date;
-   feedback?: string | null;
-   feedbackDueForActionAt?: Date | null;
+   feedback: WeeklyReviewFeedback[];
    fields: Array<{
       value: string;
       label: string;

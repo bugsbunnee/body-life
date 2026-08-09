@@ -61,16 +61,20 @@ const WeeklyReviewEmail: React.FC<Props> = ({ departmentName, formattedServiceDa
                      ))}
                   </Section>
 
-                  {weeklyReview.feedback && (
-                     <Text style={reviewFeedback}>
-                        <strong>Feedback:</strong> {parse(weeklyReview.feedback)}
-                     </Text>
-                  )}
+                  {weeklyReview.feedback && weeklyReview.feedback.length > 0 && (
+                     <Section style={reviewFeedbackSection}>
+                        {weeklyReview.feedback.map((item, idx) => (
+                           <React.Fragment key={idx}>
+                              <Text style={reviewFeedback}>
+                                 <strong>Feedback:</strong> {parse(item.text)}
+                              </Text>
 
-                  {weeklyReview.feedbackDueForActionAt && (
-                     <Text style={reviewDue}>
-                        <strong>Action Due By:</strong> {format(new Date(weeklyReview.feedbackDueForActionAt), 'PPP')}
-                     </Text>
+                              <Text style={reviewDue}>
+                                 <strong>Action Due By:</strong> {format(new Date(item.dueForActionAt), 'PPP')}
+                              </Text>
+                           </React.Fragment>
+                        ))}
+                     </Section>
                   )}
 
                   <Text style={reviewSubmitted}>
@@ -128,6 +132,8 @@ const reviewDepartmentTitle = {
 const reviewFieldsSection = { marginBottom: '10px' };
 
 const reviewFieldText = { fontSize: '14px', color: '#5f4b3a', margin: '2px 0' };
+
+const reviewFeedbackSection = { marginTop: '10px' };
 
 const reviewFeedback = { fontSize: '14px', color: '#d97706', marginTop: '6px' };
 

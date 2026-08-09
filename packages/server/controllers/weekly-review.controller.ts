@@ -8,6 +8,8 @@ import { WeeklyReviewQuerySchema } from '../infrastructure/database/validators/w
 import { departmentRepository } from '../repositories/department.repository';
 import { serviceReportRepository } from '../repositories/service-report.repository';
 import { weeklyReviewRepository } from '../repositories/weekly-review.repository';
+import { lib } from '../utils/lib';
+import { CORE_ROLES } from '../utils/constants';
 
 export const weeklyReviewController = {
    async createWeeklyReview(req: Request, res: Response) {
@@ -23,6 +25,10 @@ export const weeklyReviewController = {
 
          if (!serviceReport) {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid service report provided.' });
+         }
+
+         if (!CORE_ROLES.includes(req.admin.userRole) && department._id.toString() !== `${req.admin.department}`) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: 'You can only submit a weekly report for your own department.' });
          }
 
          req.body.department = department._id;
@@ -52,6 +58,25 @@ export const weeklyReviewController = {
       } catch (ex) {
          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             message: 'Failed to get weekly reviews',
+         });
+      }
+   },
+
+   async addWeeklyReviewFeedback(req: Request, res: Response) {
+      try {
+         const weeklyReviewId = lib.parseObjectId(req.params.id!);
+         const weeklyReview = await weeklyReviewRepository.getOneWeeklyReview(weeklyReviewId);
+
+         if (!weeklyReview) {
+            return res.status(StatusCodes.NOT_FOUND).json({ message: 'Invalid weekly report provided.' });
+         }
+
+         const updatedWeeklyReview = await weeklyReviewRepository.addFeedback(weeklyReview, req.body, req.admin._id);
+
+         res.status(StatusCodes.CREATED).json({ data: updatedWeeklyReview, message: 'Feedback added successfully!' });
+      } catch (ex) {
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: 'Failed to add feedback',
          });
       }
    },

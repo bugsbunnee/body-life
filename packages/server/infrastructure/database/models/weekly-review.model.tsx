@@ -54,6 +54,6 @@ weeklyReviewSchema.methods.sendWeeklyReviewEmail = async function (departmentNam
 };
 
 export type IWeeklyReview = mongoose.InferSchemaType<typeof weeklyReviewSchema>;
-export type IWeeklyReviewDocument = IWeeklyReview & Document & IWeeklyReviewMethods;
+export type IWeeklyReviewDocument = mongoose.HydratedDocument<IWeeklyReview, IWeeklyReviewMethods>;
 
-export const WeeklyReview = mongoose.model<IWeeklyReviewDocument>('WeeklyReview', weeklyReviewSchema);
+export const WeeklyReview = mongoose.model<IWeeklyReview, mongoose.Model<IWeeklyReview, {}, IWeeklyReviewMethods>>('WeeklyReview', weeklyReviewSchema);

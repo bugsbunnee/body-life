@@ -7,7 +7,7 @@ import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { exportToExcel } from '@/lib/utils';
+import { exportToExcel, getIsRolePermitted } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { WeeklyReview } from '@/utils/entities';
@@ -15,25 +15,50 @@ import type { WeeklyReview } from '@/utils/entities';
 import { RangeDatePicker } from '@/components/ui/datepicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+import AddWeeklyReviewFeedbackForm from '@/components/forms/weekly-review/add-weekly-review-feedback-form';
 import AddWeeklyReviewForm from '@/components/forms/weekly-review/add-weekly-review-form';
+import Conditional from '@/components/common/conditional';
 import Header from '@/components/common/header';
 import Modal from '@/components/common/modal';
 import SearchableSelect from '@/components/common/searchable-select';
 import Summary from '@/components/common/summary';
 
+import useAuthStore from '@/store/auth';
 import useDepartments from '@/hooks/useDepartments';
 import useQueryStore from '@/store/query';
 import useWeeklyReview from '@/hooks/useWeeklyReview';
+import useWeeklyReviewsByService from '@/hooks/useWeeklyReviewsByService';
 import useServiceReports from '@/hooks/useServiceReports';
 
+import { ROLES } from '@/utils/constants';
+
 const WeeklyReviewPage: React.FC = () => {
+   const { auth } = useAuthStore();
    const { data: departments, isFetching: isFetchingDepartments } = useDepartments();
    const { data: serviceReports } = useServiceReports();
    const { data, isFetching, refetch } = useWeeklyReview();
    const { weeklyReviewQuery, resetQuery, onSetDepartment, onSetWeeklyReview } = useQueryStore();
 
    const [isAddReview, setIsAddReview] = useState<boolean>(false);
+   const [isWeekFeedbackVisible, setIsWeekFeedbackVisible] = useState<boolean>(false);
    const [selectedReview, setSelectedReview] = useState<WeeklyReview | null>(null);
+   const [selectedReviewForFeedback, setSelectedReviewForFeedback] = useState<WeeklyReview | null>(null);
+
+   const weekReviews = useWeeklyReviewsByService(weeklyReviewQuery.serviceReport);
+
+   const { missingDepartments, feedbackByDepartment, feedbackCount } = useMemo(() => {
+      const submittedDepartmentIds = new Set(weekReviews.data.data.data.map((review) => review.department._id));
+
+      const feedbackByDepartment = weekReviews.data.data.data
+         .filter((review) => (review.feedback ?? []).length > 0)
+         .map((review) => ({ departmentId: review.department._id, departmentName: review.department.name, feedback: review.feedback ?? [] }));
+
+      return {
+         missingDepartments: departments.data.data.filter((department) => !submittedDepartmentIds.has(department._id)),
+         feedbackByDepartment,
+         feedbackCount: feedbackByDepartment.reduce((total, department) => total + department.feedback.length, 0),
+      };
+   }, [weekReviews.data.data.data, departments.data.data]);
 
    const columns = useMemo(() => {
       const columns: ColumnDef<WeeklyReview>[] = [
@@ -92,6 +117,12 @@ const WeeklyReviewPage: React.FC = () => {
                      <DropdownMenuItem onClick={() => setSelectedReview(row.original)} className="capitalize p-3">
                         View Review Details
                      </DropdownMenuItem>
+
+                     <Conditional visible={auth ? getIsRolePermitted(ROLES.CORE, auth.admin.userRole) : false}>
+                        <DropdownMenuItem onClick={() => setSelectedReviewForFeedback(row.original)} className="capitalize p-3">
+                           Add Feedback
+                        </DropdownMenuItem>
+                     </Conditional>
                   </DropdownMenuContent>
                </DropdownMenu>
             ),
@@ -99,10 +130,15 @@ const WeeklyReviewPage: React.FC = () => {
       ];
 
       return columns;
-   }, []);
+   }, [auth]);
 
    const handleAddWeeklyReview = () => {
       setIsAddReview(false);
+      refetch();
+   };
+
+   const handleAddWeeklyReviewFeedback = () => {
+      setSelectedReviewForFeedback(null);
       refetch();
    };
 
@@ -112,8 +148,8 @@ const WeeklyReviewPage: React.FC = () => {
          serviceDate: formatDate(datum.serviceReport.serviceDate, 'PPP'),
          submittedAt: formatDate(datum.submittedAt, 'PPP'),
          submittedBy: datum.submittedBy.firstName + ' ' + datum.submittedBy.lastName,
-         feedback: datum.feedback ?? 'N/A',
-         formatDate: datum.feedbackDueForActionAt ? formatDate(datum.feedbackDueForActionAt, 'PPP') : 'N/A',
+         feedback: datum.feedback?.length ? datum.feedback.map((item) => item.text).join(' | ') : 'N/A',
+         feedbackDueForActionAt: datum.feedback?.length ? datum.feedback.map((item) => formatDate(item.dueForActionAt, 'PPP')).join(' | ') : 'N/A',
       }));
 
       exportToExcel(extractedData, `WeeklyReviews_${formatDate(new Date(), 'PPP')}.xlsx`);
@@ -161,19 +197,24 @@ const WeeklyReviewPage: React.FC = () => {
                      ]}
                   />
 
-                  <Summary
-                     title="Feedback"
-                     labels={[
-                        {
-                           key: 'Feedback',
-                           value: selectedReview.feedback ?? 'No feedback yet.',
-                        },
-                        {
-                           key: 'Feedback Due At',
-                           value: selectedReview.feedbackDueForActionAt ? formatDate(selectedReview.feedbackDueForActionAt, 'PPP') : 'Not Available',
-                        },
-                     ]}
-                  />
+                  <div className="border border-[#EFEFEF] rounded-md flex flex-col">
+                     <div className="border-b border-b-[#EFEFEF] bg-blue-light text-base text-main font-semibold py-3 px-3.5 capitalize">Feedback</div>
+
+                     <div className="flex flex-col gap-3 px-3.5 py-4">
+                        <Conditional visible={(selectedReview.feedback ?? []).length === 0}>
+                           <div className="text-sm text-gray-neutral">No feedback has been given yet.</div>
+                        </Conditional>
+
+                        {(selectedReview.feedback ?? []).map((item) => (
+                           <div key={item._id} className="border border-[#EFEFEF] rounded-md p-3 flex flex-col gap-1">
+                              <div className="text-sm text-dark font-medium">{item.text}</div>
+                              <div className="text-xs text-gray-neutral">
+                                 Raised by {item.raisedBy.firstName} {item.raisedBy.lastName} &middot; Due {formatDate(item.dueForActionAt, 'PPP')}
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
                </div>
 
                <Summary
@@ -185,6 +226,37 @@ const WeeklyReviewPage: React.FC = () => {
                />
             </Modal>
          )}
+
+         {selectedReviewForFeedback && (
+            <Modal onClose={() => setSelectedReviewForFeedback(null)} title={'Add Feedback for ' + selectedReviewForFeedback.department.name} visible>
+               <AddWeeklyReviewFeedbackForm weeklyReviewId={selectedReviewForFeedback._id} onAddFeedback={handleAddWeeklyReviewFeedback} />
+            </Modal>
+         )}
+
+         <Modal onClose={() => setIsWeekFeedbackVisible(false)} title="All Feedback This Week" visible={isWeekFeedbackVisible}>
+            <div className="flex flex-col gap-4">
+               <Conditional visible={feedbackByDepartment.length === 0}>
+                  <div className="text-sm text-gray-neutral">No feedback has been given for this week yet.</div>
+               </Conditional>
+
+               {feedbackByDepartment.map((department) => (
+                  <div key={department.departmentId} className="border border-[#EFEFEF] rounded-md flex flex-col">
+                     <div className="border-b border-b-[#EFEFEF] bg-blue-light text-base text-main font-semibold py-3 px-3.5 capitalize">{department.departmentName}</div>
+
+                     <div className="flex flex-col gap-3 px-3.5 py-4">
+                        {department.feedback.map((item) => (
+                           <div key={item._id} className="border border-[#EFEFEF] rounded-md p-3 flex flex-col gap-1">
+                              <div className="text-sm text-dark font-medium">{item.text}</div>
+                              <div className="text-xs text-gray-neutral">
+                                 Raised by {item.raisedBy.firstName} {item.raisedBy.lastName} &middot; Due {formatDate(item.dueForActionAt, 'PPP')}
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
+               ))}
+            </div>
+         </Modal>
 
          <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -242,6 +314,29 @@ const WeeklyReviewPage: React.FC = () => {
                </SelectContent>
             </Select>
          </div>
+
+         <Conditional visible={!!weeklyReviewQuery.serviceReport}>
+            <div className="p-4 md:p-6 border-b-border border-b flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+               <div className="text-sm">
+                  <Conditional visible={missingDepartments.length === 0}>
+                     <span className="font-medium text-green-700">All departments have submitted a report for this week.</span>
+                  </Conditional>
+
+                  <Conditional visible={missingDepartments.length > 0}>
+                     <span className="font-medium text-dark">Yet to submit: </span>
+                     <span className="text-gray-neutral">{missingDepartments.map((missing) => missing.name).join(', ')}</span>
+                  </Conditional>
+               </div>
+
+               <Button
+                  onClick={() => setIsWeekFeedbackVisible(true)}
+                  variant="ghost"
+                  className="bg-blue-light px-5 h-12 rounded-md justify-start text-left font-medium text-base text-main shrink-0"
+               >
+                  <span className="flex-1">View All Feedback ({feedbackCount})</span>
+               </Button>
+            </div>
+         </Conditional>
 
          <div className="border-r border-r-border">
             <DataTable
