@@ -38,7 +38,7 @@ const UpdateUserForm: React.FC<Props> = ({ user, onUpdateUser }) => {
    const prayerCells = usePrayerCells();
    const departments = useDepartments();
 
-   const { onSetDepartment } = useQueryStore();
+   const { onSetDepartment, onSetPrayerCell } = useQueryStore();
 
    const form = useForm<IUserUpdate>({
       resolver: zodResolver(userUpdateSchema),
@@ -273,7 +273,7 @@ const UpdateUserForm: React.FC<Props> = ({ user, onUpdateUser }) => {
                         <FormControl>
                            <SearchableSelect
                               isTriggered={prayerCells.isFetching}
-                              onTriggerSearch={(name: string) => onSetDepartment({ name })}
+                              onTriggerSearch={(name: string) => onSetPrayerCell({ name })}
                               data={prayerCells.data.data.data.map((cell) => ({ label: cell.name, value: cell._id }))}
                               value={field.value}
                               onValueChange={field.onChange}

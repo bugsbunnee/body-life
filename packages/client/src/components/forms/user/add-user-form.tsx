@@ -40,7 +40,7 @@ const AddUserForm: React.FC<Props> = ({ onAddUser }) => {
    const users = useUsers();
    const services = useServiceReports();
 
-   const { onSetDepartment } = useQueryStore();
+   const { onSetDepartment, onSetPrayerCell, onSetUser } = useQueryStore();
 
    const form = useForm<IUser>({
       resolver: zodResolver(userSchema),
