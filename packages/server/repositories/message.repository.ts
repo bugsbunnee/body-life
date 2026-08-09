@@ -46,7 +46,7 @@ export const messageRepository = {
    },
 
    async getMessage(messageId: mongoose.Types.ObjectId) {
-      return Message.findById(messageId).exec();
+      return Message.findById(messageId).populate('preacher').exec();
    },
 
    async getMessages(pagination: Pagination, filters: IMessageQuery) {

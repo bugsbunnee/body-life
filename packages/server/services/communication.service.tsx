@@ -269,6 +269,7 @@ export const communicationService = {
       }
 
       const transcript = message.summary ? message.summary.transcript : await this.generateMessageTranscript(message);
+      const preacherName = `${_.get(message, 'preacher.firstName', '')} ${_.get(message, 'preacher.lastName', '')}`.trim();
 
       const summary = await llmClient.generateText({
          model: 'gpt-4.1',
@@ -277,7 +278,7 @@ export const communicationService = {
          prompt: summarizePrompt
             .replace('{{messageTranscript}}', transcript)
             .replace('{{messageTitle}}', message.title)
-            .replace('{{preacherName}}', message.preacher)
+            .replace('{{preacherName}}', preacherName)
             .replace('{{youtubeUrl}}', message.videoUrl)
             .replace('{{datePreached}}', lib.formatDate(message.date)),
       });
