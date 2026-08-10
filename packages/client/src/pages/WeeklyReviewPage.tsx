@@ -7,7 +7,7 @@ import { DownloadCloudIcon, EllipsisVertical, PlusIcon } from 'lucide-react';
 import { DataTable } from '@/components/ui/datatable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { exportToExcel, getIsRolePermitted } from '@/lib/utils';
+import { cn, exportToExcel, getIsRolePermitted } from '@/lib/utils';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { WeeklyReview } from '@/utils/entities';
@@ -217,13 +217,23 @@ const WeeklyReviewPage: React.FC = () => {
                   </div>
                </div>
 
-               <Summary
-                  title="Report"
-                  labels={selectedReview.fields.map((field) => ({
-                     key: field.label,
-                     value: field.value,
-                  }))}
-               />
+               <div className="border border-[#EFEFEF] rounded-md flex flex-col">
+                  <div className="border-b border-b-[#EFEFEF] bg-blue-light text-base text-main font-semibold py-3 px-3.5 capitalize">Report</div>
+
+                  <div className="grid grid-cols-1 gap-3 px-3.5 py-4 sm:grid-cols-2">
+                     {selectedReview.fields.map((field) => (
+                        <div
+                           key={field.label}
+                           className={cn('border border-[#EFEFEF] rounded-md p-3 flex flex-col gap-1', {
+                              'sm:col-span-2': String(field.value ?? '').length > 40,
+                           })}
+                        >
+                           <div className="text-xs text-gray-neutral font-medium">{field.label}</div>
+                           <div className="text-sm text-dark font-medium break-words whitespace-pre-wrap">{field.value || 'N/A'}</div>
+                        </div>
+                     ))}
+                  </div>
+               </div>
             </Modal>
          )}
 

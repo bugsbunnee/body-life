@@ -15,8 +15,9 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
-import { getErrorMessage } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { WeeklyReviewCreateSchema, type IWeeklyReviewCreate } from './weekly-review-schema';
 
 import useDepartments from '@/hooks/useDepartments';
@@ -34,6 +35,11 @@ const FIELD_OPTIONS = {
    REFUND: ['Not Applicable', 'Pending', 'Refunded'],
    RATING: ['Excellent', 'Good', 'Fair', 'Poor'],
 };
+
+const LONG_FORM_FIELD_PATTERN =
+   /kindly specify|please (state|explain|elaborate)|explain why|why not|list the|comments?|recommendations?|feedback|suggestions?|summary|details|update on|challenges?|lessons? learned|describe|supplies needed/i;
+
+const isLongFormField = (label: string) => LONG_FORM_FIELD_PATTERN.test(label);
 
 const fieldMappings = {
    '69f7488b3700cccf6a81a282': [
@@ -508,44 +514,54 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
             </div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-               {fields.fields.map((initialField, index) => (
-                  <FormField
-                     key={initialField.id}
-                     control={form.control}
-                     name={`fields.${index}.value`}
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel className="text-sm text-dark font-medium">{initialField.label}</FormLabel>
+               {fields.fields.map((initialField, index) => {
+                  const isLongForm = !initialField.options && isLongFormField(initialField.label);
 
-                           <Conditional visible={!!initialField.options}>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  return (
+                     <FormField
+                        key={initialField.id}
+                        control={form.control}
+                        name={`fields.${index}.value`}
+                        render={({ field }) => (
+                           <FormItem className={cn({ 'sm:col-span-2 lg:col-span-3': isLongForm })}>
+                              <FormLabel className="text-sm text-dark font-medium">{initialField.label}</FormLabel>
+
+                              <Conditional visible={!!initialField.options}>
+                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                       <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
+                                          <SelectValue placeholder="Select an option" />
+                                       </SelectTrigger>
+                                    </FormControl>
+
+                                    <SelectContent>
+                                       {(initialField.options ?? []).map((option) => (
+                                          <SelectItem key={option} value={option}>
+                                             {option}
+                                          </SelectItem>
+                                       ))}
+                                    </SelectContent>
+                                 </Select>
+                              </Conditional>
+
+                              <Conditional visible={!initialField.options && isLongForm}>
                                  <FormControl>
-                                    <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
-                                       <SelectValue placeholder="Select an option" />
-                                    </SelectTrigger>
+                                    <Textarea rows={3} className="rounded-xl border border-border p-4 shadow-none w-full resize-none" {...field} />
                                  </FormControl>
+                              </Conditional>
 
-                                 <SelectContent>
-                                    {(initialField.options ?? []).map((option) => (
-                                       <SelectItem key={option} value={option}>
-                                          {option}
-                                       </SelectItem>
-                                    ))}
-                                 </SelectContent>
-                              </Select>
-                           </Conditional>
+                              <Conditional visible={!initialField.options && !isLongForm}>
+                                 <FormControl>
+                                    <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" {...field} />
+                                 </FormControl>
+                              </Conditional>
 
-                           <Conditional visible={!initialField.options}>
-                              <FormControl>
-                                 <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" {...field} />
-                              </FormControl>
-                           </Conditional>
-
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-               ))}
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  );
+               })}
             </div>
 
             <div className="border-b-1 my-4"></div>
