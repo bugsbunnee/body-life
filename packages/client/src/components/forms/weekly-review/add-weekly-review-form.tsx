@@ -272,6 +272,44 @@ const fieldMappings = {
          value: '',
       },
    ],
+   '6a79ae0de6b6a14c6d55285a': [
+      {
+         label: 'How many team members were present in service?',
+         value: '',
+      },
+      {
+         label: 'Were all visitors and guests properly received and welcomed?',
+         value: '',
+      },
+      {
+         label: 'Was there any VIP, dignitary, or special guest in attendance? (Yes/No) If yes, kindly specify',
+         value: '',
+      },
+      {
+         label: 'Were first timers properly identified and handed over to the First Timers team?',
+         value: '',
+      },
+      {
+         label: 'Were there any issues with car park or traffic management? (Yes/No) If yes, kindly specify',
+         value: '',
+      },
+      {
+         label: 'Was crowd control and seating coordination smooth throughout service? (Yes/No) If no, kindly explain',
+         value: '',
+      },
+      {
+         label: 'Any security or safety concerns noted during service? (Yes/No) If yes, kindly specify',
+         value: '',
+      },
+      {
+         label: 'Any challenges or issues encountered? If yes, please explain',
+         value: '',
+      },
+      {
+         label: 'Feedback/Comments/Recommendations',
+         value: '',
+      },
+   ],
 };
 
 const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
