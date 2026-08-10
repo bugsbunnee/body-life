@@ -74,6 +74,8 @@ const UpdateUserForm: React.FC<Props> = ({ user, onUpdateUser }) => {
             prayerCell: user.prayerCell ? { label: user.prayerCell.name, value: user.prayerCell._id } : undefined,
             department: user.department ? { label: user.department.name, value: user.department._id } : undefined,
          });
+
+         form.trigger();
       }
    }, [form, user]);
 

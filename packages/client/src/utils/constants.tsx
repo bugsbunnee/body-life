@@ -159,11 +159,11 @@ export const CONTACT_METHODS = [
 
 export const GENDERS = [
    {
-      id: 'Male',
+      id: 'male',
       name: 'Male',
    },
    {
-      id: 'Female',
+      id: 'female',
       name: 'Female',
    },
 ];
@@ -200,12 +200,20 @@ export const REQUISITION_STATUS = [
 
 export const MARITAL_STATUS = [
    {
-      id: 'Single',
+      id: 'single',
       name: 'Single',
    },
    {
-      id: 'Married',
+      id: 'married',
       name: 'Married',
+   },
+   {
+      id: 'divorced',
+      name: 'Divorced',
+   },
+   {
+      id: 'widowed',
+      name: 'Widowed',
    },
 ];
 

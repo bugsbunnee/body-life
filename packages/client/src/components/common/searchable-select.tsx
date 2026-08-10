@@ -40,7 +40,15 @@ const SearchableSelect: React.FC<Props> = ({ data, placeholder, value, isTrigger
    }, []);
 
    return (
-      <Combobox filter={null} value={value} onValueChange={onValueChange} items={data} autoHighlight onInputValueChange={handleValueInputChange}>
+      <Combobox
+         filter={null}
+         value={value}
+         onValueChange={onValueChange}
+         items={data}
+         autoHighlight
+         onInputValueChange={handleValueInputChange}
+         isItemEqualToValue={(itemValue, value) => itemValue?.value === value?.value}
+      >
          <ComboboxInput className="rounded-xl border focus:ring-0 focus:outline-0 focus-within:border-0 border-border px-1 shadow-none w-full h-14" placeholder={placeholder} />
 
          <ComboboxContent>
