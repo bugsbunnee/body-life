@@ -11,6 +11,7 @@ import { RequisitionQuerySchema, type IRequisitionCreate, type IRequisitionQuery
 import { Requisition, type IRequisition } from '../infrastructure/database/models/requisition.model';
 import { RequisitionStatus } from '../infrastructure/database/entities/enums/requisition-status.enum';
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
+import { FEATURES } from '../utils/constants';
 
 export const requisitionRepository = {
    buildFilterQuery(query: IRequisitionQuery) {
@@ -62,7 +63,7 @@ export const requisitionRepository = {
    parseRequisitionQueryFromRequest(req: Request) {
       const query = RequisitionQuerySchema.parse(req.query);
 
-      if (req.admin.userRole !== UserRole.Pastor) {
+      if (FEATURES.ENABLE_ROLE_BASED_DATA_SCOPING && req.admin.userRole !== UserRole.Pastor) {
          if (!req.admin.department) {
             throw new Error('Admin department is required to filter requisitions.');
          }

@@ -7,6 +7,7 @@ import type { Pagination } from '../infrastructure/lib/entities';
 import { Inventory, type IInventory } from '../infrastructure/database/models/inventory.model';
 import { InventoryQuerySchema, type IInventoryQuery } from '../infrastructure/database/validators/inventory.validator';
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
+import { FEATURES } from '../utils/constants';
 
 export const inventoryRepository = {
    buildInventoryFilterQuery(query: IInventoryQuery) {
@@ -50,7 +51,7 @@ export const inventoryRepository = {
    parseInventoryQueryFromRequest(req: Request) {
       const query = InventoryQuerySchema.parse(req.query);
 
-      if (req.admin.userRole !== UserRole.Pastor) {
+      if (FEATURES.ENABLE_ROLE_BASED_DATA_SCOPING && req.admin.userRole !== UserRole.Pastor) {
          if (!req.admin.department) {
             throw new Error('Admin department is required to filter inventory.');
          }

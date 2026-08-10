@@ -359,6 +359,6 @@ const AddServiceReportForm: React.FC<Props> = ({ onAddServiceReport }) => {
    );
 };
 
-const countIntervals = ['17:00', '18:30', '19:30'];
+const countIntervals = ['10:00', '11:30', '12:30', '17:00', '18:30', '19:30'];
 
 export default AddServiceReportForm;

@@ -9,6 +9,7 @@ import type { Request } from 'express';
 import { UserQuerySchema, type IUserQuery, type IUserUpdate } from '../infrastructure/database/validators/user.validator';
 import { User, type IUser } from '../infrastructure/database/models/user.model';
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
+import { FEATURES } from '../utils/constants';
 
 export const userRepository = {
    buildMessageFilterQuery(query: IUserQuery) {
@@ -85,7 +86,7 @@ export const userRepository = {
    parseUserQueryFromRequest(req: Request) {
       const query = UserQuerySchema.parse(req.query);
 
-      if (req.admin.userRole !== UserRole.Pastor) {
+      if (FEATURES.ENABLE_ROLE_BASED_DATA_SCOPING && req.admin.userRole !== UserRole.Pastor) {
          if (req.admin.userRole === UserRole.Hod && req.admin.department) {
             query.department = req.admin.department!;
          }

@@ -5,6 +5,7 @@ import { FollowUpStatus } from '../infrastructure/database/entities/enums/follow
 import { FollowUp, type IFollowUp } from '../infrastructure/database/models/followup.model';
 import { FollowUpQuerySchema, type IFollowUpQuery, type IFollowUpUpdate } from '../infrastructure/database/validators/followup.validator';
 import { UserRole } from '../infrastructure/database/entities/enums/user-role.enum';
+import { FEATURES } from '../utils/constants';
 
 import type { QueryFilter } from 'mongoose';
 import type { Request } from 'express';
@@ -57,7 +58,7 @@ export const followupRepository = {
    parseFollowUpQueryFromRequest(req: Request) {
       const query = FollowUpQuerySchema.parse(req.query);
 
-      if (req.admin.userRole === UserRole.Worker) {
+      if (FEATURES.ENABLE_ROLE_BASED_DATA_SCOPING && req.admin.userRole === UserRole.Worker) {
          query.assignedTo = req.admin._id;
       }
 

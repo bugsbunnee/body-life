@@ -17,6 +17,7 @@ export const CACHE_NAMES = {
 
 export const FEATURES = {
    ENABLE_CACHE: false,
+   ENABLE_ROLE_BASED_DATA_SCOPING: false,
 };
 
 export const HIGH_RANKING_ROLES = [UserRole.Pastor, UserRole.Admin, UserRole.Hod, UserRole.PrayerCellLeader];
