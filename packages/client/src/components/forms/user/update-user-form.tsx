@@ -68,7 +68,7 @@ const UpdateUserForm: React.FC<Props> = ({ user, onUpdateUser }) => {
             address: user.address,
             email: user.email,
             phoneNumber: user.phoneNumber,
-            dateOfBirth: dayjs(user.dateOfBirth).toDate(),
+            dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth).toDate() : undefined,
             maritalStatus: user.maritalStatus,
             gender: user.gender,
             prayerCell: user.prayerCell ? { label: user.prayerCell.name, value: user.prayerCell._id } : undefined,

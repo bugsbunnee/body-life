@@ -1,7 +1,11 @@
 import z from 'zod';
+import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { UserRole } from '@/utils/entities';
+
+dayjs.extend(isSameOrBefore);
 
 export const userSchema = z
    .object({
@@ -11,7 +15,7 @@ export const userSchema = z
       gender: z.string().min(1, 'Gender is required').max(200, 'Gender is too long (max 200 characters'),
       maritalStatus: z.string().min(1, 'Marital Status is required').max(20, 'Marital Status is too long (max 20 characters'),
       email: z.email().min(1, 'Email Address is required').max(200, 'Email Address is too long (max 50 characters'),
-      dateOfBirth: z.date().max(new Date()),
+      dateOfBirth: z.date().refine((date) => dayjs(date).isSameOrBefore(dayjs(), 'day'), { message: 'Date of birth cannot be in the future' }),
       phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
       department: z
          .object({
@@ -66,7 +70,7 @@ export const userUpdateSchema = z.object({
    gender: z.string().min(1, 'Gender is required').max(200, 'Gender is too long (max 200 characters'),
    maritalStatus: z.string().min(1, 'Marital Status is required').max(20, 'Marital Status is too long (max 20 characters'),
    email: z.email().min(1, 'Email Address is required').max(200, 'Email Address is too long (max 50 characters'),
-   dateOfBirth: z.date().max(new Date()),
+   dateOfBirth: z.date().refine((date) => dayjs(date).isSameOrBefore(dayjs(), 'day'), { message: 'Date of birth cannot be in the future' }),
    phoneNumber: z.string().refine((value) => isValidPhoneNumber(value, 'NG'), 'Please enter a valid phone number'),
    department: z
       .object({
