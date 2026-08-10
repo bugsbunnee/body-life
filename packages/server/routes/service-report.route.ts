@@ -8,12 +8,12 @@ import validate from '../middleware/validate';
 import { dateRangeSchema } from '../infrastructure/database/validators/base.validator';
 import { serviceReportController } from '../controllers/service-report.controller';
 import { ServiceReportSchema } from '../infrastructure/database/validators/service-report.validator';
-import { DEFAULT_ROLES, HIGH_RANKING_ROLES } from '../utils/constants';
+import { DEFAULT_ROLES } from '../utils/constants';
 
 const router = express.Router();
 
 router.get('/overview', [auth, protectedRoute(DEFAULT_ROLES), validate(dateRangeSchema, 'query')], serviceReportController.getServiceReportOverview);
-router.get('/', [auth, protectedRoute(HIGH_RANKING_ROLES), paginate, validate(dateRangeSchema, 'query')], serviceReportController.getServiceReportByDateRange);
-router.post('/', [auth, protectedRoute(HIGH_RANKING_ROLES), validate(ServiceReportSchema, 'body')], serviceReportController.createServiceReport);
+router.get('/', [auth, protectedRoute(DEFAULT_ROLES), paginate, validate(dateRangeSchema, 'query')], serviceReportController.getServiceReportByDateRange);
+router.post('/', [auth, protectedRoute(DEFAULT_ROLES), validate(ServiceReportSchema, 'body')], serviceReportController.createServiceReport);
 
 export default router;

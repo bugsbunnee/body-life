@@ -28,7 +28,7 @@ export const APP_ROUTES = {
 
 export const ROLES = {
    HIGH_RANKING: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Admin],
-   DEFAULT: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Worker, UserRole.Admin],
+   DEFAULT: [UserRole.Hod, UserRole.Pastor, UserRole.PrayerCellLeader, UserRole.Worker, UserRole.Admin, UserRole.External],
    CORE: [UserRole.Admin, UserRole.Pastor],
    PASTOR_ONLY: [UserRole.Pastor],
 };

@@ -6,10 +6,10 @@ import communicationController from '../controllers/communication.controller';
 import protectedRoute from '../middleware/protected';
 
 import { NewsletterSchema } from '../infrastructure/database/validators/communication.validator';
-import { CORE_ROLES } from '../utils/constants';
+import { DEFAULT_ROLES } from '../utils/constants';
 
 const router = express.Router();
 
-router.post('/newsletter', [auth, protectedRoute(CORE_ROLES), validate(NewsletterSchema, 'body')], communicationController.sendNewsletter);
+router.post('/newsletter', [auth, protectedRoute(DEFAULT_ROLES), validate(NewsletterSchema, 'body')], communicationController.sendNewsletter);
 
 export default router;

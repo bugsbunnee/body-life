@@ -7,11 +7,11 @@ import validate from '../middleware/validate';
 
 import { InventoryCreateSchema, InventoryQuerySchema } from '../infrastructure/database/validators/inventory.validator';
 import { inventoryController } from '../controllers/inventory.controller';
-import { CORE_ROLES } from '../utils/constants';
+import { DEFAULT_ROLES } from '../utils/constants';
 
 const router = express.Router();
 
-router.get('/', [auth, protectedRoute(CORE_ROLES), validate(InventoryQuerySchema, 'query'), paginate], inventoryController.getInventory);
-router.post('/', [auth, protectedRoute(CORE_ROLES), validate(InventoryCreateSchema, 'body')], inventoryController.createInventory);
+router.get('/', [auth, protectedRoute(DEFAULT_ROLES), validate(InventoryQuerySchema, 'query'), paginate], inventoryController.getInventory);
+router.post('/', [auth, protectedRoute(DEFAULT_ROLES), validate(InventoryCreateSchema, 'body')], inventoryController.createInventory);
 
 export default router;

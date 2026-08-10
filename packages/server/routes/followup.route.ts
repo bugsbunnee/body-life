@@ -9,12 +9,12 @@ import validateObjectId from '../middleware/validateObjectId';
 import { FollowUpQuerySchema, FollowUpUpdateSchema } from '../infrastructure/database/validators/followup.validator';
 import { followupController } from '../controllers/followup.controller';
 import { dateRangeSchema } from '../infrastructure/database/validators/base.validator';
-import { HIGH_RANKING_ROLES } from '../utils/constants';
+import { DEFAULT_ROLES } from '../utils/constants';
 
 const router = express.Router();
 
 router.get('/report', [auth, validate(dateRangeSchema, 'query')], followupController.generateFirstTimersReport);
-router.put('/:id', [auth, protectedRoute(HIGH_RANKING_ROLES), validateObjectId, validate(FollowUpUpdateSchema, 'body')], followupController.updateFirstTimer);
-router.get('/', [auth, protectedRoute(HIGH_RANKING_ROLES), validate(FollowUpQuerySchema, 'query'), paginate], followupController.getFirstTimers);
+router.put('/:id', [auth, protectedRoute(DEFAULT_ROLES), validateObjectId, validate(FollowUpUpdateSchema, 'body')], followupController.updateFirstTimer);
+router.get('/', [auth, protectedRoute(DEFAULT_ROLES), validate(FollowUpQuerySchema, 'query'), paginate], followupController.getFirstTimers);
 
 export default router;
