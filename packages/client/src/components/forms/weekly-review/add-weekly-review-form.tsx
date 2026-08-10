@@ -29,6 +29,12 @@ interface Props {
    onAddWeeklyReport: () => void;
 }
 
+const FIELD_OPTIONS = {
+   EXECUTION: ['Completed Successfully', 'Completed with Challenges', 'Not Completed'],
+   REFUND: ['Not Applicable', 'Pending', 'Refunded'],
+   RATING: ['Excellent', 'Good', 'Fair', 'Poor'],
+};
+
 const fieldMappings = {
    '69f7488b3700cccf6a81a282': [
       {
@@ -274,39 +280,123 @@ const fieldMappings = {
    ],
    '6a79ae0de6b6a14c6d55285a': [
       {
-         label: 'How many team members were present in service?',
+         label: 'Total Team Members',
          value: '',
       },
       {
-         label: 'Were all visitors and guests properly received and welcomed?',
+         label: 'Total Members on Duty',
          value: '',
       },
       {
-         label: 'Was there any VIP, dignitary, or special guest in attendance? (Yes/No) If yes, kindly specify',
+         label: 'Main Guest Minister(s)',
          value: '',
       },
       {
-         label: 'Were first timers properly identified and handed over to the First Timers team?',
+         label: "Guest Minister's Team Member(s)",
          value: '',
       },
       {
-         label: 'Were there any issues with car park or traffic management? (Yes/No) If yes, kindly specify',
+         label: 'Planned Seating Arrangement',
          value: '',
       },
       {
-         label: 'Was crowd control and seating coordination smooth throughout service? (Yes/No) If no, kindly explain',
+         label: 'Inbound Logistics (Airport/Home/Hotel to Venue)',
          value: '',
       },
       {
-         label: 'Any security or safety concerns noted during service? (Yes/No) If yes, kindly specify',
+         label: 'Update on Inbound Logistics',
          value: '',
       },
       {
-         label: 'Any challenges or issues encountered? If yes, please explain',
+         label: 'Outbound Logistics (Venue to Hotel/Airport/Home)',
          value: '',
       },
       {
-         label: 'Feedback/Comments/Recommendations',
+         label: 'Update on Outbound Logistics',
+         value: '',
+      },
+      {
+         label: 'Accommodation Details (if applicable)',
+         value: '',
+      },
+      {
+         label: 'Update on Accommodation',
+         value: '',
+      },
+      {
+         label: 'Update on Guest Feeding/Refreshment (Interface with Welfare)',
+         value: '',
+      },
+      {
+         label: 'Guest Pickup',
+         value: '',
+         options: FIELD_OPTIONS.EXECUTION,
+      },
+      {
+         label: 'Transportation Coordination',
+         value: '',
+         options: FIELD_OPTIONS.EXECUTION,
+      },
+      {
+         label: 'Seating Arrangement Execution',
+         value: '',
+         options: FIELD_OPTIONS.EXECUTION,
+      },
+      {
+         label: 'Accommodation Coordination',
+         value: '',
+         options: FIELD_OPTIONS.EXECUTION,
+      },
+      {
+         label: 'Feeding Coordination',
+         value: '',
+         options: FIELD_OPTIONS.EXECUTION,
+      },
+      {
+         label: 'Guest Departure Coordination',
+         value: '',
+         options: FIELD_OPTIONS.EXECUTION,
+      },
+      {
+         label: 'Challenges Encountered',
+         value: '',
+      },
+      {
+         label: 'How Challenges Were Resolved',
+         value: '',
+      },
+      {
+         label: 'Lessons Learned / Recommendations',
+         value: '',
+      },
+      {
+         label: 'Approved Budget (₦)',
+         value: '',
+      },
+      {
+         label: 'Actual Expense (₦)',
+         value: '',
+      },
+      {
+         label: 'Refund Status',
+         value: '',
+         options: FIELD_OPTIONS.REFUND,
+      },
+      {
+         label: 'Refund Details (if any)',
+         value: '',
+      },
+      {
+         label: 'Overall Protocol Operation Rating',
+         value: '',
+         options: FIELD_OPTIONS.RATING,
+      },
+      {
+         label: 'Summary of Event Support',
+         value: '',
+      },
+      {
+         label: 'Other Comments (additional observations, incidents, recommendations, or information not captured above)',
          value: '',
       },
    ],
@@ -426,9 +516,31 @@ const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
                      render={({ field }) => (
                         <FormItem>
                            <FormLabel className="text-sm text-dark font-medium">{initialField.label}</FormLabel>
-                           <FormControl>
-                              <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" {...field} />
-                           </FormControl>
+
+                           <Conditional visible={!!initialField.options}>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                 <FormControl>
+                                    <SelectTrigger style={{ height: '3.5rem' }} className="rounded-xl border border-border px-4 shadow-none w-full">
+                                       <SelectValue placeholder="Select an option" />
+                                    </SelectTrigger>
+                                 </FormControl>
+
+                                 <SelectContent>
+                                    {(initialField.options ?? []).map((option) => (
+                                       <SelectItem key={option} value={option}>
+                                          {option}
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                           </Conditional>
+
+                           <Conditional visible={!initialField.options}>
+                              <FormControl>
+                                 <Input className="h-[3.5rem] rounded-xl border border-border px-4 shadow-none w-full" {...field} />
+                              </FormControl>
+                           </Conditional>
+
                            <FormMessage />
                         </FormItem>
                      )}
