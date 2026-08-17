@@ -410,7 +410,7 @@ const fieldMappings = {
 
 const AddWeeklyReviewForm: React.FC<Props> = ({ onAddWeeklyReport }) => {
    const serviceReports = useServiceReports();
-   const departments = useDepartments();
+   const departments = useDepartments(1000);
 
    const auth = useAuthStore();
 
